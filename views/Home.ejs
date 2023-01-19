@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf-token" content="<%= csrfToken %>" />
+    <title>Home Page</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body>
+    <div class="grid justify-center my-6">
+     <%-include ("header.ejs") %>
+      <span class="text-2xl text-black my-6 block">Create Election</span>
+      <div class="block">
+        <form action="/AddElectionTitle" method="post" class="grid grid-rows-2">
+          <input type="hidden" name="_csrf" value="<%= csrfToken%>" />
+          <input
+            type="text"
+            class="border-black border-2 rounded font-medium text-xl p-2 bold w-96 m-4"
+            name="ElectionTitle"
+            placeholder="Enter Election Title"
+            required
+          />
+          <input
+            type="submit"
+            class="mx-2 text-xl rounded bg-green-700 font-medium p-1 outline-none text-white w-20 h-12 cursor-pointer"
+          />
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

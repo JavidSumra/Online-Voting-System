@@ -10,7 +10,9 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      VotingAdmin.hasMany(models.Voting,{
+        foreignKey:"userId",
+      });
     }
   }
   VotingAdmin.init({
@@ -18,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
     LastName: DataTypes.STRING,
     email: DataTypes.STRING,
     password: DataTypes.STRING,
-    AdminRole: DataTypes.STRING
+    UserRole: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'VotingAdmin',

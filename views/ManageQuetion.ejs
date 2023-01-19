@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="<%= csrfToken %>" />
+    <title>Manage Quetion List</title>
+</head>
+<body>
+    <div class="grid justify-center my-4">
+        <%-include ("header.ejs") %>
+        <div class="text-2xl text-center font-medium mb-3">Election Title : <%= ElectionTitle %></div>
+        <div class="">
+            <span class="text-xl font-medium">Add Quetion<%=userId%></span>
+            <form action="/addQuetion/<%=userId%>" method="post">
+                <input type="hidden" name="_csrf" value="<%= csrfToken%>" />
+                <span class="text-xl block my-4">Quetion Name/Title:</span>
+                <input type="text" name="QuetionTitile" class="rounded border border-black outline-none p-3 w-2/4" placeholder="Enter Quetion Name">
+                <span class="text-xl block my-4">Quetion Description:</span>
+                <textarea name="Description" placeholder="Enter Quetion Description" class="p-3 border border-black rounded resize-none" cols="40" rows="3"></textarea>
+                <input type="submit" value="Add" class="my-4 text-xl rounded bg-green-700 font-medium p-1 outline-none text-white w-20 h-12 cursor-pointer block">
+            </form>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="csrf-token" content="<%= csrfToken %>" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AddQution</title>
+</head>
+<body>
+    <div class="grid justify-center my-6">
+       <%-include ("header.ejs") %>
+    <div class="title text-3xl font-medium text-center">Election Title : <%= ElectionTitle %></div>
+        <div class="grid">
+            <div class="my-4 text-2xl font-medium">You Have 0 Quetion In Your Election Ballot</div>
+            <a href="/ManageQuetion" class="text-xl rounded bg-green-700 font-medium p-2 outline-none text-white w-56 h-12 relative text-center">Manage Quetion</a>
+            <div class="font-medium my-4 text-2xl ">You Have 0 Registred Voters</div>
+            <a href="" class="text-xl rounded bg-green-700 font-medium p-2 outline-none text-white w-56 h-12 relative text-center">Manage Voters</a>
+            <div class="my-5 grid grid-cols-2 grid-rows-1">
+                <a href="" class="text-xl rounded bg-green-700 font-medium p-2 outline-none text-white w-56 h-12 relative text-center my-3">Declare Election</a>
+                <a href="" class="bg-red-500 text-xl rounded font-medium p-2 outline-none text-white w-56 h-12 relative text-center my-3">End Election</a>
+            </div>
+           <div class="flex items-center justify-center mr-20">
+            <a href="" class="text-xl rounded bg-yellow-400 font-medium p-2 outline-none text-white w-56 h-12 relative text-center my-">Result Perview</a>
+           </div>
+        </div>
+   </div>
+</body>
+</html>
