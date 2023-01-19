@@ -1,4 +1,4 @@
-let port = 3008 || process.env.PORT;
+let port = process.env.PORT || 3008;
 let app = require("./VotingSystem");
 
 app.listen(port,()=>{
