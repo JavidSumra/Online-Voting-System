@@ -12,7 +12,7 @@ module.exports = {
       OptionTitle: {
         type: Sequelize.STRING
       },
-      votes: {
+      OptionId: {
         type: Sequelize.INTEGER
       },
       createdAt: {
