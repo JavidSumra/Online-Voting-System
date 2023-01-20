@@ -30,11 +30,11 @@ app.set("view engine", "ejs");
 const { sequelize } = require("./models");
 const { DataTypes } = require("sequelize");
 const { request } = require("https");
-const electiondetail = require("./models/electiondetail");
+
 let Admin = require("./models/votingadmin")(sequelize, DataTypes);
 let Quetion = require("./models/quetiondetail")(sequelize, DataTypes);
 const CreateElection = require("./models/electiondetail")(sequelize, DataTypes);
-const CreateVoters = require("./models/voterlogin")(sequelize, DataTypes);
+const CreateOption = require("./models/optiondetail")(sequelize, DataTypes);
 app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -160,6 +160,7 @@ app.get(
   async (request, response) => {
     let elcetionList = await CreateElection.findByPk(request.params.id);
     let QuetionList = await Quetion.getQuetionList(request.params.id);
+    // let OptionList = awai CreateOption.getOptionList(request.params.id);
     response.render("ManageQuetion", {
       csrfToken: request.csrfToken(),
       User: request.user.FirstName,
@@ -169,10 +170,13 @@ app.get(
     });
   }
 );
+app.get("/ManageOption/:id",async (request,response)=>{
+    response.render("AddOption",{User:request.user.FirstName,csrfToken:request.csrfToken()})
+})
 
+//! Remaining Work
 app.get("/voter/addVoter",async (request,response)=>{
-  let 
-  response.render("AddVoters");
+  response.render("AddVoters")
 })
 
 app.get("/Signout", (request, response, next) => {

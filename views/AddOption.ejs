@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="<%= csrfToken %>" />
+    <title>AddOption</title>
+</head>
+<body>
+   <div class="grid justify-center my-6">
+    <%-include ("header.ejs") %>
+    <form action="" method="post">
+        <input type="hidden" name="_csrf" value="<%= csrfToken%>" />
+          <span class="text-xl block my-4 font-medium">Quetion Name/Title:</span>
+          <input
+            type="text"
+            name="Option Title"
+            class="rounded border border-black outline-none p-3 w-2/4"
+            placeholder="Enter Quetion Name"
+          />
+          <input
+          type="submit"
+          value="Add"
+          class="my-4 text-xl rounded bg-green-700 font-medium p-1 outline-none text-white w-20 h-12 cursor-pointer block"
+        />
+    </form>
+    <span class="text-2xl font-medium"
+    >You Have <%=QuetionList.length%> Previous Quetion:</span
+  >
+  <div class="mt-5">
+    <% for( let i = 0; i < QuetionList.length ; i++ ) { %>
+    <div class="flex-wrap mt-5">
+      <div class="inline-blcok">
+        <span class="inline-blcok text-xl">
+          <%= QuetionList[i].QuetionTitle %>
+        </span>
+        <a
+          href=""
+          onclick="deleteQuetion(<%=QuetionList[i].id%>)"
+          class="ml-3 bg-red-500 text-xl rounded font-medium p-2 outline-none text-white w-56 h-12 relative text-center my-3"
+          >Delete Quetion</a
+        >
+        <a
+          href=""
+          class="ml-3 bg-emerald-500 text-xl rounded font-medium p-2 outline-none text-white w-56 h-12 relative text-center my-3"
+          >Edit Quetion</a
+        >
+      </div>
+    </div>
+    <% } %>
+   </div>
+</body>
+</html>
