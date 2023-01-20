@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class VoterQuetion extends Model {
+  class QuetionDetail extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -12,14 +12,29 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
     }
+    static getQuetionList(id){
+      return this.findAll({
+        where:{
+          ElectionId:id,
+        }
+      })
+    }
+
+    static removeQuetion(id){
+      return this.destroy({
+        where:{
+          id,
+        }
+      })
+    }
   }
-  VoterQuetion.init({
+  QuetionDetail.init({
     QuetionTitle: DataTypes.STRING,
     Description: DataTypes.STRING,
-    Userid: DataTypes.INTEGER
+    ElectionId: DataTypes.INTEGER
   }, {
     sequelize,
-    modelName: 'VoterQuetion',
+    modelName: 'QuetionDetail',
   });
-  return VoterQuetion;
+  return QuetionDetail;
 };

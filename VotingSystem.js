@@ -27,11 +27,14 @@ app.set("view engine", "ejs");
 //   VotingOption,
 //   sequelize,
 // } = require("./models");
-const{sequelize} = require("./models")
+const { sequelize } = require("./models");
 const { DataTypes } = require("sequelize");
 const { request } = require("https");
-let Admin = require("./models/AdminDetail")(sequelize, DataTypes);
-const CreateElection = require("./models/ElectionDetail")(sequelize,DataTypes)
+const electiondetail = require("./models/electiondetail");
+let Admin = require("./models/votingadmin")(sequelize, DataTypes);
+let Quetion = require("./models/quetiondetail")(sequelize, DataTypes);
+const CreateElection = require("./models/electiondetail")(sequelize, DataTypes);
+const CreateVoters = require("./models/voterlogin")(sequelize, DataTypes);
 app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -105,9 +108,9 @@ app.use(function (request, response, next) {
   response.locals.messages = Message;
   next();
 });
-let title;
+// let title;
 // Get Request's
-app.get("/",(request, response) => {
+app.get("/", (request, response) => {
   response.render("Login", { csrfToken: request.csrfToken() });
 });
 
@@ -118,26 +121,60 @@ app.get("/Signup", (request, response) => {
 app.get(
   "/Home",
   connectEnsure.ensureLoggedIn({ redirectTo: "/" }),
-  (request, response) => {
-    console.log(request.user.UserRole)
-    response.render("Home", {
+  async (request, response) => {
+    if (request.user.UserRole == "Admin") {
+      console.log(request.user.id);
+      let getElection = await CreateElection.RetriveElection(request.user.id);
+      // console.log(getElection)
+      response.render("Home", {
+        csrfToken: request.csrfToken(),
+        User: request.user.FirstName,
+        getElection,
+      });
+    } else {
+      response.redirect("/");
+    }
+  }
+);
+
+app.get(
+  "/Quetion/:id",
+  connectEnsure.ensureLoggedIn({ redirectTo: "/" }),
+  async (request, response) => {
+    console.log("Id:" + request.params.id);
+    let elcetionList = await CreateElection.findByPk(request.params.id);
+    let QuetionList = await Quetion.getQuetionList(request.params.id);
+    response.render("AddQuetion", {
       csrfToken: request.csrfToken(),
       User: request.user.FirstName,
+      ElectionTitle: elcetionList.Title,
+      ElectionId: elcetionList.id,
+      QuetionList,
     });
   }
 );
 
-app.get("/Quetion",connectEnsure.ensureLoggedIn({redirectTo:"/"}),(request,response)=>{
-  console.log(title)
-  response.render("AddQuetion",{csrfToken:request.csrfToken(),User:request.user.FirstName,ElectionTitle:title});
-});
+app.get(
+  "/ManageQuetion/:id",
+  connectEnsure.ensureLoggedIn({ redirectTo: "/" }),
+  async (request, response) => {
+    let elcetionList = await CreateElection.findByPk(request.params.id);
+    let QuetionList = await Quetion.getQuetionList(request.params.id);
+    response.render("ManageQuetion", {
+      csrfToken: request.csrfToken(),
+      User: request.user.FirstName,
+      ElectionTitle: elcetionList.Title,
+      UserId: elcetionList.id,
+      QuetionList,
+    });
+  }
+);
 
-app.get("/ManageQuetion",connectEnsure.ensureLoggedIn({redirectTo:"/"}),async (request,response)=>{
-  console.log("userId is :"+request.user.id);
-  const getList = await CreateElection.findAll({where:{userId:request.user.id}});
-  console.log("Election:"+getList);
-   response.render("ManageQuetion",{csrfToken:request.csrfToken(),User:request.user.FirstName,ElectionTitle:title,userId:getList})
+app.get("/voter/addVoter",async (request,response)=>{
+  let 
+  response.render("AddVoters");
 })
+
 app.get("/Signout", (request, response, next) => {
   request.logout((err) => {
     if (err) {
@@ -147,15 +184,16 @@ app.get("/Signout", (request, response, next) => {
     response.redirect("/");
   });
 });
+
 // Post Request
 app.post(
   "/AdminLogin",
   passport.authenticate("local", { failureRedirect: "/", failureFlash: true }),
-  (request, response) => {
-    if(request.user.UserRole == "Admin"){
-      console.log("Admin")
+  async (request, response) => {
+    if (request.user.UserRole == "Admin") {
+      console.log("Admin");
     }
-    request.flash("success","Login Successfully")
+    request.flash("success", "Login Successfully");
     response.redirect("/Home");
   }
 );
@@ -172,7 +210,7 @@ app.post("/SignUpUser", async (request, response) => {
         LastName: request.body.lname,
         email: request.body.email,
         password: hashPass,
-        UserRole:"Admin"
+        UserRole: "Admin",
       });
       request.login(add, (err) => {
         if (err) {
@@ -190,30 +228,86 @@ app.post("/SignUpUser", async (request, response) => {
   }
 });
 
-app.post("/AddElectionTitle",connectEnsure.ensureLoggedIn({redirectTo:"/"}),async (request,response)=>{
-   try {
-     if(request.user.UserRole=="Admin"){
-      console.log("Request Id:"+request.user.id);
-      title = request.body.ElectionTitle
-      let addElection = await CreateElection.addNewElection(request.body.ElectionTitle,request.user.id)
-      console.log(addElection)
-      request.flash("success","Election Created Successfully");
-       response.redirect("/Quetion");
-     }
-     else{
-      response.redirect("/")
-     }
-   } catch (error) {
-    response.send(error);
-    // npx sequelize-cli migration:create --name add-user-id-in-todo
-   }
-});
+app.post(
+  "/AddElectionTitle",
+  connectEnsure.ensureLoggedIn({ redirectTo: "/" }),
+  async (request, response) => {
+    try {
+      if (request.user.UserRole == "Admin") {
+        console.log("Request User Id:" + request.user.id);
+        let addElection = await CreateElection.create({
+          Title: request.body.title,
+          userId: request.user.id,
+          Start: false,
+          End: false,
+        });
+        console.log("Created");
+        // console.log(addElection)
+        // console.log(addElection.userId)
+        request.flash("success", "Election Created Successfully");
+        response.redirect(`Quetion/${addElection.id}`);
+      } else {
+        response.redirect("/");
+      }
+    } catch (error) {
+      response.send(error);
+    }
+  }
+);
 
-// app.post("/addQuetion/:id",connectEnsure.ensureLoggedIn({redirectTo:"/"}),async (request,response)=>{
-//   try {
-      
-//   } catch (error) {
-//     response.send(error)
-//   }
-// })
+app.post(
+  "/addQuetion/:id",
+  connectEnsure.ensureLoggedIn({ redirectTo: "/" }),
+  async (request, response) => {
+    try {
+      console.log("Post Request:" + request.params.id);
+      let AddQuetion = await Quetion.create({
+        QuetionTitle: request.body.QuetionTitile,
+        Description: request.body.Description,
+        ElectionId: request.params.id,
+      });
+      console.log(AddQuetion);
+
+      response.redirect(`/Quetion/${request.params.id}`);
+    } catch (error) {
+      response.send(error);
+    }
+  }
+);
+
+
+// delete Request
+app.delete(
+  "/delete/:id",
+  connectEnsure.ensureLoggedIn({ redirectTo: "/" }),
+  async (request, response) => {
+    console.log("We Get Delete Request From" + request.params.id);
+    let deleteElection = await CreateElection.RemoveElection(
+      request.params.id,
+      request.user.id
+    );
+    if (deleteElection ? true : false) {
+      request.flash("success", "Successfully Deleted");
+    } else {
+      request.flash("error", "Failed To Delete");
+    }
+    return response.send(deleteElection ? true : false);
+  }
+);
+app.delete(
+  "/delete/Quetion/:id",
+  connectEnsure.ensureLoggedIn({ redirectTo: "/" }),
+  async (request, response) => {
+    console.log("We Get Delete Request For Quetion:" + request.params.id);
+    let deleteElectionQuetion = await Quetion.removeQuetion(request.params.id);
+    console.log(deleteElectionQuetion);
+    if (deleteElectionQuetion ? true : false) {
+      request.flash("success", "Successfully Deleted");
+    } else {
+      request.flash("error", "Failed To Delete");
+    }
+    return response.send(deleteElectionQuetion ? true : false);
+  }
+);
+
 module.exports = app;

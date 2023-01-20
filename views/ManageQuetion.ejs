@@ -1,27 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="csrf-token" content="<%= csrfToken %>" />
     <title>Manage Quetion List</title>
-</head>
-<body>
+    <script>
+      var token = document
+        .querySelector('meta[name="csrf-token"]')
+        .getAttribute("content");
+
+      function deleteQuetion(id) {
+        fetch(`/delete/Quetion/${id}`, {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            _csrf: token,
+          }),
+        })
+          .then((res) => {
+            if (res.ok) {
+              window.location.reload();
+            }
+          })
+          .catch((err) => console.log(err));
+      }
+    </script>
+  </head>
+  <body>
     <div class="grid justify-center my-4">
-        <%-include ("header.ejs") %>
-        <div class="text-2xl text-center font-medium mb-3">Election Title : <%= ElectionTitle %></div>
-        <div class="">
-            <span class="text-xl font-medium">Add Quetion<%=userId%></span>
-            <form action="/addQuetion/<%=userId%>" method="post">
-                <input type="hidden" name="_csrf" value="<%= csrfToken%>" />
-                <span class="text-xl block my-4">Quetion Name/Title:</span>
-                <input type="text" name="QuetionTitile" class="rounded border border-black outline-none p-3 w-2/4" placeholder="Enter Quetion Name">
-                <span class="text-xl block my-4">Quetion Description:</span>
-                <textarea name="Description" placeholder="Enter Quetion Description" class="p-3 border border-black rounded resize-none" cols="40" rows="3"></textarea>
-                <input type="submit" value="Add" class="my-4 text-xl rounded bg-green-700 font-medium p-1 outline-none text-white w-20 h-12 cursor-pointer block">
-            </form>
+      <%-include ("header.ejs") %>
+      <div class="text-2xl text-center font-medium mb-3">
+        Election Title : <%= ElectionTitle %>
+      </div>
+      <div>
+        <span class="text-xl font-medium">Add Quetion</span>
+        <form action="/addQuetion/<%=UserId%>" method="post">
+          <input type="hidden" name="_csrf" value="<%= csrfToken%>" />
+          <span class="text-xl block my-4">Quetion Name/Title:</span>
+          <input
+            type="text"
+            name="QuetionTitile"
+            class="rounded border border-black outline-none p-3 w-2/4"
+            placeholder="Enter Quetion Name"
+          />
+          <span class="text-xl block my-4">Quetion Description:</span>
+          <textarea
+            name="Description"
+            placeholder="Enter Quetion Description"
+            class="p-3 border border-black rounded resize-none"
+            cols="40"
+            rows="3"
+          ></textarea>
+          <input
+            type="submit"
+            value="Add"
+            class="my-4 text-xl rounded bg-green-700 font-medium p-1 outline-none text-white w-20 h-12 cursor-pointer block"
+          />
+        </form>
+      </div>
+      <span class="text-2xl font-medium"
+        >You Have <%=QuetionList.length%> Previous Quetion:</span
+      >
+      <div class="mt-5">
+        <% for( let i = 0; i < QuetionList.length ; i++ ) { %>
+        <div class="flex-wrap mt-5">
+          <div class="inline-blcok">
+            <span class="inline-blcok text-xl">
+              <%= QuetionList[i].QuetionTitle %>
+            </span>
+            <a
+              href=""
+              onclick="deleteQuetion(<%=QuetionList[i].id%>)"
+              class="ml-3 bg-red-500 text-xl rounded font-medium p-2 outline-none text-white w-56 h-12 relative text-center my-3"
+              >Delete Quetion</a
+            >
+            <a
+              href=""
+              class="ml-3 bg-emerald-500 text-xl rounded font-medium p-2 outline-none text-white w-56 h-12 relative text-center my-3"
+              >Edit Quetion</a
+            >
+          </div>
         </div>
+        <% } %>
+      </div>
     </div>
-</body>
+  </body>
 </html>
