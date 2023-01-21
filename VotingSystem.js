@@ -364,11 +364,7 @@ app.get(
 
     let getOptionList = [];
     for (let i = 0; i < QuetionDetail.length; ++i) {
-      let OptionList = await CreateOption.findAll({
-        where: {
-          OptionId: QuetionDetail[i].id,
-        },
-      });
+      let OptionList = await CreateOption.getOptionList(QuetionDetail[i].id)
       console.log(`${i + 1}Time:` + QuetionDetail[i].id);
       getOptionList.push(OptionList);
     }
