@@ -12,6 +12,22 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
      
     }
+    static getVotersList(id){
+      return this.findAll({
+        where:{
+          userElectionId:id,
+        }
+      })
+    }
+
+    static removeVoter(id){
+      this.destroy({
+        where:{
+         id,
+        }
+      })
+    }
+
   }
   VoterLogin.init({
     Status: DataTypes.BOOLEAN,

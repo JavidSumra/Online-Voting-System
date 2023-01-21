@@ -61,7 +61,7 @@
       }
       .form a {
         font-size: 16px;
-        color: #009579;
+        color: #2efb00;
         text-decoration: none;
       }
       .form a:hover {
@@ -103,29 +103,58 @@
       <br />
       <div class="login form">
         <% if(messages && messages.error && messages.error.length != 0) { %>
-          <div style="background-color: #fee2e2;border-color: #f87171;color: #ef4444;border-radius: 3px; position: relative;padding: 10px;text-align: center;margin-bottom: 20px;" role="alert">
-            <% for(var i=0; i < messages.error.length; i++ ) { %>
-           <strong> <%= messages.error[i] %> </strong>
-           <% } %>
-         </div>
-         <% } %>
-        <header>Voter Registration for Online Voting Platform</header>
+        <div
+          style="
+            background-color: #fee2e2;
+            border-color: #f87171;
+            color: #ef4444;
+            border-radius: 3px;
+            position: relative;
+            padding: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+          "
+          role="alert"
+        >
+          <strong> <%=messages.error %> </strong>
+        </div>
+        <% } %> <% if(messages && messages.success && messages.success.length !=
+        0) { %>
+        <div
+          style="
+            background-color: #ecfccb;
+            border-color: #a3e635;
+            color: #84cc16;
+            border-radius: 3px;
+            position: relative;
+            padding: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+          "
+          role="alert"
+        >
+          <strong> <%=messages.success %> </strong>
+        </div>
+        <% } %>
+        <header>Welcome To Online Voting Platform</header>
         <hr />
-        <form action="/AddVoter/<%=electionList.id%>" method="post">
+        <form action="/VoterLogin" method="post">
           <input type="hidden" name="_csrf" value="<%= csrfToken%>" />
           <input
             type="text"
-            placeholder="Enter VoterId"
+            id="email"
             name="VoterId"
+            placeholder="Enter Your VoterId"
             required
           />
           <input
-            type="Password"
+            type="password"
             name="password"
-            placeholder="Enter Voter Password"
+            id="Password"
+            placeholder="Enter Your Password"
             required
           />
-          <input type="submit" class="button" value="Register" />
+          <input type="submit" class="button" value="Login" />
         </form>
       </div>
     </div>

@@ -12,8 +12,21 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
     }
+    static getOptionList(id){
+      return this.findAll({
+        where:{
+          OptionId:id,
+        }
+      })
+    }
 
-    
+    static removeOption(id){
+      return this.destroy({
+        where:{
+          id,
+        }
+      })
+    }
   }
   OptionDetail.init({
     OptionTitle: DataTypes.STRING,

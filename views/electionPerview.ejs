@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="<%= csrfToken %>" />
+    <title>Election Perview</title>
+</head>
+<body>
+    <div class="grid justify-center">
+        <%-include ("header") %>
+    <span class="text-3xl text-center font-medium">Election Perview</span>
+    <span class="text-2xl font-medium mt-4">Title:<%=electionList.Title%></span>
+    <form action="/">
+        <% for(let i = 0;i < QuetionDetail.length; i++) { %>
+            <span class="text-2xl font-medium mt-4 block">QuetionTitle:<%=QuetionDetail[i].QuetionTitle%></span>
+            <span class="text-2xl font-medium mt-3 block">QuetionDescription:<%=QuetionDetail[i].Description%></span>
+            <% for(let j = 0;j< getOptionList.length; j++) { %>
+              <div class="text-2xl font-medium"> <input type="radio" name="Option" id="check-<%=[i]%><%=[j]%>"><label for="check-<%=[i]%><%=[j]%>"><span class="ml-5"><%=getOptionList[i][j].OptionTitle%></span></label></div>
+            <% } %>
+        <% } %>
+    </form>
+    </div>
+</body>
+</html>

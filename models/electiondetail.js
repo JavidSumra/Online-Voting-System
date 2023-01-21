@@ -16,7 +16,8 @@ module.exports = (sequelize, DataTypes) => {
       return this.findAll({
         where:{
           userId,
-        }
+        },
+        order:[["id","ASC"]]
       })
     }
 
@@ -26,6 +27,26 @@ module.exports = (sequelize, DataTypes) => {
           id,
           userId,
         }
+      })
+    }
+
+    StartElection(id){
+      return this.update({
+        where:{
+          id,
+        },
+        Start:true,
+        End:false,
+      })
+    }
+
+    EndElection(id){
+      return this.update({
+        where:{
+          id,
+        },
+        End:true,
+        Start:false,
       })
     }
   }

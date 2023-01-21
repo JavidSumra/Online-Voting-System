@@ -12,7 +12,7 @@
         .getAttribute("content");
         console.log("Function Part")
       function deleteOption(id) {
-        fetch(`/delete/Option/${id}`, {
+        fetch(`/delete/Voter/${id}`, {
           method: "DELETE",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -29,58 +29,42 @@
     </script>
   </head>
   <body>
-   <% if (QuetionDetail.length != 0 ) { %>
-    <div class="grid justify-center my-6">
-      <%-include ("header.ejs") %>
-      <% for( let i = 0; i < QuetionDetail.length ; i++ ) { %>
-      <div class="text-xl font-medium">Quetion Title: <%=QuetionDetail[i].QuetionTitle %></div>
-      <div class="text-xl font-medium">Quetion Description: <%=QuetionDetail[i].Description %></div>
-      <form action="/addOption/<%=QuetionDetail[i].id%>/<%=Id%>" method="post">
-        <input type="hidden" name="_csrf" value="<%= csrfToken%>" />
-        <span class="text-xl block my-4 font-medium">Option Name/Title:</span>
-        <input
-          type="text"
-          name="Title"
-          class="rounded border border-black outline-none p-3 w-2/4"
-          placeholder="Enter Quetion Name"
-        />
-        <input
-          type="submit"
-          value="Add"
-          class="my-4 text-xl rounded bg-green-700 font-medium p-1 outline-none text-white w-20 h-12 cursor-pointer block"
-        />
-      </form>
-      <span class="text-2xl font-medium"
-      >You Have <%=OptionList.length%> Previous Option:</span
-    >
+      <% if (VotersList.length != 0 ) { %>
+        <div class="grid justify-center my-6">
+            <%-include ("header.ejs") %>
+            <span class="text-2xl font-medium"
+            >You Have <%=VotersList.length%>  Voters:</span
+          >
+      <% for( let i = 0; i < VotersList.length ; i++ ) { %>
     <div class="mt-5">
-      <% for( let i = 0; i < OptionList.length ; i++ ) { %>
       <div class="flex-wrap mt-5">
         <div class="inline-blcok">
           <span class="inline-blcok text-xl">
-            <%=OptionList[i].OptionTitle%>
+            (<%=i+1%>)
+          </span>
+          <span class="inline-blcok text-xl">
+            <%=VotersList[i].VoterId%>
           </span>
           <a
             href=""
-            onclick="deleteOption(<%=OptionList[i].id%>)"
+            onclick="deleteOption(<%=VotersList[i].id%>)"
             class="ml-3 bg-red-500 text-xl rounded font-medium p-2 outline-none text-white w-56 h-12 relative text-center my-3"
-            >Delete Option</a
+            >Delete Voter</a
           >
           <a
             href=""
             class="ml-3 bg-emerald-500 text-xl rounded font-medium p-2 outline-none text-white w-56 h-12 relative text-center my-3"
-            >Edit Option</a
+            >Edit Edit</a
           >
         </div>
       </div>
-      <% } %>
       <% } %>
       </div>
     </div>
   <% } else { %>
     <div class="grid justify-center my-6">
       <%-include ("header.ejs") %>
-      <div class="text-2xl font-medium text-center">Please Create Quetion</div>
+      <div class="text-2xl font-medium text-center">Please Add Voters</div>
       </div>
     <% } %>
   </body>
