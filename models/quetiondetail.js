@@ -19,7 +19,14 @@ module.exports = (sequelize, DataTypes) => {
         }
       })
     }
-
+     
+    static getParticularList(id){
+      return this.findAll({
+        where: { 
+          id: id 
+        },
+      });
+    }
     static removeQuetion(id){
       return this.destroy({
         where:{
