@@ -302,11 +302,7 @@ app.get(
     let VoterDetail = await Voter.getVotersList(request.params.id)
     for (let i = 0; i < QuetionDetail.length; i++) {
       var getOptionList = [];
-      getOptionList = await CreateOption.findAll({
-        where: {
-          OptionId: QuetionDetail[i].id,
-        },
-      });
+      getOptionList = await CreateOption.getOptionList(QuetionDetail[i].id)
     }
     if (electionList.Start === true && electionList.End === false) {
       request.flash("error", "Election Is Already Live");
