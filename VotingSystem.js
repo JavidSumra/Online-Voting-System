@@ -230,9 +230,7 @@ app.get(
   async (request, response) => {
     console.log("ManageOption:" + request.params.id);
     let elcetionList = await CreateElection.findByPk(request.params.ElectId);
-    let OptionList = await CreateOption.findAll({
-      where: { OptionId: request.params.id },
-    });
+    let OptionList = await CreateOption.getOptionList(request.params.id);
     let QuetionDetail = await Quetion.findAll({
       where: { id: request.params.id },
     });
