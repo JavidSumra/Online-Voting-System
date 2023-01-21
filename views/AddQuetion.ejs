@@ -24,10 +24,11 @@
       >
         <strong> <%=messages.success %> </strong>
       </div>
-      <% } %> <%-include ("header.ejs") %>
-      <% if(URL!=null && electionList.Start == true) { %>
+      <% } %> <%-include ("header.ejs") %> <% if(URL!=null && electionList.Start
+      == true) { %>
       <div class="title text-2xl font-medium text-center mb-3">
-        Your Election is Live on : <a class="cursor-pointer text-violet-700 underline"><%=URL%></a>
+        Your Election is Live on :
+        <a class="cursor-pointer text-violet-700 underline"><%=URL%></a>
       </div>
       <% } %>
       <div class="title text-3xl font-medium text-center">
@@ -39,38 +40,38 @@
         </div>
         <div class="grid grid-cols-2 grid-rows-1">
           <a
-          href="/ManageQuetion/<%= electionList.id %>"
-          class="text-xl rounded bg-green-700 font-medium p-2 outline-none text-white w-56 h-12 relative text-center"
-          >Manage Quetion</a
-        >
+            href="/ManageQuetion/<%= electionList.id %>"
+            class="text-xl rounded bg-green-700 font-medium p-2 outline-none text-white w-56 h-12 relative text-center"
+            >Manage Quetion</a
+          >
           <a
-          href="/AddUrl/<%= electionList.id %>"
-          class="text-xl rounded bg-green-700 font-medium p-2 outline-none text-white w-56 h-12 relative text-center"
-          >Add Url</a
-        >
+            href="/AddUrl/<%= electionList.id %>"
+            class="text-xl rounded bg-green-700 font-medium p-2 outline-none text-white w-56 h-12 relative text-center"
+            >Add Url</a
+          >
         </div>
         <div class="font-medium my-4 text-2xl">
           You Have <%=VotersList.length%> Registred Voters
         </div>
         <div class="grid grid-cols-2 grid-rows-3">
           <a
-            href="/voter/addVoter/<%=electionList.id%>"
+            href="/voter/addVoter/<%= electionList.id %>"
             class="text-xl rounded bg-green-700 font-medium p-2 outline-none text-white w-56 h-12 relative text-center"
             >Add Voters</a
           >
           <a
-            href="/Manage/voter/<%=electionList.id%>"
+            href="/Manage/voter/<%= electionList.id %>"
             class="text-xl rounded bg-green-700 font-medium p-2 outline-none text-white w-56 h-12 relative text-center"
             >Manage Voters</a
           >
 
           <a
-            href="/DeclareElection/<%=electionList.id%>"
+            href="/DeclareElection/<%= electionList.id %>"
             class="text-xl rounded bg-green-700 font-medium p-2 outline-none text-white w-56 h-12 relative text-center my-3"
             >Declare Election</a
           >
           <a
-            href="/EndElection/<%=electionList.id%>"
+            href="/EndElection/<%= electionList.id %>"
             class="bg-red-500 text-xl rounded font-medium p-2 outline-none text-white w-56 h-12 relative text-center my-3"
             >End Election</a
           >
@@ -81,7 +82,7 @@
             >Result Perview</a
           >
           <a
-            href="/ElectionPerview/<%=electionList.id%>"
+            href="/ElectionPerview/<%= electionList.id %>"
             class="text-xl rounded bg-orange-500 font-medium p-2 outline-none text-white w-56 h-12 relative text-center my-3"
             >Election Perview</a
           >
