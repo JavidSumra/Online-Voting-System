@@ -31,6 +31,7 @@ const { sequelize } = require("./models");
 const { DataTypes } = require("sequelize");
 const { request } = require("http");
 const { response } = require("express");
+const { send } = require("process");
 
 let Admin = require("./models/votingadmin")(sequelize, DataTypes);
 let Quetion = require("./models/quetiondetail")(sequelize, DataTypes);
@@ -162,29 +163,41 @@ app.use(function (request, response, next) {
 let URL=null;
 // Get Request's
 app.get("/", (request, response) => {
-  response.render("Login", { csrfToken: request.csrfToken() });
+  try {
+    response.render("Login", { csrfToken: request.csrfToken() });
+  } catch (error) {
+    response.status(402).send(error)
+  }
 });
 
 app.get("/Signup", (request, response) => {
-  response.render("SignUp", { csrfToken: request.csrfToken() });
+  try {
+    response.render("SignUp", { csrfToken: request.csrfToken() });
+  } catch (error) {
+    response.status(402).send(error)
+  }
 });
 
 app.get(
   "/Home",
   connectEnsure.ensureLoggedIn({ redirectTo: "/" }),
   async (request, response) => {
-    if (request.user.UserRole == "Admin") {
-      URL=null;
-      console.log(request.user.id);
-      let getElection = await CreateElection.RetriveElection(request.user.id);
-      // console.log(getElection)
-      response.render("Home", {
-        csrfToken: request.csrfToken(),
-        User: request.user.FirstName,
-        getElection,
-      });
-    } else {
-      response.redirect("/");
+    try {
+      if (request.user.UserRole == "Admin") {
+        URL=null;
+        console.log(request.user.id);
+        let getElection = await CreateElection.RetriveElection(request.user.id);
+        // console.log(getElection)
+        response.render("Home", {
+          csrfToken: request.csrfToken(),
+          User: request.user.FirstName,
+          getElection,
+        });
+      } else {
+        response.redirect("/");
+      }
+    } catch (error) {
+      response.status(402).send(error)
     }
   }
 );
@@ -193,6 +206,7 @@ app.get(
   "/Quetion/:id",
   connectEnsure.ensureLoggedIn({ redirectTo: "/" }),
   async (request, response) => {
+   try {
     console.log("Id:" + request.params.id);
     let electionList = await CreateElection.findByPk(request.params.id);
     let QuetionList = await Quetion.getQuetionList(request.params.id);
@@ -206,6 +220,9 @@ app.get(
       VotersList,
       URL,
     });
+   } catch (error) {
+    response.status(402).send(error)
+   }
   }
 );
 
@@ -213,7 +230,8 @@ app.get(
   "/ManageQuetion/:id",
   connectEnsure.ensureLoggedIn({ redirectTo: "/" }),
   async (request, response) => {
-    let elcetionList = await CreateElection.findByPk(request.params.id);
+    try {
+      let elcetionList = await CreateElection.findByPk(request.params.id);
     let QuetionList = await Quetion.getQuetionList(request.params.id);
     // let OptionList = awai CreateOption.getOptionList(request.params.id);
     response.render("ManageQuetion", {
@@ -222,13 +240,17 @@ app.get(
       elcetionList,
       QuetionList,
     });
+    } catch (error) {
+      response.status(402).send(error)
+    }
   }
 );
 app.get(
   "/ManageOption/:id/:ElectId",
   connectEnsure.ensureLoggedIn({ redirectTo: "/" }),
   async (request, response) => {
-    console.log("ManageOption:" + request.params.id);
+    try {
+      console.log("ManageOption:" + request.params.id);
     let elcetionList = await CreateElection.findByPk(request.params.ElectId);
     let OptionList = await CreateOption.getOptionList(request.params.id);
     let QuetionDetail = await Quetion.getParticularList(request.params.id)
@@ -241,20 +263,28 @@ app.get(
       OptionList,
       QuetionDetail,
     });
+    } catch (error) {
+      response.status(402).send(error)
+    }
   }
 );
 
 app.get("/AddUrl/:id",connectEnsure.ensureLoggedIn({redirectTo:"/"}),async (request,response)=>{
-  console.log(request.params.id)
+  try {
+    console.log(request.params.id)
   let electionList = await CreateElection.findByPk(request.params.id)
    response.render("addURL",{csrfToken:request.csrfToken(),ElectionId:request.params.id,User:request.user.FirstName,electionList});
+  } catch (error) {
+    response.status(402).send(error)
+  }
 });
 
 app.get(
   "/voter/addVoter/:id",
   connectEnsure.ensureLoggedIn({ redirectTo: "/" }),
   async (request, response) => {
-    console.log("Voter Id:" + request.params.id);
+    try {
+      console.log("Voter Id:" + request.params.id);
     let electionList = await CreateElection.findByPk(request.params.id);
     console.log("AddVoter:" + electionList);
     console.log(electionList.Title);
@@ -263,6 +293,9 @@ app.get(
       electionList,
       csrfToken: request.csrfToken(),
     });
+    } catch (error) {
+      response.status(402).send(error)
+    }
   }
 );
 
@@ -278,19 +311,24 @@ app.get(
         VotersList,
       });
     } catch (error) {
-      response.send(error);
+      response.status(402).send(error);
     }
   }
 );
 
 app.get("/loginvoter",(request, response) => {
+ try {
   response.render("VoterLogin", { csrfToken: request.csrfToken() });
+ } catch (error) {
+  response.status(402).send(error)
+ }
 });
 
 app.get(
   "/DeclareElection/:id",
   connectEnsure.ensureLoggedIn({ redirectTo: "/" }),
   async (request, response) => {
+  try {
     let electionList = await CreateElection.findByPk(request.params.id);
     console.log(electionList);
     console.log(request.params.id);
@@ -330,12 +368,16 @@ app.get(
         response.redirect(`/Quetion/${request.params.id}`);
     }
   }
+  } catch (error) {
+    response.status(402).send(error)
+  }
 });
 
 app.get(
   "/EndElection/:id",
   connectEnsure.ensureLoggedIn({ redirectTo: "/" }),
   async (request, response) => {
+   try {
     let electionList = await CreateElection.findByPk(request.params.id);
     if (electionList.Start === true && electionList.End === false) {
       request.flash("success", "Election is Now Ended");
@@ -345,6 +387,9 @@ app.get(
       request.flash("error", "Please Make Sure Election Is Live or Not");
       response.redirect(`/Quetion/${request.params.id}`);
     }
+   } catch (error) {
+    response.status(402).send(error)
+   }
   }
 );
 
@@ -352,7 +397,8 @@ app.get(
   "/ElectionPerview/:id",
   connectEnsure.ensureLoggedIn({ redirectTo: "/" }),
   async (request, response) => {
-    let electionList = await CreateElection.findByPk(request.params.id);
+    try {
+      let electionList = await CreateElection.findByPk(request.params.id);
     let QuetionDetail = await Quetion.getQuetionList(request.params.id);
 
     console.log(QuetionDetail);
@@ -376,23 +422,34 @@ app.get(
       request.flash("error", "Election is Not Live");
       response.redirect(`/Quetion/${request.params.id}`);
     }
+    } catch (error) {
+      response.status(402).send(error)
+    }
   }
 );
 
 app.get("/voting",async (request,response)=>{
-  console.log(request.user)
+  try {
+    console.log(request.user)
   let electionList = await CreateElection.findByPk(request.user.id)
   console.log(electionList)
   response.render("VotersVote",{csrfToken:request.csrfToken()})
+  } catch (error) {
+    response.status(402).send(error)
+  }
 })
 app.get("/Signout", (request, response, next) => {
-  request.logout((err) => {
-    if (err) {
-      return next(err);
-    }
-    request.flash("success", "Signout Successfully");
-    response.redirect("/");
-  });
+  try {
+    request.logout((err) => {
+      if (err) {
+        return next(err);
+      }
+      request.flash("success", "Signout Successfully");
+      response.redirect("/");
+    });
+  } catch (error) {
+    response.status(402).send(error)
+  }
 });
 
 // Post Request
@@ -400,13 +457,16 @@ app.post(
   "/AdminLogin",
   passport.authenticate("local", { failureRedirect: "/", failureFlash: true }),
   async (request, response) => {
+   try {
     if (request.user.UserRole == "Admin") {
       console.log("Admin");
     }
     request.flash("success", "Login Successfully");
     response.redirect("/Home");
-  }
-);
+   } catch (error) {
+    response.status(402).send(error)
+   }
+  });
 
 app.post("/SignUpUser", async (request, response) => {
   console.log(request.body);
@@ -434,7 +494,7 @@ app.post("/SignUpUser", async (request, response) => {
       response.redirect("/Signup");
     }
   } catch (error) {
-    console.log(error);
+    response.status(402).send(error)
   }
 });
 
@@ -460,7 +520,7 @@ app.post(
         response.redirect("/");
       }
     } catch (error) {
-      response.send(error);
+      response.status(402).send(error);
     }
   }
 );
@@ -480,7 +540,7 @@ app.post(
 
       response.redirect(`/Quetion/${request.params.id}`);
     } catch (error) {
-      response.send(error);
+      response.status(402).send(error)
     }
   }
 );
@@ -489,6 +549,7 @@ app.post(
   "/addOption/:QueId/:id",
   connectEnsure.ensureLoggedIn({ redirectTo: "/" }),
   async (request, response) => {
+   try {
     console.log("Add Option:" + request.params.id);
     console.log("Quetion Id:" + request.params.QueId);
     let addOption = await CreateOption.create({
@@ -499,6 +560,9 @@ app.post(
     response.redirect(
       `/ManageOption/${request.params.QueId}/${request.params.id}`
     );
+   } catch (error) {
+    response.status(402).send(error)
+   }
   }
 );
 
@@ -527,7 +591,7 @@ app.post(
         return response.redirect(`/Quetion/${request.params.id}`);
       }
     } catch (error) {
-      response.send(error);
+      response.status(402).send(error)
     }
   }
 );
@@ -539,19 +603,27 @@ app.post(
     failureFlash: true,
   }),
   async (request, response) => {
-    response.redirect("/voting")
+    try {
+      response.redirect("/voting")
+    } catch (error) {
+      response.status(402).send(error)
+    }
   }
 );
 
 app.post("/url/:id",connectEnsure.ensureLoggedIn({redirectTo:"/"}),async (request,response)=>{
-  URL = request.body.Url
-  if(URL!=null){
-    request.flash("success","Url Created Successfully")
-    response.redirect(`/Quetion/${request.params.id}`)
-  }
-  else{
-    request.flash("error","Failed To Create Url")
-    response.redirect(`/Quetion/${request.params.id}`)
+  try {
+    URL = request.body.Url
+    if(URL!=null){
+      request.flash("success","Url Created Successfully")
+      response.redirect(`/Quetion/${request.params.id}`)
+    }
+    else{
+      request.flash("error","Failed To Create Url")
+      response.redirect(`/Quetion/${request.params.id}`)
+    }
+  } catch (error) {
+    response.status(402).send(error)
   }
 })
 // delete Request
@@ -559,6 +631,7 @@ app.delete(
   "/delete/:id",
   connectEnsure.ensureLoggedIn({ redirectTo: "/" }),
   async (request, response) => {
+   try {
     console.log("We Get Delete Request From:" + request.params.id);
     let deleteElection = await CreateElection.RemoveElection(request.params.id,request.user.id);
     let deleteElectionQuetion = await Quetion.removeQuetion(request.params.id)
@@ -570,12 +643,16 @@ app.delete(
       request.flash("error", "Failed To Delete");
     }
     return response.send(deleteElection ? true : false);
+   } catch (error) {
+     response.status(402).send(error)
+   }
   }
 );
 app.delete(
   "/delete/Quetion/:id",
   connectEnsure.ensureLoggedIn({ redirectTo: "/" }),
   async (request, response) => {
+   try {
     console.log("We Get Delete Request For Quetion:" + request.params.id);
     let deleteElectionQuetion = await Quetion.removeQuetion(request.params.id);
     console.log(deleteElectionQuetion);
@@ -585,6 +662,9 @@ app.delete(
       request.flash("error", "Failed To Delete");
     }
     return response.send(deleteElectionQuetion ? true : false);
+   } catch (error) {
+    response.status(402).send(error)
+   }
   }
 );
 
@@ -592,6 +672,7 @@ app.delete(
   "/delete/Option/:id",
   connectEnsure.ensureLoggedIn({ redirectTo: "/" }),
   async (request, response) => {
+   try {
     console.log("Executed");
     console.log("We Get Delete Request For Option:" + request.params.id);
     let deleteElectionOption = await CreateOption.removeOption(
@@ -599,12 +680,15 @@ app.delete(
       request.user.id
     );
     console.log(deleteElectionOption ? true : false);
-    if (!deleteElectionOption ? true : false) {
+    if (deleteElectionOption ? true : false) {
       request.flash("success", "Successfully Deleted");
     } else {
       request.flash("error", "Failed To Delete");
     }
-    return response.send(!deleteElectionOption ? true : false);
+    return response.send(deleteElectionOption ? true : false);
+   } catch (error) {
+    response.status(402).send(error)
+   }
   }
 );
 
@@ -612,6 +696,7 @@ app.delete(
   "/delete/Voter/:id",
   connectEnsure.ensureLoggedIn({ redirectTo: "/" }),
   async (request, response) => {
+   try {
     console.log("We Get Delete Request For Voter:" + request.params.id);
     let deleteElectionVoter = await Voter.removeVoter(request.params.id);
     console.log(!deleteElectionVoter ? true : false);
@@ -621,6 +706,9 @@ app.delete(
       request.flash("error", "Failed To Delete");
     }
     return response.send(!deleteElectionVoter ? true : false);
+   } catch (error) {
+    response.status(402).send(error)
+   }
   }
 );
 
