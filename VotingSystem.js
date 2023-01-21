@@ -251,7 +251,7 @@ app.get(
 app.get("/AddUrl/:id",connectEnsure.ensureLoggedIn({redirectTo:"/"}),async (request,response)=>{
   console.log(request.params.id)
   let electionList = await CreateElection.findByPk(request.params.id)
-   response.render("addURl",{csrfToken:request.csrfToken(),ElectionId:request.params.id,User:request.user.FirstName,electionList});
+   response.render("addURL",{csrfToken:request.csrfToken(),ElectionId:request.params.id,User:request.user.FirstName,electionList});
 });
 
 app.get(
@@ -575,6 +575,7 @@ app.delete(
     let deleteElection = await CreateElection.RemoveElection(request.params.id,request.user.id);
     let deleteElectionQuetion = await Quetion.removeQuetion(request.params.id)
     let deleteVoters = await Voter.removeVoter(request.params.id)
+
     if (deleteElection ? true : false) {
       request.flash("success", "Successfully Deleted");
     } else {
