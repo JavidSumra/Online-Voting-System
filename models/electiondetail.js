@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-     
+      // define association here
     }
     static RetriveElection(userId){
       return this.findAll({
@@ -22,10 +22,10 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     static RemoveElection(id,userId){
-      return this.destroy({
+       this.destroy({
         where:{
-          id,
-          userId,
+          id:id,
+          userId:userId,
         }
       })
     }

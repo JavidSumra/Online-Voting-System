@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
     }
+
     static getQuetionList(id){
       return this.findAll({
         where:{
@@ -31,6 +32,13 @@ module.exports = (sequelize, DataTypes) => {
       return this.destroy({
         where:{
           id,
+        }
+      })
+    }
+    static removeParticularQuetion(id){
+      return this.destroy({
+        where:{
+          ElectionId:id,
         }
       })
     }

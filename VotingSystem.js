@@ -644,22 +644,33 @@ app.delete(
   connectEnsure.ensureLoggedIn({ redirectTo: "/" }),
   async (request, response) => {
     try {
-      console.log("We Get Delete Request From:" + request.params.id);
+      let electionList =await CreateElection.findByPk(request.params.id)
+      console.log(electionList)
+      if(electionList.Start===true && electionList.End ===false){
+        request.flash("error","Election is Live Please End First")
+        console.log("If PArt")
+        response.redirect("/Home")
+      }
+      else{
+        console.log("We Get Delete Request From:" + request.params.id+request.user.id);
       let deleteElection = await CreateElection.RemoveElection(
         request.params.id,
         request.user.id
       );
-      let deleteElectionQuetion = await Quetion.removeQuetion(
-        request.params.id
-      );
-      let deleteVoters = await Voter.removeVoter(request.params.id);
-
-      if (deleteElection ? true : false) {
-        request.flash("success", "Successfully Deleted");
-      } else {
-        request.flash("error", "Failed To Delete");
-      }
+      console.log(deleteElection?true:false)
+      // let deleteElectionQuetion = await Quetion.removeParticularQuetion(
+      //   request.params.id
+      // );
+      // console.log(deleteElectionQuetion)
+      // let deleteVoters = await Voter.removeVoter(request.params.id);
+      //   console.log(deleteVoters)
+      // if (deleteElection ? true : false) {
+      //   request.flash("success", "Successfully Deleted");
+      // } else {
+      //   request.flash("error", "Failed To Delete");
+      // }
       return response.send(deleteElection ? true : false);
+      }
     } catch (error) {
       response.status(402).send(error);
     }

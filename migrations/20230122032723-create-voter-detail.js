@@ -18,7 +18,7 @@ module.exports = {
       VoterId: {
         type: Sequelize.INTEGER
       },
-      TotalVote: {
+      TotalVotes: {
         type: Sequelize.STRING
       },
       createdAt: {

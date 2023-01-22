@@ -2,26 +2,28 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('ElectionDetails', {
+    await queryInterface.createTable('VoterLogins', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      Title: {
+      Status: {
+        type: Sequelize.BOOLEAN
+      },
+      VoterId: {
         type: Sequelize.STRING
       },
-      Start: {
-        type: Sequelize.BOOLEAN
+      password: {
+        type: Sequelize.STRING
       },
-      End: {
-        type: Sequelize.BOOLEAN
+      userElectionId: {
+        type: Sequelize.INTEGER
       },
-      userId:{
-        type:Sequelize.INTEGER,
-      }
-      ,
+      UserRole: {
+        type: Sequelize.STRING
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
@@ -33,6 +35,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('ElectionDetails');
+    await queryInterface.dropTable('VoterLogins');
   }
 };

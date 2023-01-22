@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     ElectionId: DataTypes.INTEGER,
     QuetionId: DataTypes.INTEGER,
     VoterId: DataTypes.INTEGER,
-    TotalVote: DataTypes.STRING
+    TotalVotes: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'VoterDetail',

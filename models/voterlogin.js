@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-     
+      // define association here
     }
     static getVotersList(id){
       return this.findAll({
@@ -33,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
     Status: DataTypes.BOOLEAN,
     VoterId: DataTypes.STRING,
     password: DataTypes.STRING,
-    userElectionId:DataTypes.INTEGER,
+    userElectionId: DataTypes.INTEGER,
     UserRole: DataTypes.STRING
   }, {
     sequelize,
