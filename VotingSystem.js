@@ -253,6 +253,7 @@ app.get(
       console.log("ManageOption:" + request.params.id);
       let elcetionList = await CreateElection.findByPk(request.params.ElectId);
       let OptionList = await CreateOption.getOptionList(request.params.id);
+      console.log(OptionList?true:false)
       let QuetionDetail = await Quetion.getParticularList(request.params.id);
       console.log(QuetionDetail);
       console.log(OptionList);
