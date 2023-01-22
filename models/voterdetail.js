@@ -12,6 +12,14 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
     }
+    static getVoter(id,VoterId){
+      return this.findAll({
+        where:{
+          VoterId,
+          id,
+        }
+      })
+    }
     static getNumberofVotes(ElectId,OptTitle,QueId){
       return this.findAll({
         where:{
@@ -22,22 +30,6 @@ module.exports = (sequelize, DataTypes) => {
       })
     }
 
-    static getTotalVoters(id){
-      return this.findAll({
-        where:{
-          ElectionId:id,
-        }
-      })
-    }
-
-    static getRemVoters(id){
-      return this.findAll({
-        where:{
-          ElectionId:id,
-          Status:false,
-        }
-      })
-    }
   }
   VoterDetail.init({
     ElectionId: DataTypes.INTEGER,

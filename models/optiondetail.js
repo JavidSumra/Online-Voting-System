@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     static removeOption(id){
-      return this.destroy({
+       this.destroy({
         where:{
           id,
         }

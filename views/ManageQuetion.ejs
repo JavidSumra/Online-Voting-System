@@ -48,16 +48,16 @@
         <% } %> 
       <%-include ("header.ejs") %>
       <div class="text-2xl text-center font-medium mb-3">
-        Election Title : <%= elcetionList.Title %>
+        Election Title : <%= electionList.Title %>
       </div>
       <div>
         <span class="text-xl font-medium">Add Quetion</span>
-        <form action="/addQuetion/<%= elcetionList.id %>" method="post">
+        <form action="/addQuetion/<%= electionList.id %>" method="post">
           <input type="hidden" name="_csrf" value="<%= csrfToken%>" />
           <span class="text-xl block my-4">Quetion Name/Title:</span>
           <input
             type="text"
-            name="QuetionTitile"
+            name="QuetionTitle"
             class="rounded border border-black outline-none p-3 w-2/4"
             placeholder="Enter Quetion Name"
           />
@@ -87,7 +87,6 @@
               <%= QuetionList[i].QuetionTitle %>
             </span>
             <a
-              href=""
               onclick="deleteQuetion(<%=QuetionList[i].id%>)"
               class="ml-3 bg-red-500 text-xl rounded font-medium p-2 outline-none text-white w-56 h-12 relative text-center my-3"
               >Delete Quetion</a
@@ -98,7 +97,7 @@
               >Edit Quetion</a
             >
             <a
-            href="/ManageOption/<%=QuetionList[i].id%>/election/<%=elcetionList.id%>"
+            href="/ManageOption/<%=QuetionList[i].id%>/election/<%=electionList.id%>"
             class="ml-3 text-xl rounded bg-green-700 font-medium p-2 outline-none text-white w-56 h-12 relative text-center"
             >Manage Option</a
           >

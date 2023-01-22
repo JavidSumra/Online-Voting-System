@@ -20,32 +20,27 @@
       <span class="text-2xl font-medium mt-10"
         >Title:<%=electionList.Title%></span
       >
-      <% if(electionList.End === false){ %> <% for(let i = 0; i <
-      VoterDetail.length; i++) { %> <% if(VoterDetail[i].Status===true){ %>
-      <span class="text-3xl mt-5 font-medium"
-        >Thanks For Voting</span
-      >
-      <span class="text-3xl mt-5 font-medium">
-        Result Announce Soon
-      </span>
+      <% if(electionList.End == false) { %> <% if(VoterDetail.Status==true){ %>
+      <span class="text-3xl mt-5 font-medium">Thanks For Voting</span>
+      <span class="text-3xl mt-5 font-medium"> Result Announce Soon </span>
       <% } else { %>
       <form
-        action="/addVote/<%=electionList.id%>/<%=VoterDetail[i].id%>"
+        action="/addVote/<%=electionList.id%>/election/<%=VoterDetail[0].id %>"
         method="post"
       >
         <input type="hidden" name="_csrf" value="<%= csrfToken%>" />
-        <% for(let j = 0;j < QuetionDetail.length; j++) { %>
+        <% for(let j = 0;j < QuetionDetail.length; ++j) { %>
         <span class="text-2xl font-medium mt-4 block"
-          >(<%=(i+1)%>) QuetionTitle:<%=QuetionDetail[j].QuetionTitle%></span
+          >(<%=(j+1)%>) QuetionTitle:<%=QuetionDetail[j].QuetionTitle%></span
         >
         <span class="text-2xl font-medium mt-3 block ml-8"
           >QuetionDescription:<%=QuetionDetail[j].Description%></span
         >
-        <% for(let k = 0;k<= getOptionList.length; k++) { %>
+        <% for(let k = 0;k < getOptionList.length; k++) { %>
         <div class="text-2xl font-medium ml-8 mt-4">
           <input
             type="radio"
-            name="Option-[<%=QuetionDetail[i].id%>]"
+            name="Option-[<%=QuetionDetail[j].id%>]"
             id="check-<%=[j]%><%=[k]%>"
             value="<%=getOptionList[j][k].OptionTitle%>"
             required
@@ -62,8 +57,7 @@
           class="ml-3 text-xl rounded bg-green-700 font-medium p-2 outline-none text-white w-56 h-12 relative text-center"
         />
       </form>
-      <% } %> <% } %> <%} else {%> 
-        <span>Completed</span><%}%>
+      <% } %><%} else {%><span>Completed</span><% } %>
     </div>
   </body>
 </html>

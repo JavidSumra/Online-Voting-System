@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
     static removeQuetion(id){
-      return this.destroy({
+       this.destroy({
         where:{
           id,
         }
