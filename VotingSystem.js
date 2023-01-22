@@ -398,9 +398,11 @@ app.get(
       let getOptionList = [];
       for (let i = 0; i < QuetionDetail.length; ++i) {
         let OptionList = await CreateOption.getOptionList(QuetionDetail[i].id);
-        console.log(`${i + 1} Time:` + QuetionDetail[i].id);
-        getOptionList.push(OptionList);
+          for(let j=0;j<OptionList.length;j++){
+            getOptionList.push(OptionList)
+          }
       }
+      console.log(getOptionList)
       if (electionList.Start === true && electionList.End === false) {
         response.status(200).render("electionPerview", {
           csrfToken: request.csrfToken(),
@@ -426,11 +428,11 @@ app.get("/voting/:id", async (request, response) => {
     let QuetionDetail = await Quetion.getQuetionList(electionList.id);
     let VoterDetail = await Voter.getVotersList(electionList.id);
     let getOptionList = [];
-    for (let i = 0; i < QuetionDetail.length; i++) {
+    for (let i = 0; i < QuetionDetail.length; ++i) {
       let OptionList = await CreateOption.getOptionList(QuetionDetail[i].id);
-      console.log(OptionList);
-      console.log(`${i + 1}Time:` + QuetionDetail[i].id);
-      getOptionList.push(OptionList);
+        for(let j=0;j<OptionList.length;j++){
+          getOptionList.push(OptionList)
+        }
     }
     console.log(VoterDetail);
     console.log("Voter Login:" + VoterDetail.length);
