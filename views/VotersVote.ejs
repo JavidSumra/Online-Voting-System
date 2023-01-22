@@ -20,34 +20,50 @@
       <span class="text-2xl font-medium mt-10"
         >Title:<%=electionList.Title%></span
       >
-      <% for(let i = 0; i < VoterDetail.length; i++) { %>
-        <% if(VoterDetail[i].Status===true){ %>
-              <span>Thanks For Voting</span>
-         <% } else { %>
-          <form action="/addVote/<%=electionList.id%>" method="post">
-            <input type="hidden" name="_csrf" value="<%= csrfToken%>" />
-            <% for(let j = 0;j < QuetionDetail.length; j++) { %>
-            <span class="text-2xl font-medium mt-4 block"
-              >(<%=(i+1)%>) QuetionTitle:<%=QuetionDetail[j].QuetionTitle%></span
-            >
-            <span class="text-2xl font-medium mt-3 block ml-8"
-              >QuetionDescription:<%=QuetionDetail[j].Description%></span
-            >
-            <% for(let k = 0;k<= getOptionList.length; k++) { %>
-            <div class="text-2xl font-medium ml-8 mt-4">
-              <input type="radio" name="Option-[<%=QuetionDetail[i].id%>]" id="check-<%=[j]%><%=[k]%>" value="<%=getOptionList[j][k].OptionTitle%>" required/><label
-                for="check-<%=[j]%><%=[k]%>"
-                ><span class="ml-5"
-                  ><%=getOptionList[j][k].OptionTitle%></span
-                ></label
-              >
-            </div>
-            <% } %> 
-            <% } %>
-            <input type="submit" value="Vote" class="ml-3 text-xl rounded bg-green-700 font-medium p-2 outline-none text-white w-56 h-12 relative text-center">
-          </form>
-          <% } %> 
-      <% } %>
+      <% if(electionList.End === false){ %> <% for(let i = 0; i <
+      VoterDetail.length; i++) { %> <% if(VoterDetail[i].Status===true){ %>
+      <span class="text-3xl mt-5 font-medium"
+        >Thanks For Voting</span
+      >
+      <span class="text-3xl mt-5 font-medium">
+        Result Announce Soon
+      </span>
+      <% } else { %>
+      <form
+        action="/addVote/<%=electionList.id%>/<%=VoterDetail[i].id%>"
+        method="post"
+      >
+        <input type="hidden" name="_csrf" value="<%= csrfToken%>" />
+        <% for(let j = 0;j < QuetionDetail.length; j++) { %>
+        <span class="text-2xl font-medium mt-4 block"
+          >(<%=(i+1)%>) QuetionTitle:<%=QuetionDetail[j].QuetionTitle%></span
+        >
+        <span class="text-2xl font-medium mt-3 block ml-8"
+          >QuetionDescription:<%=QuetionDetail[j].Description%></span
+        >
+        <% for(let k = 0;k<= getOptionList.length; k++) { %>
+        <div class="text-2xl font-medium ml-8 mt-4">
+          <input
+            type="radio"
+            name="Option-[<%=QuetionDetail[i].id%>]"
+            id="check-<%=[j]%><%=[k]%>"
+            value="<%=getOptionList[j][k].OptionTitle%>"
+            required
+          /><label for="check-<%=[j]%><%=[k]%>"
+            ><span class="ml-5"
+              ><%=getOptionList[j][k].OptionTitle%></span
+            ></label
+          >
+        </div>
+        <% } %> <% } %>
+        <input
+          type="submit"
+          value="Vote"
+          class="ml-3 text-xl rounded bg-green-700 font-medium p-2 outline-none text-white w-56 h-12 relative text-center"
+        />
+      </form>
+      <% } %> <% } %> <%} else {%> 
+        <span>Completed</span><%}%>
     </div>
   </body>
 </html>

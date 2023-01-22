@@ -25,7 +25,8 @@ module.exports = (sequelize, DataTypes) => {
       return this.findAll({
         where:{
           id,
-        }
+        },
+        order:[["id","ASC"]]
       })
     }
 

@@ -20,6 +20,13 @@ module.exports = (sequelize, DataTypes) => {
       })
     }
 
+    static getVotersListById(id){
+      return this.findAll({
+        where:{
+          id,
+        }
+      })
+    }
     static removeVoter(id){
       this.destroy({
         where:{
@@ -32,6 +39,42 @@ module.exports = (sequelize, DataTypes) => {
         where:{
           userElectionId:id,
         }
+      })
+    }
+    static getTotalVoters(id){
+      return this.findAll({
+        where:{
+          userElectionId:id,
+        },
+        order:[["id","ASC"]]
+      })
+    }
+
+    static getRemVoters(id){
+      return this.findAll({
+        where:{
+          userElectionId:id,
+          Status:false,
+        },
+        order:[["id","ASC"]],
+      })
+    }
+
+    static getSuccessVoters(id){
+      return this.findAll({
+        where:{
+          userElectionId:id,
+          Status:true,
+        },
+        order:[["id","ASC"]],
+      })
+    }
+
+
+
+    votedVoter(){//!Change Name
+      return this.update({
+        Status:true
       })
     }
   }

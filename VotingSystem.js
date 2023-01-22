@@ -32,13 +32,14 @@ const { DataTypes } = require("sequelize");
 const { request } = require("http");
 const { response } = require("express");
 const { send } = require("process");
+const voterdetail = require("./models/voterdetail");
 
 let Admin = require("./models/votingadmin")(sequelize, DataTypes);
 let Quetion = require("./models/quetiondetail")(sequelize, DataTypes);
 const CreateElection = require("./models/electiondetail")(sequelize, DataTypes);
 const CreateOption = require("./models/optiondetail")(sequelize, DataTypes);
 const Voter = require("./models/voterlogin")(sequelize, DataTypes);
-const Voting = require("./models/voterdetail")(sequelize,DataTypes);
+const Voting = require("./models/voterdetail")(sequelize, DataTypes);
 app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -187,6 +188,7 @@ app.get(
         console.log(request.user.id);
         let getElection = await CreateElection.RetriveElection(request.user.id);
         // console.log(getElection)
+        console.log(getElection);
         response.status(200).render("Home", {
           csrfToken: request.csrfToken(),
           User: request.user.FirstName,
@@ -250,7 +252,7 @@ app.get(
   async (request, response) => {
     try {
       console.log("ManageOption:" + request.params.id);
-      let elcetionList = await CreateElection.findByPk(request.params.ElectId);
+      let electionList = await CreateElection.findByElectID(request.params.ElectId);
       let OptionList = [];
       OptionList = await CreateOption.getOptionList(request.params.id);
       console.log(OptionList ? true : false);
@@ -260,11 +262,12 @@ app.get(
       response.status(200).render("AddOption", {
         User: request.user.FirstName,
         csrfToken: request.csrfToken(),
-        Id: elcetionList.id,
+        Id: electionList[0].id,
         OptionList,
         QuetionDetail,
       });
     } catch (error) {
+      console.log(error);
       response.status(402).send(error);
     }
   }
@@ -430,21 +433,92 @@ app.get("/voting/:id", async (request, response) => {
       getOptionList.push(OptionList);
     }
     console.log(VoterDetail);
-    console.log("Voter Login:"+VoterDetail.length);
-   
-      response.status(200).render("VotersVote",{
-        csrfToken: request.csrfToken(),
-        electionList,
-        QuetionDetail,
-        getOptionList,
-        VoterDetail,
-      });
-   
+    console.log("Voter Login:" + VoterDetail.length);
+
+    response.status(200).render("VotersVote", {
+      csrfToken: request.csrfToken(),
+      electionList,
+      QuetionDetail,
+      getOptionList,
+      VoterDetail,
+    });
   } catch (error) {
-    console.log("Error:"+error)
+    console.log("Error:" + error);
     response.status(402).send(error);
   }
 });
+
+app.get(
+  "/election/ResultPerview/:id",
+  connectEnsure.ensureLoggedIn("/"),
+  async (request, response) => {
+    try {
+      console.log(request.params.id);
+      if (request.user.UserRole == "Admin") {
+        let electionList = await CreateElection.findByElectID(
+          request.params.id
+        );
+        console.log(electionList);
+        console.log(electionList.length);
+        console.log(electionList[0].Start);
+        console.log(electionList[0].id);
+        if (electionList[0].Start == true) {
+          let QuetionDetail = await Quetion.getQuetionList(request.params.id);
+          let OptionDetail = [];
+          let Vote = [];
+          let QuetionId = [];
+
+          for (let i = 0; i < QuetionDetail.length; i++) {
+            QuetionId.push(QuetionDetail[i].id);
+            let Options = await CreateOption.getOptionList(
+              QuetionDetail[i].id
+            );
+            let OptionName = [];
+            let VotesList = [];
+            for (let j = 0; j < Options.length; j++) {
+              OptionName.push(Options[j].OptionTitle);
+              let votes = await Voting.getNumberofVotes(
+                electionList[0].id,
+                Options[j].OptionTitle,
+                QuetionDetail[i].id
+              );
+              VotesList.push(votes.length);
+            }
+            OptionDetail.push(OptionName);
+            Vote.push(VotesList);
+          }
+
+          let TotalNumberofVoters = await Voter.getTotalVoters(request.params.id);
+          let RemaininigVoters = await Voter.getRemVoters(request.params.id);
+          let SuccessVoters = await Voter.getSuccessVoters(request.params.id);
+         console.log( QuetionDetail,
+          OptionDetail,
+          QuetionId,
+          Vote,)
+          // response.send("Completed")
+          response.status(200).render("ResultPerview", {
+            electionList,
+            QuetionDetail,
+            OptionDetail,
+            QuetionId,
+            Vote,
+            Total: TotalNumberofVoters.length,
+            Remaining: RemaininigVoters.length,
+            Success: SuccessVoters.length,
+            User: request.user.FirstName,
+          });
+        } else {
+          request.flash("error", "Please Make Sure Election is Live or Not!");
+          return response.redirect("/Home");
+        }
+      } else {
+        response.redirect("/");
+      }
+    } catch (error) {
+      response.send(error);
+    }
+  }
+);
 app.get("/Signout", (request, response, next) => {
   try {
     request.logout((err) => {
@@ -595,7 +669,7 @@ app.post(
           Status: false,
           UserRole: "Voter",
         });
-        console.log("Voter:"+addVoter)
+        console.log("Voter:" + addVoter);
         request.flash("success", "Voter Suceessfully Created");
         return response.redirect(`/Quetion/${request.params.id}`);
       }
@@ -605,45 +679,41 @@ app.post(
   }
 );
 
-app.post(
-  "/VoterLogin/:id",
-  async (request, response) => {
-    try {
-      passport.authenticate("local-Voter", {
-        failureRedirect: `/loginvoter/${request.params.id}`,
-        failureFlash: true,
-      });
-      response.redirect(`/voting/${request.params.id}`);
-    } catch (error) {
-      response.status(402).send(error);
-    }
+app.post("/VoterLogin/:id", async (request, response) => {
+  try {
+    passport.authenticate("local-Voter", {
+      failureRedirect: `/loginvoter/${request.params.id}`,
+      failureFlash: true,
+    });
+    request.flash("success", "Login Suceessfully");
+    return response.redirect(`/voting/${request.params.id}`);
+  } catch (error) {
+    response.status(402).send(error);
   }
-);
+});
 
-app.post("/addVote/:id", async (request, response) => {
-  console.log(request.body)
-  let electionList = await CreateElection.findByPk(request.params.id)
+app.post("/addVote/:id/:voteId", async (request, response) => {
+  console.log(request.body);
+  let electionList = await CreateElection.findByPk(request.params.id);
   let QuetionDetail = await Quetion.getQuetionList(request.params.id);
-  let VoterList = []
-  console.log(request.user.id)
-  for(let i = 0; i < QuetionDetail.length;i++ ){
-    VoterList = await Voter.getVotersList(QuetionDetail[i].id)
-    let VoteValue = request.body[`Option-[${QuetionDetail[i].id}]`]
-     console.log(VoteValue)
-    //  let AddVote = await Voting.create({
-    //     ElectionId:electionList.id,
-    //     QuetionId:QuetionDetail[i].id,
-    //     VoterId:request.user.id,
-    //     TotalVotes:VoteValue,
-    //  });
-    //  let updateStatus = await Voter.updateStatus(VoterList[i].id)
-    //  console.log(updateStatus)
-    //  console.log(AddVote)
+  let VoterDetail = await Voter.findByPk(request.params.voteId);
+  console.log(VoterDetail);
+  for (let i = 0; i < QuetionDetail.length; i++) {
+    let VoteValue = request.body[`Option-[${QuetionDetail[i].id}]`];
+    console.log(VoteValue);
+    let AddVote = await Voting.create({
+      ElectionId: electionList.id,
+      QuetionId: QuetionDetail[i].id,
+      VoterId: request.params.voteId,
+      TotalVotes: VoteValue,
+    });
+    console.log(AddVote);
   }
-  console.log(QuetionDetail)
-  console.log(electionList)
-  console.log(VoterList)
-  // let addAsVoted = 
+  //  console.log(updateVotingStatus)
+  await VoterDetail.votedVoter();
+  console.log(QuetionDetail);
+  console.log(electionList);
+  response.redirect(`/voting/${request.params.id}`);
 });
 // delete Request
 app.delete(
@@ -651,7 +721,7 @@ app.delete(
   connectEnsure.ensureLoggedIn({ redirectTo: "/" }),
   async (request, response) => {
     try {
-      console.log(request.params.id)
+      console.log(request.params.id);
       let electionList = await CreateElection.findByPk(request.params.id);
       console.log(electionList);
       if (electionList.Start === true && electionList.End === false) {
@@ -662,7 +732,10 @@ app.delete(
         console.log(
           "We Get Delete Request From:" + request.params.id + request.user.id
         );
-        let deleteElection = await CreateElection.RemoveElection(request.params.id,request.user.id);
+        let deleteElection = await CreateElection.RemoveElection(
+          request.params.id,
+          request.user.id
+        );
         console.log(deleteElection ? true : false);
         let deleteElectionQuetion = await Quetion.removeParticularQuetion(
           request.params.id
