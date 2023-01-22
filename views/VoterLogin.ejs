@@ -138,7 +138,7 @@
         <% } %>
         <header>Welcome To Online Voting Platform</header>
         <hr />
-        <form action="/VoterLogin" method="post">
+        <form action="/VoterLogin/<%=Id%>" method="post">
           <input type="hidden" name="_csrf" value="<%= csrfToken%>" />
           <input
             type="text"

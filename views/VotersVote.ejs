@@ -1,22 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="csrf-token" content="<%= csrfToken %>" />
-    <title>Document</title>
+    <title>Voting Platform</title>
     <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body>
-     <div class="grid justify-center mt-5">
-        <div class="text-4xl bold block">
-            Online Voting Platform<a
-              class="mx-20 text-xl rounded bg-green-700 font-medium p-2 outline-none text-white"
-              href="/Signout/Voter"
-              >SignOut</a
+  </head>
+  <body>
+    <div class="grid justify-center mt-5">
+      <div class="text-4xl bold block">
+        Online Voting Platform<a
+          class="mx-20 text-xl rounded bg-green-700 font-medium p-2 outline-none text-white"
+          href="/Signout/Voter"
+          >SignOut</a
+        >
+      </div>
+      <span class="text-2xl font-medium mt-10"
+        >Title:<%=electionList.Title%></span
+      >
+      <% for(let i = 0; i < VoterDetail.length; i++) { %>
+        <% if(VoterDetail[i].Status===true){ %>
+              <span>Thanks For Voting</span>
+         <% } else { %>
+          <form action="/addVote/<%=electionList.id%>" method="post">
+            <input type="hidden" name="_csrf" value="<%= csrfToken%>" />
+            <% for(let j = 0;j < QuetionDetail.length; j++) { %>
+            <span class="text-2xl font-medium mt-4 block"
+              >(<%=(i+1)%>) QuetionTitle:<%=QuetionDetail[j].QuetionTitle%></span
             >
-          </div>
-     </div>
-</body>
+            <span class="text-2xl font-medium mt-3 block ml-8"
+              >QuetionDescription:<%=QuetionDetail[j].Description%></span
+            >
+            <% for(let k = 0;k<= getOptionList.length; k++) { %>
+            <div class="text-2xl font-medium ml-8 mt-4">
+              <input type="radio" name="Option-[<%=QuetionDetail[i].id%>]" id="check-<%=[j]%><%=[k]%>" value="<%=getOptionList[j][k].OptionTitle%>" required/><label
+                for="check-<%=[j]%><%=[k]%>"
+                ><span class="ml-5"
+                  ><%=getOptionList[j][k].OptionTitle%></span
+                ></label
+              >
+            </div>
+            <% } %> 
+            <% } %>
+            <input type="submit" value="Vote" class="ml-3 text-xl rounded bg-green-700 font-medium p-2 outline-none text-white w-56 h-12 relative text-center">
+          </form>
+          <% } %> 
+      <% } %>
+    </div>
+  </body>
 </html>

@@ -27,7 +27,13 @@ module.exports = (sequelize, DataTypes) => {
         }
       })
     }
-
+    static removeParticularVoter(id){
+      this.destroy({
+        where:{
+          userElectionId:id,
+        }
+      })
+    }
   }
   VoterLogin.init({
     Status: DataTypes.BOOLEAN,

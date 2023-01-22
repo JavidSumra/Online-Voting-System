@@ -38,6 +38,7 @@ let Quetion = require("./models/quetiondetail")(sequelize, DataTypes);
 const CreateElection = require("./models/electiondetail")(sequelize, DataTypes);
 const CreateOption = require("./models/optiondetail")(sequelize, DataTypes);
 const Voter = require("./models/voterlogin")(sequelize, DataTypes);
+const Voting = require("./models/voterdetail")(sequelize,DataTypes);
 app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -160,11 +161,10 @@ app.use(function (request, response, next) {
   response.locals.messages = Message;
   next();
 });
-let URL = null;
 // Get Request's
 app.get("/", (request, response) => {
   try {
-    response.render("Login", { csrfToken: request.csrfToken() });
+    response.status(200).render("Login", { csrfToken: request.csrfToken() });
   } catch (error) {
     response.status(402).send(error);
   }
@@ -172,7 +172,7 @@ app.get("/", (request, response) => {
 
 app.get("/Signup", (request, response) => {
   try {
-    response.render("SignUp", { csrfToken: request.csrfToken() });
+    response.status(200).render("SignUp", { csrfToken: request.csrfToken() });
   } catch (error) {
     response.status(402).send(error);
   }
@@ -184,11 +184,10 @@ app.get(
   async (request, response) => {
     try {
       if (request.user.UserRole == "Admin") {
-        URL = null;
         console.log(request.user.id);
         let getElection = await CreateElection.RetriveElection(request.user.id);
         // console.log(getElection)
-        response.render("Home", {
+        response.status(200).render("Home", {
           csrfToken: request.csrfToken(),
           User: request.user.FirstName,
           getElection,
@@ -212,7 +211,7 @@ app.get(
       let QuetionList = await Quetion.getQuetionList(request.params.id);
       let VotersList = await Voter.getVotersList(request.params.id);
       // console.log(VotersList);
-      response.render("AddQuetion", {
+      response.status(200).render("AddQuetion", {
         csrfToken: request.csrfToken(),
         User: request.user.FirstName,
         electionList,
@@ -233,8 +232,8 @@ app.get(
     try {
       let elcetionList = await CreateElection.findByPk(request.params.id);
       let QuetionList = await Quetion.getQuetionList(request.params.id);
-      // let OptionList = awai CreateOption.getOptionList(request.params.id);
-      response.render("ManageQuetion", {
+      // let OptionList = await CreateOption.getOptionList(request.params.id);
+      response.status(200).render("ManageQuetion", {
         csrfToken: request.csrfToken(),
         User: request.user.FirstName,
         elcetionList,
@@ -253,36 +252,17 @@ app.get(
       console.log("ManageOption:" + request.params.id);
       let elcetionList = await CreateElection.findByPk(request.params.ElectId);
       let OptionList = [];
-       OptionList = await CreateOption.getOptionList(request.params.id);
-      console.log(OptionList?true:false)
+      OptionList = await CreateOption.getOptionList(request.params.id);
+      console.log(OptionList ? true : false);
       let QuetionDetail = await Quetion.getParticularList(request.params.id);
       console.log(QuetionDetail);
       console.log(OptionList);
-      response.render("AddOption", {
+      response.status(200).render("AddOption", {
         User: request.user.FirstName,
         csrfToken: request.csrfToken(),
         Id: elcetionList.id,
         OptionList,
         QuetionDetail,
-      });
-    } catch (error) {
-      response.status(402).send(error);
-    }
-  }
-);
-
-app.get(
-  "/AddUrl/:id",
-  connectEnsure.ensureLoggedIn({ redirectTo: "/" }),
-  async (request, response) => {
-    try {
-      console.log(request.params.id);
-      let electionList = await CreateElection.findByPk(request.params.id);
-      response.render("addURL", {
-        csrfToken: request.csrfToken(),
-        ElectionId: request.params.id,
-        User: request.user.FirstName,
-        electionList,
       });
     } catch (error) {
       response.status(402).send(error);
@@ -299,7 +279,7 @@ app.get(
       let electionList = await CreateElection.findByPk(request.params.id);
       console.log("AddVoter:" + electionList);
       console.log(electionList.Title);
-      response.render("AddVoters", {
+      response.status(200).render("AddVoters", {
         User: request.user.FirstName,
         electionList,
         csrfToken: request.csrfToken(),
@@ -316,7 +296,7 @@ app.get(
   async (request, response) => {
     try {
       let VotersList = await Voter.getVotersList(request.params.id);
-      response.render("ManageVoter", {
+      response.status(200).render("ManageVoter", {
         csrfToken: request.csrfToken(),
         User: request.user.FirstName,
         VotersList,
@@ -327,9 +307,12 @@ app.get(
   }
 );
 
-app.get("/loginvoter", (request, response) => {
+app.get("/loginvoter/:id", (request, response) => {
   try {
-    response.render("VoterLogin", { csrfToken: request.csrfToken() });
+    response.status(200).render("VoterLogin", {
+      csrfToken: request.csrfToken(),
+      Id: request.params.id,
+    });
   } catch (error) {
     response.status(402).send(error);
   }
@@ -345,35 +328,30 @@ app.get(
       console.log(request.params.id);
       let QuetionDetail = await Quetion.getQuetionList(request.params.id);
       let VoterDetail = await Voter.getVotersList(request.params.id);
-      let getOptionList 
+      let getOptionList;
       for (let i = 0; i < QuetionDetail.length; i++) {
         getOptionList = await CreateOption.getOptionList(QuetionDetail[i].id);
       }
       if (electionList.Start === true && electionList.End === false) {
         request.flash("error", "Election Is Already Live");
-        response.redirect(`/Quetion/${request.params.id}`);
+        response.redirect(`/loginvoter/${request.params.id}`);
       } else {
-        if (URL != null) {
-          if (QuetionDetail.length >= 1) {
-            if (getOptionList.length >= 2) {
-              if (VoterDetail.length >= 1) {
-                request.flash("success", "Election is Live");
-                await electionList.StartElection(request.params.id);
-                response.redirect(`/Quetion/${request.params.id}`);
-              } else {
-                request.flash("error", "Please Register At Least One Voter");
-                response.redirect(`/Quetion/${request.params.id}`);
-              }
+        if (QuetionDetail.length >= 1) {
+          if (getOptionList.length >= 2) {
+            if (VoterDetail.length >= 1) {
+              request.flash("success", "Election is Live");
+              await electionList.StartElection(request.params.id);
+              response.redirect(`/loginvoter/${request.params.id}`);
             } else {
-              request.flash("error", "Please Create At Least Two Option");
+              request.flash("error", "Please Register At Least One Voter");
               response.redirect(`/Quetion/${request.params.id}`);
             }
           } else {
-            request.flash("error", "Please Create At Least One Quetion");
+            request.flash("error", "Please Create At Least Two Option");
             response.redirect(`/Quetion/${request.params.id}`);
           }
         } else {
-          request.flash("error", "Please Add Url First");
+          request.flash("error", "Please Create At Least One Quetion");
           response.redirect(`/Quetion/${request.params.id}`);
         }
       }
@@ -417,11 +395,11 @@ app.get(
       let getOptionList = [];
       for (let i = 0; i < QuetionDetail.length; ++i) {
         let OptionList = await CreateOption.getOptionList(QuetionDetail[i].id);
-        console.log(`${i + 1}Time:` + QuetionDetail[i].id);
+        console.log(`${i + 1} Time:` + QuetionDetail[i].id);
         getOptionList.push(OptionList);
       }
       if (electionList.Start === true && electionList.End === false) {
-        response.render("electionPerview", {
+        response.status(200).render("electionPerview", {
           csrfToken: request.csrfToken(),
           User: request.user.FirstName,
           electionList,
@@ -438,13 +416,32 @@ app.get(
   }
 );
 
-app.get("/voting", async (request, response) => {
+app.get("/voting/:id", async (request, response) => {
   try {
-    console.log(request.user);
-    let electionList = await CreateElection.findByPk(request.user.id);
-    console.log(electionList);
-    response.render("VotersVote", { csrfToken: request.csrfToken() });
+    console.log(request.params.id);
+    let electionList = await CreateElection.findByPk(request.params.id);
+    let QuetionDetail = await Quetion.getQuetionList(electionList.id);
+    let VoterDetail = await Voter.getVotersList(electionList.id);
+    let getOptionList = [];
+    for (let i = 0; i < QuetionDetail.length; i++) {
+      let OptionList = await CreateOption.getOptionList(QuetionDetail[i].id);
+      console.log(OptionList);
+      console.log(`${i + 1}Time:` + QuetionDetail[i].id);
+      getOptionList.push(OptionList);
+    }
+    console.log(VoterDetail);
+    console.log("Voter Login:"+VoterDetail.length);
+   
+      response.status(200).render("VotersVote",{
+        csrfToken: request.csrfToken(),
+        electionList,
+        QuetionDetail,
+        getOptionList,
+        VoterDetail,
+      });
+   
   } catch (error) {
+    console.log("Error:"+error)
     response.status(402).send(error);
   }
 });
@@ -598,6 +595,7 @@ app.post(
           Status: false,
           UserRole: "Voter",
         });
+        console.log("Voter:"+addVoter)
         request.flash("success", "Voter Suceessfully Created");
         return response.redirect(`/Quetion/${request.params.id}`);
       }
@@ -608,70 +606,76 @@ app.post(
 );
 
 app.post(
-  "/VoterLogin",
-  passport.authenticate("local-Voter", {
-    failureRedirect: "/loginvoter",
-    failureFlash: true,
-  }),
+  "/VoterLogin/:id",
   async (request, response) => {
     try {
-      response.redirect("/voting");
+      passport.authenticate("local-Voter", {
+        failureRedirect: `/loginvoter/${request.params.id}`,
+        failureFlash: true,
+      });
+      response.redirect(`/voting/${request.params.id}`);
     } catch (error) {
       response.status(402).send(error);
     }
   }
 );
 
-app.post(
-  "/url/:id",
-  connectEnsure.ensureLoggedIn({ redirectTo: "/" }),
-  async (request, response) => {
-    try {
-      URL = request.body.Url;
-      if (URL != null) {
-        request.flash("success", "Url Created Successfully");
-        response.redirect(`/Quetion/${request.params.id}`);
-      } else {
-        request.flash("error", "Failed To Create Url");
-        response.redirect(`/Quetion/${request.params.id}`);
-      }
-    } catch (error) {
-      response.status(402).send(error);
-    }
+app.post("/addVote/:id", async (request, response) => {
+  console.log(request.body)
+  let electionList = await CreateElection.findByPk(request.params.id)
+  let QuetionDetail = await Quetion.getQuetionList(request.params.id);
+  let VoterList = []
+  console.log(request.user.id)
+  for(let i = 0; i < QuetionDetail.length;i++ ){
+    VoterList = await Voter.getVotersList(QuetionDetail[i].id)
+    let VoteValue = request.body[`Option-[${QuetionDetail[i].id}]`]
+     console.log(VoteValue)
+    //  let AddVote = await Voting.create({
+    //     ElectionId:electionList.id,
+    //     QuetionId:QuetionDetail[i].id,
+    //     VoterId:request.user.id,
+    //     TotalVotes:VoteValue,
+    //  });
+    //  let updateStatus = await Voter.updateStatus(VoterList[i].id)
+    //  console.log(updateStatus)
+    //  console.log(AddVote)
   }
-);
+  console.log(QuetionDetail)
+  console.log(electionList)
+  console.log(VoterList)
+  // let addAsVoted = 
+});
 // delete Request
 app.delete(
   "/delete/:id",
   connectEnsure.ensureLoggedIn({ redirectTo: "/" }),
   async (request, response) => {
     try {
-      let electionList =await CreateElection.findByPk(request.params.id)
-      console.log(electionList)
-      if(electionList.Start===true && electionList.End ===false){
-        request.flash("error","Election is Live Please End First")
-        console.log("If PArt")
-        response.redirect("/Home")
-      }
-      else{
-        console.log("We Get Delete Request From:" + request.params.id+request.user.id);
-      let deleteElection = await CreateElection.RemoveElection(
-        request.params.id,
-        request.user.id
-      );
-      console.log(deleteElection?true:false)
-      // let deleteElectionQuetion = await Quetion.removeParticularQuetion(
-      //   request.params.id
-      // );
-      // console.log(deleteElectionQuetion)
-      // let deleteVoters = await Voter.removeVoter(request.params.id);
-      //   console.log(deleteVoters)
-      // if (deleteElection ? true : false) {
-      //   request.flash("success", "Successfully Deleted");
-      // } else {
-      //   request.flash("error", "Failed To Delete");
-      // }
-      return response.send(deleteElection ? true : false);
+      console.log(request.params.id)
+      let electionList = await CreateElection.findByPk(request.params.id);
+      console.log(electionList);
+      if (electionList.Start === true && electionList.End === false) {
+        request.flash("error", "Election is Live Please End First");
+        console.log("If PArt");
+        response.redirect("/Home");
+      } else {
+        console.log(
+          "We Get Delete Request From:" + request.params.id + request.user.id
+        );
+        let deleteElection = await CreateElection.RemoveElection(request.params.id,request.user.id);
+        console.log(deleteElection ? true : false);
+        let deleteElectionQuetion = await Quetion.removeParticularQuetion(
+          request.params.id
+        );
+        console.log(deleteElectionQuetion);
+        let deleteVoters = await Voter.removeParticularVoter(request.params.id);
+        console.log(deleteVoters);
+        if (deleteElection ? true : false) {
+          request.flash("success", "Successfully Deleted");
+        } else {
+          request.flash("error", "Failed To Delete");
+        }
+        return response.send(deleteElection ? true : false);
       }
     } catch (error) {
       response.status(402).send(error);
@@ -693,7 +697,7 @@ app.delete(
       } else {
         request.flash("error", "Failed To Delete");
       }
-      return response.send(deleteElectionQuetion ? true : false);
+      return response.status(200).send(deleteElectionQuetion ? true : false);
     } catch (error) {
       response.status(402).send(error);
     }
@@ -717,7 +721,7 @@ app.delete(
       } else {
         request.flash("error", "Failed To Delete");
       }
-      return response.send(deleteElectionOption ? true : false);
+      return response.status(200).send(deleteElectionOption ? true : false);
     } catch (error) {
       response.status(402).send(error);
     }
@@ -737,7 +741,7 @@ app.delete(
       } else {
         request.flash("error", "Failed To Delete");
       }
-      return response.send(!deleteElectionVoter ? true : false);
+      return response.status(200).send(!deleteElectionVoter ? true : false);
     } catch (error) {
       response.status(402).send(error);
     }

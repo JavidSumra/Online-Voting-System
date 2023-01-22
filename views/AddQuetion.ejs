@@ -24,13 +24,7 @@
       >
         <strong> <%=messages.success %> </strong>
       </div>
-      <% } %> <%-include ("header.ejs") %> <% if(URL!=null && electionList.Start
-      == true) { %>
-      <div class="title text-2xl font-medium text-center mb-3">
-        Your Election is Live on :
-        <a class="cursor-pointer text-violet-700 underline"><%=URL%></a>
-      </div>
-      <% } %>
+      <% } %> <%-include ("header.ejs") %> 
       <div class="title text-3xl font-medium text-center">
         Election Title : <%= electionList.Title %>
       </div>
@@ -43,11 +37,6 @@
             href="/ManageQuetion/<%= electionList.id %>"
             class="text-xl rounded bg-green-700 font-medium p-2 outline-none text-white w-56 h-12 relative text-center"
             >Manage Quetion</a
-          >
-          <a
-            href="/AddUrl/<%= electionList.id %>"
-            class="text-xl rounded bg-green-700 font-medium p-2 outline-none text-white w-56 h-12 relative text-center"
-            >Add Url</a
           >
         </div>
         <div class="font-medium my-4 text-2xl">
