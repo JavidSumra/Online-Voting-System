@@ -247,14 +247,15 @@ app.get(
   }
 );
 app.get(
-  "/ManageOption/:id/election/:ElectId",
+  "/ManageOption/:id/election",
   connectEnsure.ensureLoggedIn({ redirectTo: "/" }),
   async (request, response) => {
     try {
       console.log("ManageOption:" + request.params.id);
-      // let electionList = await CreateElection.findByElectID(request.params.ElectId);
+      console.log(request.params.ElectId)
+      let electionList = await CreateElection.findByElectID(request.params.id);
       let OptionList = [];
-      // OptionList = await CreateOption.getOptionList(request.params.id);
+      OptionList = await CreateOption.getOptionList(request.params.id);
       console.log(OptionList ? true : false);
       let QuetionDetail = await Quetion.getParticularList(request.params.id);
       console.log(QuetionDetail);
@@ -262,8 +263,8 @@ app.get(
       response.status(200).render("AddOption", {
         User: request.user.FirstName,
         csrfToken: request.csrfToken(),
-        // Id: electionList[0].id,
-        // OptionList,
+        Id: electionList[0].id,
+        OptionList,
         QuetionDetail,
       });
     } catch (error) {
@@ -632,7 +633,6 @@ app.post(
   connectEnsure.ensureLoggedIn({ redirectTo: "/" }),
   async (request, response) => {
     try {
-      console.log("Add Option:" + request.params.id);
       console.log("Quetion Id:" + request.params.QueId);
       let addOption = await CreateOption.create({
         OptionTitle: request.body.Title,
@@ -640,7 +640,7 @@ app.post(
       });
       console.log(addOption);
       response.redirect(
-        `/ManageOption/${request.params.QueId}/election/${request.params.id}`
+        `/ManageOption/${request.params.QueId}/election`
       );
     } catch (error) {
       response.status(402).send(error);
