@@ -21,6 +21,14 @@ module.exports = (sequelize, DataTypes) => {
       })
     }
 
+    static findByElectID(id){
+      return this.findAll({
+        where:{
+          id,
+        }
+      })
+    }
+
     static RemoveElection(id,userId){
        this.destroy({
         where:{
@@ -29,7 +37,6 @@ module.exports = (sequelize, DataTypes) => {
         }
       })
     }
-
     StartElection(id){
       return this.update({
         where:{
