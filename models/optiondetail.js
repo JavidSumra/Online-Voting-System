@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
     }
+
     static getOptionList(id){
       return this.findAll({
         where:{
@@ -37,3 +38,4 @@ module.exports = (sequelize, DataTypes) => {
   });
   return OptionDetail;
 };
+
