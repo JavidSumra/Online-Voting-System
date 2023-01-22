@@ -252,18 +252,18 @@ app.get(
   async (request, response) => {
     try {
       console.log("ManageOption:" + request.params.id);
-      let electionList = await CreateElection.findByElectID(request.params.ElectId);
+      // let electionList = await CreateElection.findByElectID(request.params.ElectId);
       let OptionList = [];
-      OptionList = await CreateOption.getOptionList(request.params.id);
+      // OptionList = await CreateOption.getOptionList(request.params.id);
       console.log(OptionList ? true : false);
       let QuetionDetail = await Quetion.getParticularList(request.params.id);
       console.log(QuetionDetail);
-      console.log(OptionList);
+      // console.log(OptionList);
       response.status(200).render("AddOption", {
         User: request.user.FirstName,
         csrfToken: request.csrfToken(),
-        Id: electionList[0].id,
-        OptionList,
+        // Id: electionList[0].id,
+        // OptionList,
         QuetionDetail,
       });
     } catch (error) {
