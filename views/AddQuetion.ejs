@@ -70,7 +70,7 @@
             >End Election</a
           >
 
-          <% if(electionList.Start === false && electionList.End === false) {%>
+          <% if(electionList.Start === false || electionList.End === false) {%>
           <a
             href="/election/ResultPerview/<%= electionList.id %>"
             class="text-xl rounded bg-yellow-400 font-medium p-2 outline-none text-white w-56 h-12 relative text-center my-3"
