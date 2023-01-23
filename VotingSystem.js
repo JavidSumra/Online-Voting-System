@@ -967,7 +967,7 @@ app.post(
     console.log(request.params.id);
     try {
       if (
-        request.body.VoterId.trim().length < 10 ||
+        request.body.VoterId.trim().length < 10 &&
         request.body.VoterId.trim().length > 5
       ) {
         request.flash("error", "Voter Id Must Greater Than 5 and Less Than 10");
