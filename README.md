@@ -1,5 +1,5 @@
 <h1>Web Application Link:https://online-voting-platform-4bf2.onrender.com/</h1>
-<h1>Loom(Video) Link:https://www.loom.com/share/e2b3506446164b3eb0e82f73eb7bb86f</h1>![Voting Platform - Google Chrome 23-01-2023 07_18_33 PM](https://user-images.githubusercontent.com/112365664/214055964-37aa023f-5366-413c-95d2-53cd806af2fe.png)
+<h1>Loom(Video) Link:https://www.loom.com/share/e2b3506446164b3eb0e82f73eb7bb86f</h1>
 
 <h1>Online Voting Platform<h1>
 <h2>Demonstration<h2>
