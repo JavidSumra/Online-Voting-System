@@ -525,7 +525,8 @@ app.get(
   connectEnsure.ensureLoggedIn("/"),
   async (request, response) => {
     try {
-      if (request.user.Start != false && request.user.End != false) {
+      let list = await CreateElection.findByPk(request.params.id)
+      if (list.Start != false && list.End != false) {
         console.log(request.params.id);
         if (request.user.UserRole == "Admin") {
           let electionList = await CreateElection.findByElectID(
@@ -581,14 +582,14 @@ app.get(
             });
           } else {
             request.flash("error", "Please Make Sure Election is Live or Not!");
-            return response.redirect(`/Quetion/${request.params}`);
+            return response.redirect("/Home");
           }
         } else {
           response.redirect("/");
         }
       } else {
         request.flash("error", "Make Sure Election is Live or Not!");
-        response.redirect(`/Quetion/${request.user.id}`);
+        response.redirect("/Home");
       }
     } catch (error) {
       console.log("Error:" + error);
