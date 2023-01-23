@@ -42,6 +42,13 @@ module.exports = (sequelize, DataTypes) => {
         }
       })
     }
+
+    updateQuetion(title,desc){
+      return this.update({
+        QuetionTitle:title,
+        Description:desc,
+      })
+    }
   }
   QuetionDetail.init({
     QuetionTitle: DataTypes.STRING,

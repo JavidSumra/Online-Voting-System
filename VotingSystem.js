@@ -190,18 +190,19 @@ app.get(
         let getElection = await CreateElection.RetriveElection(request.user.id);
         // console.log(getElection)
         console.log(getElection);
-       if(request.accepts("application/json")){
-        response.json({
-          getElection
-        })
-      }
-      else if(request.accepts("html")){
-        response.render("Home", {
-          csrfToken: request.csrfToken(),
-          User: request.user.FirstName,
-          getElection,
-        });
-      }
+        if (request.accepts("html")) {
+          
+          response.render("Home", {
+            csrfToken: request.csrfToken(),
+            User: request.user.FirstName,
+            getElection,
+          });
+        } else {
+          response.json({
+            getElection,
+            User: request.user.FirstName,
+          });
+        }
       } else {
         response.redirect("/");
       }
@@ -228,7 +229,6 @@ app.get(
         electionList,
         QuetionList,
         VotersList,
-        URL,
       });
     } catch (error) {
       console.log("Error:" + error);
@@ -243,9 +243,10 @@ app.get(
   async (request, response) => {
     try {
       let electionList = await CreateElection.findByPk(request.params.id);
-      if (electionList.Start === true) {
+      console.log(electionList.Start)
+      if (electionList.Start == true) {
         request.flash("error", "Election is Live Now You Can Not Edit Quetion");
-        response.redirect(`/ManageQuetion/${request.params.id}`);
+        response.redirect(`/Quetion/${request.params.id}`);
       } else {
         let electionList = await CreateElection.findByPk(request.params.id);
         let QuetionList = await Quetion.getQuetionList(request.params.id);
@@ -302,7 +303,7 @@ app.get(
       let electionList = await CreateElection.findByPk(request.params.id);
       if (electionList.Start === true) {
         request.flash("error", "Election is Live Now You Can Not Add Voters");
-        response.redirect(`/voter/addVoter/${request.params.id}`);
+        response.redirect(`/Quetion/${request.params.id}`);
       } else {
         console.log("AddVoter:" + electionList);
         console.log(electionList.Title);
@@ -427,13 +428,12 @@ app.get(
 
       let getOptionList = [];
       for (let i = 0; i < QuetionDetail.length; ++i) {
-        let OptionList = await CreateOption.getOptionList(QuetionDetail[i].id);
-        for (let j = 0; j < OptionList.length; j++) {
-          getOptionList.push(OptionList);
-        }
+        let OptionList = await CreateOption.getOptionList(
+          QuetionDetail[i].id
+        );
+        getOptionList.push(OptionList);
       }
       console.log(getOptionList);
-      if (electionList.Start === true && electionList.End === false) {
         response.status(200).render("electionPerview", {
           csrfToken: request.csrfToken(),
           User: request.user.FirstName,
@@ -441,16 +441,17 @@ app.get(
           QuetionDetail,
           getOptionList,
         });
-      } else {
-        request.flash("error", "Election is Not Live");
-        response.redirect(`/Quetion/${request.params.id}`);
-      }
     } catch (error) {
       console.log("Error:" + error);
       response.status(402).send(error);
     }
   }
 );
+
+app.get("/editQuetion/:id",connectEnsure.ensureLoggedIn({redirectTo:"/"}),async (request,response)=>{
+  let QuetionDetail = await Quetion.findByPk(request.params.id)
+  response.status(200).render("editQuetion",{csrfToken:request.csrfToken(),QuetionDetail,User:request.user.FirstName})
+})
 
 app.get("/voting/:id/:voterId", async (request, response) => {
   try {
@@ -459,16 +460,19 @@ app.get("/voting/:id/:voterId", async (request, response) => {
     );
     let electionList = await CreateElection.findByPk(request.params.id);
     let VoterDetail = await Voter.getVoter(
-      request.params.id,
       request.params.voterId
     );
     console.log(VoterDetail);
-    console.log("Length" + VoterDetail.length);
+    // console.log("Length" + VoterDetail.length);
+    // console.log("Length" + VoterDetail.UserRole);
     if (VoterDetail.length != 0) {
       console.log(request.params.id);
       console.log(request.params.voterId);
-      if (electionList.End == false && electionList.Start == true) {
-        if (electionList.Start == true && VoterDetail[0].UserRole == "Voter") {
+      if(electionList.End==true){
+        response.redirect(`/result/${request.params.id}`)
+       }
+      else if (electionList.End == false && electionList.Start == true) {
+        if (VoterDetail.UserRole == "Voter") {
           let QuetionDetail = await Quetion.getQuetionList(electionList.id);
           let getOptionList = [];
           for (let i = 0; i < QuetionDetail.length; ++i) {
@@ -486,13 +490,14 @@ app.get("/voting/:id/:voterId", async (request, response) => {
           console.log("Voter Login:" + VoterDetail.length);
           console.log(getOptionList);
           console.log(getOptionList.length);
-          response.status(200).render("VotersVote", {
-            csrfToken: request.csrfToken(),
-            electionList,
-            QuetionDetail,
-            getOptionList,
-            VoterDetail,
-          });
+         
+            response.status(200).render("VotersVote", {
+              csrfToken: request.csrfToken(),
+              electionList,
+              QuetionDetail,
+              getOptionList,
+              VoterDetail,
+            });
         } else {
           request.flash("error", "Voting Completed");
           response.redirect(`/loginvoter/${request.params.id}`);
@@ -516,6 +521,7 @@ app.get(
   connectEnsure.ensureLoggedIn("/"),
   async (request, response) => {
     try {
+    if(request.user.Start!=false&&request.user.End!=false){
       console.log(request.params.id);
       if (request.user.UserRole == "Admin") {
         let electionList = await CreateElection.findByElectID(
@@ -525,7 +531,7 @@ app.get(
         console.log(electionList.length);
         console.log(electionList[0].Start);
         console.log(electionList[0].id);
-        if (electionList[0].Start == true || electionList[0].End == true) {
+        if (electionList[0].Start != false || electionList[0].End != true) {
           let QuetionDetail = await Quetion.getQuetionList(request.params.id);
           let OptionDetail = [];
           let Vote = [];
@@ -574,12 +580,80 @@ app.get(
       } else {
         response.redirect("/");
       }
+    }
+    else{
+      request.flash("error","Make Sure Election is Live or Not!");
+      response.redirect(`/Quetion/${request.user.id}`);
+    }
     } catch (error) {
       console.log("Error:" + error);
       response.status(402).send(error);
     }
   }
 );
+
+app.get("/result/:id",async (request,response)=>{
+  let QuetionDetail = await Quetion.getQuetionList(request.params.id);
+          let OptionDetail = [];
+          let Vote = [];
+          let QuetionId = [];
+          for (let i = 0; i < QuetionDetail.length; i++) {
+            QuetionId.push(QuetionDetail[i].id);
+            let Options = await CreateOption.getOptionList(QuetionDetail[i].id);
+            let OptionName = [];
+            let VotesList = [];
+            for (let j = 0; j < Options.length; j++) {
+              OptionName.push(Options[j].OptionTitle);
+              let votes = await Voting.getNumberofVotes(
+                electionList[0].id,
+                Options[j].OptionTitle,
+                QuetionDetail[i].id
+              );
+              VotesList.push(votes.length);
+            }
+            OptionDetail.push(OptionName);
+            Vote.push(VotesList);
+          }
+          console.log(QuetionDetail, OptionDetail, QuetionId, Vote);
+          // response.send("Completed")
+          response.status(200).render("Result", {
+            electionList,
+            QuetionDetail,
+            OptionDetail,
+            QuetionId,
+            Vote,
+          });
+})
+
+app.get("/editOption/:id",async (request,response)=>{
+   let OptionList = await CreateOption.findByPk(request.params.id);
+   try {
+    response.render("editOption",{csrfToken:request.csrfToken(),User:request.user.FirstName,OptionList})
+   } catch (error) {
+    console.log("Error:"+error)
+    response.send(error)
+   }
+})
+
+app.get("/editVoter/:id",async (request,response)=>{
+  let VoterList = await Voter.findByPk(request.params.id);
+  console.log(VoterList)
+  try {
+   response.render("updateVoter",{csrfToken:request.csrfToken(),User:request.user.FirstName,VoterList})
+  } catch (error) {
+   console.log("Error:"+error)
+   response.send(error)
+  }
+})
+
+app.get("/forgotPass", async (request, response) => {
+  try {
+    response.render("forgotpass", { csrfToken: request.csrfToken() });
+  } catch (error) {
+    console.log("Error:" + error);
+    response.status(402).send(error);
+  }
+});
 app.get("/Signout", (request, response, next) => {
   try {
     request.logout((err) => {
@@ -595,7 +669,7 @@ app.get("/Signout", (request, response, next) => {
   }
 });
 
-app.get("/Signout/Voter/:id",(request,response)=>{
+app.get("/Signout/Voter/:id", (request, response) => {
   try {
     request.logout((err) => {
       if (err) {
@@ -608,7 +682,7 @@ app.get("/Signout/Voter/:id",(request,response)=>{
     console.log("Error:" + error);
     response.status(402).send(error);
   }
-})
+});
 
 // Post Request
 app.post(
@@ -659,6 +733,32 @@ app.post("/SignUpUser", async (request, response) => {
   }
 });
 
+app.post("/forgotPass/User", async (request, response) => {
+  try {
+    let findUser = await Admin.getUser(request.body.email);
+    if (findUser) {
+      if (request.body.NewPass === request.body.ConPass) {
+        let Hashpass =await bcrypt.hash(request.body.NewPass,saltRound)
+        await findUser.updatePass(Hashpass);
+        request.flash("success", "Password Updated Successfully");
+        response.redirect("/");
+      } else {
+        request.flash(
+          "error",
+          "New Password and Confirm Password Are Not Same"
+        );
+        response.redirect("/forgotPass");
+      }
+    } else {
+      request.flash("error", "Please SignUp First");
+      response.redirect("/SignUp");
+    }
+  } catch (error) {
+    console.log("Error:" + error);
+    response.json(error);
+  }
+});
+
 app.post(
   "/AddElectionTitle",
   connectEnsure.ensureLoggedIn({ redirectTo: "/" }),
@@ -706,12 +806,12 @@ app.post(
         response.redirect(`/ManageQuetion/${request.params.id}`);
       } else {
         if (
-          request.body.QuetionTitle.trim().length < 5 ||
+          request.body.QuetionTitle.trim().length > 20 ||
           request.body.Description.trim().length < 10
         ) {
           request.flash(
             "error",
-            "Quetion Title Must Greate Than 10 And Quetion Description Greater Than 10"
+            "Quetion Title Must Less Than 15 And Quetion Description Greater Than 10"
           );
           response.redirect(`/ManageQuetion/${request.params.id}`);
         } else {
@@ -731,6 +831,84 @@ app.post(
     }
   }
 );
+
+app.post("/editQuetion/:id",connectEnsure.ensureLoggedIn({redirectTo:"/"}),async (request,response)=>{
+  try {
+     let QuetionDetail = await Quetion.findByPk(request.params.id);
+    let updateTitle = request.body.QuetionTitle;
+    let updateDesc = request.body.Description;
+    console.log(updateTitle+"\n"+updateDesc)
+    if (
+      updateTitle.trim().length > 20 ||
+      updateDesc.trim().length < 10
+    ) {
+      request.flash(
+        "error",
+        "Quetion Title Must Less Than 10 And Quetion Description Greater Than 10"
+      );
+      response.redirect(`/editQuetion/${request.params.id}`);
+      }
+      else{
+    await QuetionDetail.updateQuetion(updateTitle,updateDesc);
+    request.flash("success","Quetion Updated Successfully")
+    response.redirect(`/Quetion/${request.user.id}`)
+      }
+   } catch (error) {
+    console.log("Error:"+error)
+    response.send(error)
+   }
+});
+
+app.post("/editOption/:id",connectEnsure.ensureLoggedIn({redirectTo:"/"}),async (request,response)=>{
+  try {
+     let OptionDetail = await CreateOption.findByPk(request.params.id);
+    let updateTitle = request.body.OptionTitle;
+    if (
+      updateTitle.trim().length >10
+    ) {
+      request.flash(
+        "error",
+        "Option Title Must Less Than 10"
+      );
+      response.redirect(`/editOption/${request.params.id}`);
+      }
+      else{
+    await OptionDetail.updateOption(updateTitle);
+    request.flash("success","Option Updated Successfully")
+    response.redirect(`/Quetion/${request.user.id}`)
+      }
+   } catch (error) {
+    console.log("Error:"+error)
+    response.send(error)
+   }
+});
+
+app.post("/forgotPass/Voter",connectEnsure.ensureLoggedIn({redirectTo:"/"}),async (request,response)=>{
+  try {
+     let VoterDetail = await Voter.getParticularVoter(request.body.VoterId);
+     console.log(VoterDetail)
+    if(VoterDetail){
+      if(request.body.NewPass === request.body.ConPass){
+        let updatePass = request.body.NewPass;
+        updatePass = await bcrypt.hash(updatePass,saltRound)
+        await VoterDetail.updateVoterPass(updatePass);
+        request.flash("success","Voter Password Updated Successfully")
+        response.redirect(`/Quetion/${request.user.id}`)
+       }
+       else{
+        request.flash("error","New Password And Confirm Password Are Not Same")
+        response.redirect(`/editVoter/${request.params.id}`);
+       }
+    }
+    else{
+      request.flash("error","Voter Does Not Exist");
+      response.redirect(`/editVoter/${request.params.id}`)
+    }
+   } catch (error) {
+    console.log("Error:"+error)
+    response.send(error)
+   }
+})
 
 app.post(
   "/addOption/:QueId/:id",
@@ -845,7 +1023,7 @@ app.post("/addVote/:id/election/:voterId", async (request, response) => {
     await VoterDetail.Voted();
     console.log(QuetionDetail);
     console.log(electionList);
-    response.redirect(`/voting/${request.params.id}/${VoterDetail.id}`);
+    response.redirect(`/loginvoter/${request.params.id}`);
   } catch (error) {
     console.log("Error:" + error);
     response.status(402).send(error);
@@ -861,9 +1039,8 @@ app.delete(
       console.log(request.params.id);
       let electionList = await CreateElection.findByPk(request.params.id);
       console.log(electionList);
-      if (electionList.Start === true && electionList.End === false) {
+      if (electionList.Start == true && electionList.End == false) {
         request.flash("error", "Election is Live Please End First");
-        console.log("If PArt");
         response.redirect("/Home");
       } else {
         console.log(
@@ -946,7 +1123,7 @@ app.delete(
   connectEnsure.ensureLoggedIn({ redirectTo: "/" }),
   async (request, response) => {
     try {
-      console.log("We Get Delete Request For Voter:" + request.params.id);
+        console.log("We Get Delete Request For Voter:" + request.params.id);
       let deleteElectionVoter = await Voter.removeVoter(request.params.id);
       console.log(!deleteElectionVoter ? true : false);
       if (!deleteElectionVoter ? true : false) {

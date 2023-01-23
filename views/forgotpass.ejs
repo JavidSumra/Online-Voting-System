@@ -112,9 +112,9 @@
         <strong> <%=messages.success %> </strong>
       </div>
       <% } %>
-        <header>Welcome To Online Voting Platform</header>
+        <header>Update Password</header>
         <hr />
-        <form action="/AdminLogin" method="post">
+        <form action="/forgotpass/User" method="post">
           <input type="hidden" name="_csrf" value="<%= csrfToken%>" />
           <input
             type="email"
@@ -126,17 +126,20 @@
           />
           <input
             type="password"
-            name="password"
+            name="NewPass"
             id="Password"
-            placeholder="Enter Your Password"
+            placeholder="Enter Your New Password"
             required
           />
-          <a href="/forgotPass" style="margin-left: 10px;color: black;">Forgot Password?</a>
-          <input type="submit" class="button" value="Login" />
+          <input
+            type="password"
+            name="ConPass"
+            id="Password"
+            placeholder="Enter Your Confirm Password"
+            required
+          />
+          <input type="submit" class="button" value="Update" />
         </form>
-        <div class="signup">
-          <span>Don't have an account?<a href="/Signup">SignUp</a></span>
-        </div>
       </div>
     </div>
     <script>

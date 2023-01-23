@@ -93,7 +93,6 @@ const login = async (agent, username, password) => {
 
         response = await agent.get("/Home").set("Accept","application/json");
         const ParseElection = JSON.parse(response.text);
-        console.log(ParseElection)
         const ParseElectionlength = ParseElection.getElection.length
         console.log(ParseElectionlength)
         const Election = ParseElection.getElection[ParseElectionlength - 1];

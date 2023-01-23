@@ -27,6 +27,11 @@ module.exports = (sequelize, DataTypes) => {
         }
       })
     }
+    updateOption(title){
+      return this.update({
+        OptionTitle:title,
+      })
+    }
   }
   OptionDetail.init({
     OptionTitle: DataTypes.STRING,

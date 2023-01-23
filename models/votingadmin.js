@@ -12,6 +12,19 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
     }
+    static getUser(email){
+      return this.findOne({
+        where:{
+          email,
+        }
+      })
+    }
+
+    updatePass(Password){
+      return this.update({
+        password:Password
+      })
+    }
   }
   VotingAdmin.init({
     FirstName: DataTypes.STRING,

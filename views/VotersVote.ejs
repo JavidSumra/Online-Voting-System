@@ -13,19 +13,19 @@
       <div class="text-4xl bold block">
         Online Voting Platform<a
           class="mx-20 text-xl rounded bg-green-700 font-medium p-2 outline-none text-white"
-          href="/Signout/Voter/<%=VoterDetail[0].id%>"
+          href="/Signout/Voter/<%=VoterDetail.id%>"
           >SignOut</a
         >
       </div>
       <span class="text-2xl font-medium mt-10"
         >Title:<%=electionList.Title%></span
       >
-      <% if(VoterDetail[0].Status==true){ %>
+      <% if(VoterDetail.Status==true){ %>
       <span class="text-3xl mt-5 font-medium">Thanks For Voting</span>
       <span class="text-3xl mt-5 font-medium"> Result Announce Soon </span>
       <% } else { %>
       <form
-        action="/addVote/<%=electionList.id%>/election/<%=VoterDetail[0].id %>"
+        action="/addVote/<%=electionList.id%>/election/<%=VoterDetail.id %>"
         method="post"
       >
         <input type="hidden" name="_csrf" value="<%= csrfToken%>" />
@@ -36,7 +36,7 @@
         <span class="text-2xl font-medium mt-3 block ml-8"
           >QuetionDescription:<%=QuetionDetail[j].Description%></span
         >
-        <% for(let k = 0;k < getOptionList.length; k++) { %>
+        <% for(let k = 0;k < getOptionList[j].length; k++) { %>
         <div class="text-2xl font-medium ml-8 mt-4">
           <input
             type="radio"
@@ -54,7 +54,7 @@
         <input
           type="submit"
           value="Vote"
-          class="ml-3 text-xl rounded bg-green-700 font-medium p-2 outline-none text-white w-56 h-12 relative text-center"
+          class="mt-10 text-3xl rounded bg-green-700 font-medium  outline-none text-white w-40 h-12 relative text-center"
         />
       </form>
       <% } %>

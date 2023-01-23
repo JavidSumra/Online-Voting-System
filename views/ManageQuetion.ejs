@@ -88,17 +88,17 @@
             </span>
             <a
               onclick="deleteQuetion(<%=QuetionList[i].id%>)"
-              class="ml-3 bg-red-500 text-xl rounded font-medium p-2 outline-none text-white w-56 h-12 relative text-center my-3"
+              class="ml-3 bg-red-500 text-xl rounded font-medium p-2 outline-none text-white w-56 h-12 relative text-center my-3 cursor-pointer"
               >Delete Quetion</a
             >
             <a
-              href=""
-              class="ml-3 bg-emerald-500 text-xl rounded font-medium p-2 outline-none text-white w-56 h-12 relative text-center my-3"
+              href="/editQuetion/<%=QuetionList[i].id%>"
+              class="ml-3 bg-emerald-500 text-xl rounded font-medium p-2 outline-none text-white w-56 h-12 relative text-center my-3 cursor-pointer"
               >Edit Quetion</a
             >
             <a
             href="/ManageOption/<%=QuetionList[i].id%>/election/<%=electionList.id%>"
-            class="ml-3 text-xl rounded bg-green-700 font-medium p-2 outline-none text-white w-56 h-12 relative text-center"
+            class="ml-3 text-xl rounded bg-green-700 font-medium p-2 outline-none text-white w-56 h-12 relative text-center cursor-pointer"
             >Manage Option</a
           >
           </div>

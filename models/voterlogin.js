@@ -69,13 +69,26 @@ module.exports = (sequelize, DataTypes) => {
         order:[["id","ASC"]],
       })
     }
-    static getVoter(id,VoterId){
-      return this.findAll({
+    static getVoter(VoterId){
+      return this.findOne({
         where:{
-          id,
           VoterId,
         },
         order:[["id","ASC"]],
+      })
+    }
+
+    static getParticularVoter(id){
+      return this.findOne({
+        where:{
+          VoterId:id,
+        }
+      })
+    }
+
+    updateVoterPass(pass){
+      return this.update({
+        password:pass
       })
     }
     Voted(){

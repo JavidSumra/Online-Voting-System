@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ResultPerview</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <div class="grid justify-center mt-10">
+
+         <div class="text-2xl font-medium ">Election Title - <%=electionList[0].Title%></div>
+         <div class="text-2xl font-medium mt-5">
+            <% for( let i = 0; i < QuetionDetail.length ; i++ ) { %>
+                <span class="block">QuetionTitle:<%=QuetionDetail[i].QuetionTitle%></span>
+                <span class="block">QuetionTitle:<%=QuetionDetail[i].Description%></span>
+                <div class="mt-4">
+                   <canvas id="mychart<%= QuetionDetail[i].id %>" width="1" height="1"></canvas>
+                </div>
+            <% } %>
+         </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const TotalVotes = JSON.parse("<%- JSON.stringify(Vote) %>");
+        const TotalOption = <%- JSON.stringify(OptionDetail) %>;
+
+        const color = ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'];
+
+        const quetionId = JSON.parse("<%- JSON.stringify(QuetionId) %>");
+
+        for(let i=0;i<quetionId.length;i++){
+            const ctx = document.getElementById(`mychart${quetionId[i]}`);
+
+            new Chart(ctx,{
+                type:"bar",
+                data:{
+                    labels:TotalOption[i],
+                    datasets:[{
+                        label:"Votes",
+                        data:TotalVotes[i],
+                        borderWidth:2,
+                        borderColor:"black",
+                        backgroundColor:color
+                    }]
+                },
+                options:{
+                    scales:{
+                        y:{
+                            beginAtZero:true,
+                            ticks:{
+                                color:"black",
+                                font:{
+                                    size:18
+                                }
+                            }
+                        },
+                        x:{
+                            beginAtZero:true,
+                            ticks:{
+                                color:"black",
+                                font:{
+                                    size:20
+                                }
+                            }
+                        }
+                    }
+                },
+                responsive:false,
+                plugins:{
+                    tooltip:{
+                        enable:true,
+                        backgroundColor:"black",
+                        titleFont:{
+                            size:15
+                        },
+                        bodyFont:{
+                            size:15
+                        },
+                        titleColor:"White",
+                        titleFontFamily:"Poppins",
+                        titleFontStyle:"bold italic",
+                        titleAlign:"center",
+                        titleSpacing:5,
+                        titleMarginBottom:8,
+                        borderSpcaing:5,
+                        bodyAlign:"center"
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

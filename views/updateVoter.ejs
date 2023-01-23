@@ -112,47 +112,35 @@
         <strong> <%=messages.success %> </strong>
       </div>
       <% } %>
-        <header>Welcome To Online Voting Platform</header>
+        <header>Update Voter Password</header>
         <hr />
-        <form action="/AdminLogin" method="post">
+        <form action="/forgotPass/Voter" method="post">
           <input type="hidden" name="_csrf" value="<%= csrfToken%>" />
           <input
-            type="email"
+            type="text"
             id="email"
-            name="email"
-            placeholder="Enter Your Email"
+            name="VoterId"
+            placeholder="Enter VoterId"
             onkeyup="validate()"
             required
           />
           <input
             type="password"
-            name="password"
+            name="NewPass"
             id="Password"
-            placeholder="Enter Your Password"
+            placeholder="Enter Your New Password"
             required
           />
-          <a href="/forgotPass" style="margin-left: 10px;color: black;">Forgot Password?</a>
-          <input type="submit" class="button" value="Login" />
+          <input
+            type="password"
+            name="ConPass"
+            id="Password"
+            placeholder="Enter Your Confirm Password"
+            required
+          />
+          <input type="submit" class="button" value="Update" />
         </form>
-        <div class="signup">
-          <span>Don't have an account?<a href="/Signup">SignUp</a></span>
-        </div>
       </div>
     </div>
-    <script>
-      var email = document.getElementById("email");
-
-      function validate() {
-        if (
-          !email.value.match(
-            /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
-          )
-        ) {
-          email.style.borderColor = "red";
-        } else {
-          email.style.borderColor = "green";
-        }
-      }
-    </script>
   </body>
 </html>
