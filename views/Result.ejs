@@ -20,7 +20,6 @@
             <% for( let i = 0; i < QuetionDetail.length ; i++ ) { %>
                 <span class="block">QuetionTitle:<%=QuetionDetail[i].QuetionTitle%></span>
                 <span class="block">QuetionTitle:<%=QuetionDetail[i].Description%></span>
-                <span class="block">Your Vote:<%=votedetail.TotalVotes%></span>
                 <div class="mt-4">
                    <canvas id="mychart<%= QuetionDetail[i].id %>" width="1" height="1"></canvas>
                 </div>
