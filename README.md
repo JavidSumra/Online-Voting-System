@@ -1,3 +1,6 @@
+<h1>Web Application Link:https://online-voting-platform-4bf2.onrender.com/</h1>
+<h1>Loom(Video) Link:https://www.loom.com/share/e2b3506446164b3eb0e82f73eb7bb86f</h1>![Voting Platform - Google Chrome 23-01-2023 07_18_33 PM](https://user-images.githubusercontent.com/112365664/214055964-37aa023f-5366-413c-95d2-53cd806af2fe.png)
+
 <h1>Online Voting Platform<h1>
 <h2>Demonstration<h2>
 <p>>This is Online Voting Web App Where User Can Signin,SignUp And Signout when User SignIn User Can See Previous Election List Created By him and User Can Add New One<p>
@@ -33,5 +36,22 @@
 <p>
 <p>We Can Install Above Dependencies Using <strong>npm install </strong></p>
 <h1>Admin Side:<h1>
-![Sign Up - Google Chrome 23-01-2023 05_55_37 PM](https://user-images.githubusercontent.com/112365664/214048024-c88ca3bc-0c54-4348-add4-92799314f6f5.png)
 
+
+![Sign Up - Google Chrome 23-01-2023 05_55_37 PM](https://user-images.githubusercontent.com/112365664/214050668-36b00079-9206-4fc0-a620-059ea1f20403.png)
+![Sign Up - Google Chrome 23-01-2023 05_55_50 PM](https://user-images.githubusercontent.com/112365664/214051040-f585070e-95d6-4bb1-b19a-e0757fd1ae2c.png)
+![Sign Up - Google Chrome 23-01-2023 05_56_08 PM](https://user-images.githubusercontent.com/112365664/214051068-5dafbfd1-c39d-4863-8e09-3b008487ef2b.png)
+![Sign Up - Google Chrome 23-01-2023 05_57_12 PM](https://user-images.githubusercontent.com/112365664/214051899-c213d53f-6ac0-4025-bdd0-3ec4c8e81756.png)
+![Sign Up - Google Chrome 23-01-2023 06_00_02 PM](https://user-images.githubusercontent.com/112365664/214051253-329bc4e6-69ba-4a80-ae54-05f7d5dd4ac4.png)
+![Sign Up - Google Chrome 23-01-2023 05_58_15 PM](https://user-images.githubusercontent.com/112365664/214051303-cc166acb-b874-403d-a3ff-160f2bb76c92.png)
+![Sign Up - Google Chrome 23-01-2023 05_58_36 PM](https://user-images.githubusercontent.com/112365664/214051189-1e931625-a02c-4260-8807-8f82219ad115.png)
+![Sign Up - Google Chrome 23-01-2023 05_59_15 PM](https://user-images.githubusercontent.com/112365664/214052500-f06084c7-dbaa-4f39-a9df-36acaf411f4b.png)
+![Sign Up - Google Chrome 23-01-2023 06_03_03 PM](https://user-images.githubusercontent.com/112365664/214052215-423d1065-3b04-4b1c-9c58-557de7d1b855.png)
+
+<h1>Voter Side:<h1>
+
+
+![Sign Up - Google Chrome 23-01-2023 05_58_50 PM](https://user-images.githubusercontent.com/112365664/214052448-5a2e4763-eecd-4898-9600-080a80a20e20.png)
+![Voting Platform - Google Chrome 23-01-2023 07_22_02 PM](https://user-images.githubusercontent.com/112365664/214056567-8c4399b5-b39c-4710-bb67-4de8eecb157f.png)
+
+![Sign Up - Google Chrome 23-01-2023 06_03_48 PM](https://user-images.githubusercontent.com/112365664/214052624-4964883a-478e-404e-b2c4-8ed183361b85.png)
