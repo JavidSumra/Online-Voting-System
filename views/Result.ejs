@@ -9,12 +9,18 @@
 </head>
 <body>
     <div class="grid justify-center mt-10">
-
          <div class="text-2xl font-medium ">Election Title - <%=electionList[0].Title%></div>
          <div class="text-2xl font-medium mt-5">
+            <div class="text-2xl font-medium mt-4 grid-cols-3 grid-rows-3 mb-5">
+                <ol>
+                  <li>Total Voters: <%=TotalNumberofVoters.length%></li>
+                  <li>Successfully Voted Voters: <%= SuccessVoters.length%></li>
+                </ol>
+              </div>
             <% for( let i = 0; i < QuetionDetail.length ; i++ ) { %>
                 <span class="block">QuetionTitle:<%=QuetionDetail[i].QuetionTitle%></span>
                 <span class="block">QuetionTitle:<%=QuetionDetail[i].Description%></span>
+                <span class="block">Your Vote:<%=votedetail.TotalVotes%></span>
                 <div class="mt-4">
                    <canvas id="mychart<%= QuetionDetail[i].id %>" width="1" height="1"></canvas>
                 </div>

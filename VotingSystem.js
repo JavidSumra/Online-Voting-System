@@ -365,14 +365,14 @@ app.get(
       }
       if (electionList.Start === true && electionList.End === false) {
         request.flash("error", "Election Is Already Live");
-        response.redirect(`/loginvoter/${request.params.id}`);
+        response.redirect(`/Quetion/${request.params.id}`);
       } else {
         if (QuetionDetail.length >= 1) {
           if (getOptionList.length >= 2) {
             if (VoterDetail.length >= 1) {
               request.flash("success", "Election is Live");
               await electionList.StartElection(request.params.id);
-              response.redirect(`/loginvoter/${request.params.id}`);
+              response.redirect(`/Quetion/${request.params.id}`);
             } else {
               request.flash("error", "Please Register At Least One Voter");
               response.redirect(`/Quetion/${request.params.id}`);
@@ -526,7 +526,7 @@ app.get(
   async (request, response) => {
     try {
       let list = await CreateElection.findByPk(request.params.id)
-      if (list.Start != false && list.End != false) {
+      if (list.Start === false || list.End === false) {
         console.log(request.params.id);
         if (request.user.UserRole == "Admin") {
           let electionList = await CreateElection.findByElectID(
@@ -536,7 +536,6 @@ app.get(
           console.log(electionList.length);
           console.log(electionList[0].Start);
           console.log(electionList[0].id);
-          if (electionList[0].Start != false || electionList[0].End != true) {
             let QuetionDetail = await Quetion.getQuetionList(request.params.id);
             let OptionDetail = [];
             let Vote = [];
@@ -580,12 +579,8 @@ app.get(
               Success: SuccessVoters.length,
               User: request.user.FirstName,
             });
-          } else {
-            request.flash("error", "Please Make Sure Election is Live or Not!");
-            return response.redirect("/Home");
-          }
         } else {
-          response.redirect("/");
+          response.redirect("/Home");
         }
       } else {
         request.flash("error", "Make Sure Election is Live or Not!");
@@ -599,8 +594,11 @@ app.get(
 );
 
 app.get("/result/:id", async (request, response) => {
+  console.log(request.params.id)
   let electionList = await CreateElection.findByElectID(request.params.id);
   let QuetionDetail = await Quetion.getQuetionList(request.params.id);
+  let votedetail = await Voting.findByPk(request.params.id)
+  console.log(votedetail)
   let OptionDetail = [];
   let Vote = [];
   let QuetionId = [];
@@ -623,12 +621,19 @@ app.get("/result/:id", async (request, response) => {
   }
   console.log(QuetionDetail, OptionDetail, QuetionId, Vote);
   // response.send("Completed")
+  let TotalNumberofVoters = await Voter.getTotalVoters(
+    request.params.id
+  );
+  let SuccessVoters = await Voter.getSuccessVoters(request.params.id);
   response.status(200).render("Result", {
     electionList,
     QuetionDetail,
     OptionDetail,
     QuetionId,
     Vote,
+    TotalNumberofVoters,
+    SuccessVoters,
+    votedetail
   });
 });
 
