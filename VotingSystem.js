@@ -15,36 +15,33 @@ const LocalStrategy = require("passport-local");
 const connectEnsure = require("connect-ensure-login");
 
 const path = require("path");
+
+//Set View Engine
 app.set("views", path.join(__dirname + "/views"));
 app.set("view engine", "ejs");
 
-//Model's
-// const {
-//   Vote,
-//   Quetion,
-//   Voters,
-//   Voting,
-//   VotingOption,
-//   sequelize,
-// } = require("./models");
 const { sequelize } = require("./models");
 const { DataTypes } = require("sequelize");
 const { request } = require("http");
 const { response } = require("express");
 const { send } = require("process");
 
+//Models
 let Admin = require("./models/votingadmin")(sequelize, DataTypes);
 let Quetion = require("./models/quetiondetail")(sequelize, DataTypes);
 const CreateElection = require("./models/electiondetail")(sequelize, DataTypes);
 const CreateOption = require("./models/optiondetail")(sequelize, DataTypes);
 const Voter = require("./models/voterlogin")(sequelize, DataTypes);
 const Voting = require("./models/voterdetail")(sequelize, DataTypes);
+
+
 app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookiepasrser("this is Secret String"));
 app.use(csrf("this_should_be_32_character_long", ["POST", "PUT", "DELETE"]));
 
+//Flash Message
 app.use(flash());
 
 app.use(
@@ -59,6 +56,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+//Authenticate Admin
 passport.use(
   "local",
   new LocalStrategy(
@@ -969,7 +967,7 @@ app.post(
     console.log(request.params.id);
     try {
       if (
-        request.body.VoterId.trim().length < 10 &&
+        request.body.VoterId.trim().length < 10 ||
         request.body.VoterId.trim().length > 5
       ) {
         request.flash("error", "Voter Id Must Greater Than 5 and Less Than 10");
