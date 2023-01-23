@@ -28,6 +28,11 @@
       <div class="title text-3xl font-medium text-center">
         Election Title : <%= electionList.Title %>
       </div>
+      <div class="text-xl font-medium text-center mt-5">
+        <% if(electionList.Start == true && electionList.End == false){%>
+          Your Election is Live On: <a href="">http://loginvoter/18</a>
+          <% } %>
+      </div>
       <div class="grid">
         <div class="my-4 text-2xl font-medium">
           You Have <%=QuetionList.length %> Quetion In Your Election Ballot

@@ -166,7 +166,7 @@ app.get("/", (request, response) => {
   try {
     response.status(200).render("Login", { csrfToken: request.csrfToken() });
   } catch (error) {
-    console.log("Error:"+error)
+    console.log("Error:" + error);
     response.status(402).send(error);
   }
 });
@@ -175,7 +175,7 @@ app.get("/Signup", (request, response) => {
   try {
     response.status(200).render("SignUp", { csrfToken: request.csrfToken() });
   } catch (error) {
-    console.log("Error:"+error)
+    console.log("Error:" + error);
     response.status(402).send(error);
   }
 });
@@ -190,16 +190,23 @@ app.get(
         let getElection = await CreateElection.RetriveElection(request.user.id);
         // console.log(getElection)
         console.log(getElection);
-        response.status(200).render("Home", {
+       if(request.accepts("application/json")){
+        response.json({
+          getElection
+        })
+      }
+      else if(request.accepts("html")){
+        response.render("Home", {
           csrfToken: request.csrfToken(),
           User: request.user.FirstName,
           getElection,
         });
+      }
       } else {
         response.redirect("/");
       }
     } catch (error) {
-      console.log("Error:"+error)
+      console.log("Error:" + error);
       response.status(402).send(error);
     }
   }
@@ -224,7 +231,7 @@ app.get(
         URL,
       });
     } catch (error) {
-      console.log("Error:"+error)
+      console.log("Error:" + error);
       response.status(402).send(error);
     }
   }
@@ -252,7 +259,7 @@ app.get(
         });
       }
     } catch (error) {
-      console.log("Error:"+error)
+      console.log("Error:" + error);
       response.status(402).send(error);
     }
   }
@@ -280,7 +287,7 @@ app.get(
         QuetionDetail,
       });
     } catch (error) {
-      console.log("Error:"+error)
+      console.log("Error:" + error);
       response.status(402).send(error);
     }
   }
@@ -306,7 +313,7 @@ app.get(
         });
       }
     } catch (error) {
-      console.log("Error:"+error)
+      console.log("Error:" + error);
       response.status(402).send(error);
     }
   }
@@ -324,7 +331,7 @@ app.get(
         VotersList,
       });
     } catch (error) {
-      console.log("Error:"+error)
+      console.log("Error:" + error);
       response.status(402).send(error);
     }
   }
@@ -337,7 +344,7 @@ app.get("/loginvoter/:id", (request, response) => {
       Id: request.params.id,
     });
   } catch (error) {
-    console.log("Error:"+error)
+    console.log("Error:" + error);
     response.status(402).send(error);
   }
 });
@@ -380,7 +387,7 @@ app.get(
         }
       }
     } catch (error) {
-      console.log("Error:"+error)
+      console.log("Error:" + error);
       response.status(402).send(error);
     }
   }
@@ -401,7 +408,7 @@ app.get(
         response.redirect(`/Quetion/${request.params.id}`);
       }
     } catch (error) {
-      console.log("Error:"+error)
+      console.log("Error:" + error);
       response.status(402).send(error);
     }
   }
@@ -439,7 +446,7 @@ app.get(
         response.redirect(`/Quetion/${request.params.id}`);
       }
     } catch (error) {
-      console.log("Error:"+error)
+      console.log("Error:" + error);
       response.status(402).send(error);
     }
   }
@@ -447,31 +454,38 @@ app.get(
 
 app.get("/voting/:id/:voterId", async (request, response) => {
   try {
-    console.log("Voter Side:"+(request.params.voterId)+"\n"+request.params.id)
+    console.log(
+      "Voter Side:" + request.params.voterId + "\n" + request.params.id
+    );
     let electionList = await CreateElection.findByPk(request.params.id);
-    let VoterDetail = await Voter.getVoter(request.params.id,request.params.voterId);
-    console.log(VoterDetail)
-    console.log("Length"+VoterDetail.length)
-    if(VoterDetail.length!=0){
+    let VoterDetail = await Voter.getVoter(
+      request.params.id,
+      request.params.voterId
+    );
+    console.log(VoterDetail);
+    console.log("Length" + VoterDetail.length);
+    if (VoterDetail.length != 0) {
       console.log(request.params.id);
-      console.log(request.params.voterId)
-     if(electionList.End==false && electionList.Start == true){
-        if(electionList.Start == true && VoterDetail[0].UserRole == "Voter"){
+      console.log(request.params.voterId);
+      if (electionList.End == false && electionList.Start == true) {
+        if (electionList.Start == true && VoterDetail[0].UserRole == "Voter") {
           let QuetionDetail = await Quetion.getQuetionList(electionList.id);
           let getOptionList = [];
           for (let i = 0; i < QuetionDetail.length; ++i) {
-            let OptionList = await CreateOption.getOptionList(QuetionDetail[i].id);
-             getOptionList.push(OptionList)
+            let OptionList = await CreateOption.getOptionList(
+              QuetionDetail[i].id
+            );
+            getOptionList.push(OptionList);
           }
           for (let i = 0; i < QuetionDetail.length; ++i) {
-             for(let j = 0;j<getOptionList.length;j++){
-              console.log(getOptionList[i][j].OptionTitle)
-             }
+            for (let j = 0; j < getOptionList.length; j++) {
+              console.log(getOptionList[i][j].OptionTitle);
+            }
           }
           console.log(VoterDetail);
           console.log("Voter Login:" + VoterDetail.length);
-          console.log(getOptionList)
-          console.log(getOptionList.length)
+          console.log(getOptionList);
+          console.log(getOptionList.length);
           response.status(200).render("VotersVote", {
             csrfToken: request.csrfToken(),
             electionList,
@@ -479,19 +493,17 @@ app.get("/voting/:id/:voterId", async (request, response) => {
             getOptionList,
             VoterDetail,
           });
-        }else{
-          request.flash("error","Voting Completed");
-          response.redirect(`/loginvoter/${request.params.id}`)
+        } else {
+          request.flash("error", "Voting Completed");
+          response.redirect(`/loginvoter/${request.params.id}`);
         }
-     }
-     else{
-      request.flash("error","Voting Not Started Yet");
-      response.redirect(`/loginvoter/${request.params.id}`)
-     }
-    }
-    else{
-      request.flash("error","Login Please");
-      response.redirect(`/loginvoter/${request.params.id}`)
+      } else {
+        request.flash("error", "Voting Not Started Yet");
+        response.redirect(`/loginvoter/${request.params.id}`);
+      }
+    } else {
+      request.flash("error", "Login Please");
+      response.redirect(`/loginvoter/${request.params.id}`);
     }
   } catch (error) {
     console.log("Error:" + error);
@@ -563,7 +575,7 @@ app.get(
         response.redirect("/");
       }
     } catch (error) {
-      console.log("Error:"+error)
+      console.log("Error:" + error);
       response.status(402).send(error);
     }
   }
@@ -578,10 +590,25 @@ app.get("/Signout", (request, response, next) => {
       response.redirect("/");
     });
   } catch (error) {
-    console.log("Error:"+error)
+    console.log("Error:" + error);
     response.status(402).send(error);
   }
 });
+
+app.get("/Signout/Voter/:id",(request,response)=>{
+  try {
+    request.logout((err) => {
+      if (err) {
+        return next(err);
+      }
+      request.flash("success", "Signout Successfully");
+      response.redirect(`/loginvoter/${request.params.id}`);
+    });
+  } catch (error) {
+    console.log("Error:" + error);
+    response.status(402).send(error);
+  }
+})
 
 // Post Request
 app.post(
@@ -595,7 +622,7 @@ app.post(
       request.flash("success", "Login Successfully");
       response.redirect("/Home");
     } catch (error) {
-      console.log("Error:"+error)
+      console.log("Error:" + error);
       response.status(402).send(error);
     }
   }
@@ -627,7 +654,7 @@ app.post("/SignUpUser", async (request, response) => {
       response.redirect("/Signup");
     }
   } catch (error) {
-    console.log("Error:"+error)
+    console.log("Error:" + error);
     response.status(402).send(error);
   }
 });
@@ -662,7 +689,7 @@ app.post(
         response.redirect("/");
       }
     } catch (error) {
-      console.log("Error:"+error)
+      console.log("Error:" + error);
       response.status(402).send(error);
     }
   }
@@ -699,7 +726,7 @@ app.post(
         }
       }
     } catch (error) {
-      console.log("Error:"+error)
+      console.log("Error:" + error);
       response.status(402).send(error);
     }
   }
@@ -728,7 +755,7 @@ app.post(
         );
       }
     } catch (error) {
-      console.log("Error:"+error)
+      console.log("Error:" + error);
       response.status(402).send(error);
     }
   }
@@ -762,63 +789,67 @@ app.post(
             Status: false,
             UserRole: "Voter",
           });
-          console.log(typeof(addVoter))
+          console.log(typeof addVoter);
           console.log(addVoter);
           request.flash("success", "Voter Suceessfully Created");
           return response.redirect(`/Quetion/${request.params.id}`);
         }
       }
     } catch (error) {
-      console.log("Error:"+error)
+      console.log("Error:" + error);
       response.status(402).send(error);
     }
   }
 );
 
-app.post("/VoterLogin/:id", passport.authenticate("local-Voter", {
-  failureRedirect: "back",
-  failureFlash: true,
-}),async (request, response) => {
-  try {
-    console.log(request.user)
-    console.log(request.user.id)
-    request.flash("success", "Login Suceessfully");
-    response.redirect(`/voting/${request.params.id}/${request.user.VoterId}`);
-  } catch (error) {
-    console.log("Error:"+error)
-    response.status(402).send(error);
+app.post(
+  "/VoterLogin/:id",
+  passport.authenticate("local-Voter", {
+    failureRedirect: "back",
+    failureFlash: true,
+  }),
+  async (request, response) => {
+    try {
+      console.log(request.user);
+      console.log(request.user.id);
+      request.flash("success", "Login Suceessfully");
+      response.redirect(`/voting/${request.params.id}/${request.user.VoterId}`);
+    } catch (error) {
+      console.log("Error:" + error);
+      response.status(402).send(error);
+    }
   }
-});
+);
 
 app.post("/addVote/:id/election/:voterId", async (request, response) => {
   console.log(request.body);
- try {
-  console.log(request.user)
-  let electionList = await CreateElection.findByPk(request.params.id);
-  let QuetionDetail = await Quetion.getQuetionList(request.params.id);
-  let VoterDetail = await Voter.findByPk(request.params.voterId);
-  console.log(VoterDetail);
-  console.log(VoterDetail.id);
-  for (let i = 0; i < QuetionDetail.length; i++) {
-    let VoteValue = request.body[`Option-[${QuetionDetail[i].id}]`];
-    console.log(VoteValue);
-    let AddVote = await Voting.create({
-      ElectionId: electionList.id,
-      QuetionId: QuetionDetail[i].id,
-      VoterId: VoterDetail.id,
-      TotalVotes: VoteValue,
-    });
-    console.log(AddVote);
+  try {
+    console.log(request.user);
+    let electionList = await CreateElection.findByPk(request.params.id);
+    let QuetionDetail = await Quetion.getQuetionList(request.params.id);
+    let VoterDetail = await Voter.findByPk(request.params.voterId);
+    console.log(VoterDetail);
+    console.log(VoterDetail.id);
+    for (let i = 0; i < QuetionDetail.length; i++) {
+      let VoteValue = request.body[`Option-[${QuetionDetail[i].id}]`];
+      console.log(VoteValue);
+      let AddVote = await Voting.create({
+        ElectionId: electionList.id,
+        QuetionId: QuetionDetail[i].id,
+        VoterId: VoterDetail.id,
+        TotalVotes: VoteValue,
+      });
+      console.log(AddVote);
+    }
+    //  console.log(updateVotingStatus)
+    await VoterDetail.Voted();
+    console.log(QuetionDetail);
+    console.log(electionList);
+    response.redirect(`/voting/${request.params.id}/${VoterDetail.id}`);
+  } catch (error) {
+    console.log("Error:" + error);
+    response.status(402).send(error);
   }
-  //  console.log(updateVotingStatus)
-  await VoterDetail.Voted();
-  console.log(QuetionDetail);
-  console.log(electionList);
-  response.redirect(`/voting/${request.params.id}/${VoterDetail.id}`);
- } catch (error) {
-  console.log("Error:"+error)
-  response.status(402).send(error)
- }
 });
 
 // delete Request
@@ -857,7 +888,7 @@ app.delete(
         return response.send(deleteElection ? true : false);
       }
     } catch (error) {
-      console.log("Error:"+error)
+      console.log("Error:" + error);
       response.status(402).send(error);
     }
   }
@@ -879,7 +910,7 @@ app.delete(
       }
       return response.status(200).send(deleteElectionQuetion ? true : false);
     } catch (error) {
-      console.log("Error:"+error)
+      console.log("Error:" + error);
       response.status(402).send(error);
     }
   }
@@ -904,7 +935,7 @@ app.delete(
       }
       return response.status(200).send(deleteElectionOption ? true : false);
     } catch (error) {
-      console.log("Error:"+error)
+      console.log("Error:" + error);
       response.status(402).send(error);
     }
   }
@@ -925,7 +956,7 @@ app.delete(
       }
       return response.status(200).send(deleteElectionVoter ? true : false);
     } catch (error) {
-      console.log("Error:"+error)
+      console.log("Error:" + error);
       response.status(402).send(error);
     }
   }

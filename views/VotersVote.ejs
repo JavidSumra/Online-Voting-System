@@ -13,14 +13,14 @@
       <div class="text-4xl bold block">
         Online Voting Platform<a
           class="mx-20 text-xl rounded bg-green-700 font-medium p-2 outline-none text-white"
-          href="/Signout/Voter"
+          href="/Signout/Voter/<%=VoterDetail[0].id%>"
           >SignOut</a
         >
       </div>
       <span class="text-2xl font-medium mt-10"
         >Title:<%=electionList.Title%></span
       >
-      <% if(electionList.End == false) { %> <% if(VoterDetail.Status==true){ %>
+      <% if(VoterDetail[0].Status==true){ %>
       <span class="text-3xl mt-5 font-medium">Thanks For Voting</span>
       <span class="text-3xl mt-5 font-medium"> Result Announce Soon </span>
       <% } else { %>
@@ -57,7 +57,7 @@
           class="ml-3 text-xl rounded bg-green-700 font-medium p-2 outline-none text-white w-56 h-12 relative text-center"
         />
       </form>
-      <% } %><%} else {%><span>Completed</span><% } %>
+      <% } %>
     </div>
   </body>
 </html>

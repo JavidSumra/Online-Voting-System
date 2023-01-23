@@ -10,7 +10,7 @@
       var token = document
         .querySelector('meta[name="csrf-token"]')
         .getAttribute("content");
-        console.log("Function Part")
+      console.log("Function Part");
       function deleteOption(id) {
         fetch(`/delete/Voter/${id}`, {
           method: "DELETE",
@@ -29,43 +29,41 @@
     </script>
   </head>
   <body>
-      <% if (VotersList.length != 0 ) { %>
-        <div class="grid justify-center my-6">
-            <%-include ("header.ejs") %>
-            <span class="text-2xl font-medium"
-            >You Have <%=VotersList.length%>  Voters:</span
-          >
+    <% if (VotersList.length != 0 ) { %>
+    <div class="grid justify-center my-6">
+      <%-include ("header.ejs") %>
+      <span class="text-2xl font-medium"
+        >You Have <%=VotersList.length%> Voters:</span
+      >
       <% for( let i = 0; i < VotersList.length ; i++ ) { %>
-    <div class="mt-5">
-      <div class="flex-wrap mt-5">
-        <div class="inline-blcok">
-          <span class="inline-blcok text-xl">
-            (<%=i+1%>)
-          </span>
-          <span class="inline-blcok text-xl">
-            <%=VotersList[i].VoterId%>
-          </span>
-          <a
-            href=""
-            onclick="deleteOption(<%=VotersList[i].id%>)"
-            class="ml-3 bg-red-500 text-xl rounded font-medium p-2 outline-none text-white w-56 h-12 relative text-center my-3"
-            >Delete Voter</a
-          >
-          <a
-            href=""
-            class="ml-3 bg-emerald-500 text-xl rounded font-medium p-2 outline-none text-white w-56 h-12 relative text-center my-3"
-            >Edit Edit</a
-          >
+      <div class="mt-5">
+        <div class="flex-wrap mt-5">
+          <div class="inline-blcok">
+            <span class="inline-blcok text-xl"> (<%=i+1%>) </span>
+            <span class="inline-blcok text-xl">
+              <%=VotersList[i].VoterId%>
+            </span>
+            <a
+              href=""
+              onclick="deleteOption(<%=VotersList[i].id%>)"
+              class="ml-3 bg-red-500 text-xl rounded font-medium p-2 outline-none text-white w-56 h-12 relative text-center my-3"
+              >Delete Voter</a
+            >
+            <a
+              href=""
+              class="ml-3 bg-emerald-500 text-xl rounded font-medium p-2 outline-none text-white w-56 h-12 relative text-center my-3"
+              >Edit Edit</a
+            >
+          </div>
         </div>
-      </div>
-      <% } %>
+        <% } %>
       </div>
     </div>
-  <% } else { %>
+    <% } else { %>
     <div class="grid justify-center my-6">
       <%-include ("header.ejs") %>
       <div class="text-2xl font-medium text-center">Please Add Voters</div>
-      </div>
+    </div>
     <% } %>
   </body>
 </html>

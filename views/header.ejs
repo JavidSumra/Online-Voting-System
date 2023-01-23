@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Header</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-       var quetiontoken = document
+      var quetiontoken = document
         .querySelector('meta[name="csrf-token"]')
         .getAttribute("content");
 
@@ -50,12 +50,12 @@
   </head>
   <body>
     <div class="text-4xl bold block">
-        Online Voting Platform<a
-          class="mx-20 text-xl rounded bg-green-700 font-medium p-2 outline-none text-white"
-          href="/Signout"
-          >SignOut</a
-        >
-      </div>
-      <div class="my-10 text-3xl text-black blcok">Welcome <%= User %>...</div>
-</body>
+      Online Voting Platform<a
+        class="mx-20 text-xl rounded bg-green-700 font-medium p-2 outline-none text-white"
+        href="/Signout"
+        >SignOut</a
+      >
+    </div>
+    <div class="my-10 text-3xl text-black blcok">Welcome <%= User %>...</div>
+  </body>
 </html>
