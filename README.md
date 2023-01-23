@@ -33,3 +33,5 @@
 <p>
 <p>We Can Install Above Dependencies Using <strong>npm install </strong></p>
 <h1>Admin Side:<h1>
+![Sign Up - Google Chrome 23-01-2023 05_55_37 PM](https://user-images.githubusercontent.com/112365664/214048024-c88ca3bc-0c54-4348-add4-92799314f6f5.png)
+
