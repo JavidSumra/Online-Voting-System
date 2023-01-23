@@ -29,7 +29,7 @@
         Election Title : <%= electionList.Title %>
       </div>
       <div class="text-xl font-medium text-center mt-5">
-        <% if(electionList.Start == true && electionList.End == false){%> Your
+        <% if(electionList.Start != false || electionList.End != false){%> Your
         Election is Live On: <a href="https://online-voting-platform-4bf2.onrender.com/loginvoter/<%=electionList.id%>">https://online-voting-platform-4bf2.onrender.com/loginvoter/<%=electionList.id%></a>
         <% } %>
       </div>
@@ -78,7 +78,7 @@
           >
           <% } else {%>
           <a
-            href="/election/ResultPerview/<%= electionList.id %>"
+            href=""
             class="text-xl rounded bg-yellow-400 font-medium p-2 outline-none text-white w-56 h-12 relative text-center my-3"
             >Result Perview</a
           >
