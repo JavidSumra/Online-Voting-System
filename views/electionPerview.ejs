@@ -10,27 +10,25 @@
   <body>
     <div class="grid justify-center">
       <%-include ("header") %>
-      <span class="text-3xl text-center font-medium">Election Perview</span>
+      <span class="text-3xl text-center font-medium">Election Preview</span>
       <span class="text-2xl font-medium mt-4"
         >Title:<%=electionList.Title%></span
       >
-        <% for(let i = 0;i < QuetionDetail.length; i++) { %>
-        <span class="text-2xl font-medium mt-4 block"
-          >QuetionTitle:<%=QuetionDetail[i].QuetionTitle%></span
+      <% for(let i = 0;i < QuetionDetail.length; i++) { %>
+      <span class="text-2xl font-medium mt-4 block"
+        >QuetionTitle:<%=QuetionDetail[i].QuetionTitle%></span
+      >
+      <span class="text-2xl font-medium mt-3 block"
+        >QuetionDescription:<%=QuetionDetail[i].Description%></span
+      >
+      <% for(let j = 0;j< getOptionList[i].length; j++) { %>
+      <div class="text-2xl font-medium">
+        <input type="radio" name="Option" id="check-<%=[i]%><%=[j]%>" /><label
+          for="check-<%=[i]%><%=[j]%>"
+          ><span class="ml-5"><%=getOptionList[i][j].OptionTitle%></span></label
         >
-        <span class="text-2xl font-medium mt-3 block"
-          >QuetionDescription:<%=QuetionDetail[i].Description%></span
-        >
-        <% for(let j = 0;j< getOptionList[i].length; j++) { %>
-        <div class="text-2xl font-medium">
-          <input type="radio" name="Option" id="check-<%=[i]%><%=[j]%>" /><label
-            for="check-<%=[i]%><%=[j]%>"
-            ><span class="ml-5"
-              ><%=getOptionList[i][j].OptionTitle%></span
-            ></label
-          >
-        </div>
-        <% } %> <% } %>
+      </div>
+      <% } %> <% } %>
     </div>
   </body>
 </html>

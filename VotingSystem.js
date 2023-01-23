@@ -598,6 +598,7 @@ app.get(
 );
 
 app.get("/result/:id", async (request, response) => {
+  let electionList = await CreateElection.findByElectID(request.params.id);
   let QuetionDetail = await Quetion.getQuetionList(request.params.id);
   let OptionDetail = [];
   let Vote = [];
