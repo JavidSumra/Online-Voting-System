@@ -24,7 +24,7 @@ const { sequelize } = require("./models");
 const { DataTypes } = require("sequelize");
 const { request } = require("http");
 const { response } = require("express");
-const { send } = require("process");
+const { type } = require("os");
 
 //Models
 let Admin = require("./models/votingadmin")(sequelize, DataTypes);
@@ -33,7 +33,6 @@ const CreateElection = require("./models/electiondetail")(sequelize, DataTypes);
 const CreateOption = require("./models/optiondetail")(sequelize, DataTypes);
 const Voter = require("./models/voterlogin")(sequelize, DataTypes);
 const Voting = require("./models/voterdetail")(sequelize, DataTypes);
-
 
 app.use(bodyParser.json());
 app.use(express.json());
@@ -448,13 +447,11 @@ app.get(
   connectEnsure.ensureLoggedIn({ redirectTo: "/" }),
   async (request, response) => {
     let QuetionDetail = await Quetion.findByPk(request.params.id);
-    response
-      .status(200)
-      .render("editQuetion", {
-        csrfToken: request.csrfToken(),
-        QuetionDetail,
-        User: request.user.FirstName,
-      });
+    response.status(200).render("editQuetion", {
+      csrfToken: request.csrfToken(),
+      QuetionDetail,
+      User: request.user.FirstName,
+    });
   }
 );
 
@@ -523,17 +520,18 @@ app.get(
   connectEnsure.ensureLoggedIn("/"),
   async (request, response) => {
     try {
-      let list = await CreateElection.findByPk(request.params.id)
-      if (list.Start === false || list.End === false) {
-        console.log(request.params.id);
-        if (request.user.UserRole == "Admin") {
-          let electionList = await CreateElection.findByElectID(
-            request.params.id
-          );
-          console.log(electionList);
-          console.log(electionList.length);
-          console.log(electionList[0].Start);
-          console.log(electionList[0].id);
+      let list = await CreateElection.findByPk(request.params.id);
+      if (list.Start === true) {
+        if (list.Start === false || list.End === false) {
+          console.log(request.params.id);
+          if (request.user.UserRole == "Admin") {
+            let electionList = await CreateElection.findByElectID(
+              request.params.id
+            );
+            console.log(electionList);
+            console.log(electionList.length);
+            console.log(electionList[0].Start);
+            console.log(electionList[0].id);
             let QuetionDetail = await Quetion.getQuetionList(request.params.id);
             let OptionDetail = [];
             let Vote = [];
@@ -577,11 +575,16 @@ app.get(
               Success: SuccessVoters.length,
               User: request.user.FirstName,
             });
+          } else {
+            response.redirect("/Home");
+          }
         } else {
+          request.flash("error", "Make Sure Election is Live or Not!");
           response.redirect("/Home");
         }
       } else {
-        request.flash("error", "Make Sure Election is Live or Not!");
+        console.log("Not Started");
+        request.flash("error", "Election is Not Live");
         response.redirect("/Home");
       }
     } catch (error) {
@@ -592,11 +595,11 @@ app.get(
 );
 
 app.get("/result/:id", async (request, response) => {
-  console.log(request.params.id)
+  console.log(request.params.id);
   let electionList = await CreateElection.findByElectID(request.params.id);
   let QuetionDetail = await Quetion.getQuetionList(request.params.id);
-  let votedetail = await Voting.findByPk(request.params.id)
-  console.log(votedetail)
+  let votedetail = await Voting.findByPk(request.params.id);
+  console.log(votedetail);
   let OptionDetail = [];
   let Vote = [];
   let QuetionId = [];
@@ -619,9 +622,7 @@ app.get("/result/:id", async (request, response) => {
   }
   console.log(QuetionDetail, OptionDetail, QuetionId, Vote);
   // response.send("Completed")
-  let TotalNumberofVoters = await Voter.getTotalVoters(
-    request.params.id
-  );
+  let TotalNumberofVoters = await Voter.getTotalVoters(request.params.id);
   let SuccessVoters = await Voter.getSuccessVoters(request.params.id);
   response.status(200).render("Result", {
     electionList,
@@ -631,7 +632,7 @@ app.get("/result/:id", async (request, response) => {
     Vote,
     TotalNumberofVoters,
     SuccessVoters,
-    votedetail
+    votedetail,
   });
 });
 

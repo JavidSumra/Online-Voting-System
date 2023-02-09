@@ -64,19 +64,11 @@
               class="ml-3 bg-emerald-500 text-xl rounded font-medium p-2 outline-none text-white w-56 h-12 relative text-center my-3"
               >Edit Election</a
             >
-            <% if(getElection[i].Start === false || getElection[i].End === false) {%>
-              <a
-                href="/election/ResultPerview/<%= getElection[i].id %>"
-                class="text-xl rounded bg-yellow-400 font-medium p-2 outline-none text-white w-56 h-12 relative text-center ml-3"
-                >Result Perview</a
-              >
-              <% } else {%>
-              <a
-                href=""
-                class="text-xl rounded bg-yellow-400 font-medium p-2 outline-none text-white w-56 h-12 relative text-center ml-3"
-                >Result Perview</a
-              >
-              <% } %>
+            <a
+              href="/election/ResultPerview/<%= getElection[i].id %>"
+              class="text-xl rounded bg-yellow-400 font-medium p-2 outline-none text-white w-56 h-12 relative text-center ml-3"
+              >Result Perview</a
+            >
           </div>
         </div>
         <% } %>

@@ -30,7 +30,13 @@
       </div>
       <div class="text-xl font-medium text-center mt-5">
         <% if(electionList.Start === true && electionList.End === false){%> Your
-        Election is Live On: <a target="_blank" href="https://online-voting-platform-4bf2.onrender.com/loginvoter/<%=electionList.id%>" class="underline">https://online-voting-platform-4bf2.onrender.com/loginvoter/<%=electionList.id%></a>
+        Election is Live On:
+        <a
+          target="_blank"
+          href="https://online-voting-platform-4bf2.onrender.com/loginvoter/<%=electionList.id%>"
+          class="underline"
+          >https://online-voting-platform-4bf2.onrender.com/loginvoter/<%=electionList.id%></a
+        >
         <% } %>
       </div>
       <div class="grid">
@@ -70,19 +76,11 @@
             >End Election</a
           >
 
-          <% if(electionList.Start === false || electionList.End === false) {%>
           <a
             href="/election/ResultPerview/<%= electionList.id %>"
             class="text-xl rounded bg-yellow-400 font-medium p-2 outline-none text-white w-56 h-12 relative text-center my-3"
             >Result Perview</a
           >
-          <% } else {%>
-          <a
-            href=""
-            class="text-xl rounded bg-yellow-400 font-medium p-2 outline-none text-white w-56 h-12 relative text-center my-3"
-            >Result Perview</a
-          >
-          <% } %>
           <a
             href="/ElectionPerview/<%= electionList.id %>"
             class="text-xl rounded bg-orange-500 font-medium p-2 outline-none text-white w-56 h-12 relative text-center my-3"
