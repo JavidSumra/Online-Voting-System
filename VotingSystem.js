@@ -1072,18 +1072,16 @@ app.delete(
           request.params.id,
           request.user.id
         );
-        console.log(deleteElection ? true : false);
         let deleteElectionQuetion = await Quetion.removeParticularQuetion(
           request.params.id
         );
-        console.log(deleteElectionQuetion);
         let deleteVoters = await Voter.removeParticularVoter(request.params.id);
-        console.log(deleteVoters);
         if (deleteElection ? true : false) {
           request.flash("success", "Successfully Deleted");
         } else {
           request.flash("error", "Failed To Delete");
         }
+        console.log(`Status:${deleteElection ? true : false}`);
         return response.send(deleteElection ? true : false);
       }
     } catch (error) {
@@ -1148,7 +1146,7 @@ app.delete(
       console.log("We Get Delete Request For Voter:" + request.params.id);
       let deleteElectionVoter = await Voter.removeVoter(request.params.id);
       console.log(!deleteElectionVoter ? true : false);
-      if (!deleteElectionVoter ? true : false) {
+      if (deleteElectionVoter ? true : false) {
         request.flash("success", "Successfully Deleted");
       } else {
         request.flash("error", "Failed To Delete");

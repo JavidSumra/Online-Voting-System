@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class ElectionDetail extends Model {
     /**
@@ -12,60 +10,63 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
     }
-    static RetriveElection(userId){
+    static RetriveElection(userId) {
       return this.findAll({
-        where:{
+        where: {
           userId,
         },
-        order:[["id","ASC"]]
-      })
+        order: [["id", "ASC"]],
+      });
     }
 
-    static findByElectID(id){
+    static findByElectID(id) {
       return this.findAll({
-        where:{
+        where: {
           id,
         },
-        order:[["id","ASC"]]
-      })
+        order: [["id", "ASC"]],
+      });
     }
 
-    static RemoveElection(id,userId){
-       this.destroy({
-        where:{
-          id:id,
-          userId:userId,
-        }
-      })
+    static RemoveElection(id, userId) {
+      return this.destroy({
+        where: {
+          id: id,
+          userId: userId,
+        },
+      });
     }
-    StartElection(id){
+    StartElection(id) {
       return this.update({
-        where:{
+        where: {
           id,
         },
-        Start:true,
-        End:false,
-      })
+        Start: true,
+        End: false,
+      });
     }
 
-    EndElection(id){
+    EndElection(id) {
       return this.update({
-        where:{
+        where: {
           id,
         },
-        End:true,
-        Start:false,
-      })
+        End: true,
+        Start: false,
+      });
     }
   }
-  ElectionDetail.init({
-    Title: DataTypes.STRING,
-    userId: DataTypes.INTEGER,
-    Start: DataTypes.BOOLEAN,
-    End: DataTypes.BOOLEAN
-  }, {
-    sequelize,
-    modelName: 'ElectionDetail',
-  });
+  ElectionDetail.init(
+    {
+      Title: DataTypes.STRING,
+      userId: DataTypes.INTEGER,
+      Start: DataTypes.BOOLEAN,
+      End: DataTypes.BOOLEAN,
+    },
+    {
+      sequelize,
+      modelName: "ElectionDetail",
+    }
+  );
   return ElectionDetail;
 };

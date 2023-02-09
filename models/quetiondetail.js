@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class QuetionDetail extends Model {
     /**
@@ -13,50 +11,53 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
 
-    static getQuetionList(id){
+    static getQuetionList(id) {
       return this.findAll({
-        where:{
-          ElectionId:id,
-        }
-      })
-    }
-     
-    static getParticularList(id){
-      return this.findAll({
-        where: { 
-          id: id 
+        where: {
+          ElectionId: id,
         },
       });
     }
-    static removeQuetion(id){
-       this.destroy({
-        where:{
-          id,
-        }
-      })
+
+    static getParticularList(id) {
+      return this.findAll({
+        where: {
+          id: id,
+        },
+      });
     }
-    static removeParticularQuetion(id){
+    static removeQuetion(id) {
       return this.destroy({
-        where:{
-          ElectionId:id,
-        }
-      })
+        where: {
+          id,
+        },
+      });
+    }
+    static removeParticularQuetion(id) {
+      return this.destroy({
+        where: {
+          ElectionId: id,
+        },
+      });
     }
 
-    updateQuetion(title,desc){
+    updateQuetion(title, desc) {
       return this.update({
-        QuetionTitle:title,
-        Description:desc,
-      })
+        QuetionTitle: title,
+        Description: desc,
+      });
     }
   }
-  QuetionDetail.init({
-    QuetionTitle: DataTypes.STRING,
-    Description: DataTypes.STRING,
-    ElectionId: DataTypes.INTEGER
-  }, {
-    sequelize,
-    modelName: 'QuetionDetail',
-  });
+  QuetionDetail.init(
+    {
+      QuetionTitle: DataTypes.STRING,
+      Description: DataTypes.STRING,
+      ElectionId: DataTypes.INTEGER,
+    },
+    {
+      sequelize,
+      modelName: "QuetionDetail",
+    }
+  );
   return QuetionDetail;
 };

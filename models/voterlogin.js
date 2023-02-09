@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class VoterLogin extends Model {
     /**
@@ -12,100 +10,103 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
     }
-    static getVotersList(id){
+    static getVotersList(id) {
       return this.findAll({
-        where:{
-          userElectionId:id,
-        }
-      })
+        where: {
+          userElectionId: id,
+        },
+      });
     }
 
-    static getVotersListById(id){
+    static getVotersListById(id) {
       return this.findAll({
-        where:{
+        where: {
           id,
-        }
-      })
-    }
-    static removeVoter(id){
-      this.destroy({
-        where:{
-         id,
-        }
-      })
-    }
-    static removeParticularVoter(id){
-      this.destroy({
-        where:{
-          userElectionId:id,
-        }
-      })
-    }
-    static getTotalVoters(id){
-      return this.findAll({
-        where:{
-          userElectionId:id,
         },
-        order:[["id","ASC"]]
-      })
+      });
+    }
+    static removeVoter(id) {
+      return this.destroy({
+        where: {
+          id,
+        },
+      });
+    }
+    static removeParticularVoter(id) {
+      return this.destroy({
+        where: {
+          userElectionId: id,
+        },
+      });
+    }
+    static getTotalVoters(id) {
+      return this.findAll({
+        where: {
+          userElectionId: id,
+        },
+        order: [["id", "ASC"]],
+      });
     }
 
-    static getRemVoters(id){
+    static getRemVoters(id) {
       return this.findAll({
-        where:{
-          userElectionId:id,
-          Status:false,
+        where: {
+          userElectionId: id,
+          Status: false,
         },
-        order:[["id","ASC"]],
-      })
+        order: [["id", "ASC"]],
+      });
     }
 
-    static getSuccessVoters(id){
+    static getSuccessVoters(id) {
       return this.findAll({
-        where:{
-          userElectionId:id,
-          Status:true,
+        where: {
+          userElectionId: id,
+          Status: true,
         },
-        order:[["id","ASC"]],
-      })
+        order: [["id", "ASC"]],
+      });
     }
-    static getVoter(VoterId){
+    static getVoter(VoterId) {
       return this.findOne({
-        where:{
+        where: {
           VoterId,
         },
-        order:[["id","ASC"]],
-      })
+        order: [["id", "ASC"]],
+      });
     }
 
-    static getParticularVoter(id){
+    static getParticularVoter(id) {
       return this.findOne({
-        where:{
-          VoterId:id,
-        }
-      })
+        where: {
+          VoterId: id,
+        },
+      });
     }
 
-    updateVoterPass(pass){
+    updateVoterPass(pass) {
       return this.update({
-        password:pass
-      })
+        password: pass,
+      });
     }
-    Voted(){
+    Voted() {
       return this.update({
-        Status:true
-      })
+        Status: true,
+      });
     }
   }
-  VoterLogin.init({
-    Status: DataTypes.BOOLEAN,
-    VoterId: DataTypes.STRING,
-    password: DataTypes.STRING,
-    userElectionId: DataTypes.INTEGER,
-    UserRole: DataTypes.STRING
-  }, {
-    sequelize,
-    modelName: 'VoterLogin',
-  });
+  VoterLogin.init(
+    {
+      Status: DataTypes.BOOLEAN,
+      VoterId: DataTypes.STRING,
+      password: DataTypes.STRING,
+      userElectionId: DataTypes.INTEGER,
+      UserRole: DataTypes.STRING,
+    },
+    {
+      sequelize,
+      modelName: "VoterLogin",
+    }
+  );
   return VoterLogin;
 };

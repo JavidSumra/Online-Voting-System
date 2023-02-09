@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class OptionDetail extends Model {
     /**
@@ -12,33 +10,36 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
     }
-    static getOptionList(id){
+    static getOptionList(id) {
       return this.findAll({
-        where:{
-          OptionId:id,
-        }
-      })
+        where: {
+          OptionId: id,
+        },
+      });
     }
 
-    static removeOption(id){
-       this.destroy({
-        where:{
+    static removeOption(id) {
+      return this.destroy({
+        where: {
           id,
-        }
-      })
+        },
+      });
     }
-    updateOption(title){
+    updateOption(title) {
       return this.update({
-        OptionTitle:title,
-      })
+        OptionTitle: title,
+      });
     }
   }
-  OptionDetail.init({
-    OptionTitle: DataTypes.STRING,
-    OptionId: DataTypes.INTEGER
-  }, {
-    sequelize,
-    modelName: 'OptionDetail',
-  });
+  OptionDetail.init(
+    {
+      OptionTitle: DataTypes.STRING,
+      OptionId: DataTypes.INTEGER,
+    },
+    {
+      sequelize,
+      modelName: "OptionDetail",
+    }
+  );
   return OptionDetail;
 };
