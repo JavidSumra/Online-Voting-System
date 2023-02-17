@@ -51,11 +51,24 @@
   <body>
     <div class="text-4xl bold block">
       Online Voting Platform<a
-        class="mx-20 text-xl rounded bg-green-700 font-medium p-2 outline-none text-white"
+        class="mx-10 text-xl rounded bg-green-700 font-medium p-2 outline-none text-white"
         href="/Signout"
         >SignOut</a
       >
+      <a
+        class="text-xl rounded bg-red-400 font-medium p-2 outline-none text-white"
+        href="#"
+        id="goBack"
+        onclick="goback()"
+      >
+        <span class="font-medium text-2xl">&#x2190;</span> Go Back</a
+      >
     </div>
     <div class="my-10 text-3xl text-black blcok">Welcome <%= User %>...</div>
+    <script>
+      function goback() {
+        let btnGoBack = (document.getElementById("goBack").href = "/");
+      }
+    </script>
   </body>
 </html>

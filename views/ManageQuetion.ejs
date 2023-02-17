@@ -31,22 +31,21 @@
   <body>
     <div class="grid justify-center my-4">
       <% if(messages && messages.error && messages.error.length != 0) { %>
-        <div
-          class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative text-center mb-3"
-          role="alert"
-        >
-          <strong> <%=messages.error %> </strong>
-        </div>
-        <% } %> <% if(messages && messages.success && messages.success.length !=
-        0) { %>
-        <div
-          class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative text-center mb-3"
-          role="alert"
-        >
-          <strong> <%=messages.success %> </strong>
-        </div>
-        <% } %> 
-      <%-include ("header.ejs") %>
+      <div
+        class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative text-center mb-3"
+        role="alert"
+      >
+        <strong> <%=messages.error %> </strong>
+      </div>
+      <% } %> <% if(messages && messages.success && messages.success.length !=
+      0) { %>
+      <div
+        class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative text-center mb-3"
+        role="alert"
+      >
+        <strong> <%=messages.success %> </strong>
+      </div>
+      <% } %> <%-include ("header.ejs") %>
       <div class="text-2xl text-center font-medium mb-3">
         Election Title : <%= electionList.Title %>
       </div>
@@ -97,14 +96,20 @@
               >Edit Quetion</a
             >
             <a
-            href="/ManageOption/<%=QuetionList[i].id%>/election/<%=electionList.id%>"
-            class="ml-3 text-xl rounded bg-green-700 font-medium p-2 outline-none text-white w-56 h-12 relative text-center cursor-pointer"
-            >Manage Option</a
-          >
+              href="/ManageOption/<%=QuetionList[i].id%>/election/<%=electionList.id%>"
+              class="ml-3 text-xl rounded bg-green-700 font-medium p-2 outline-none text-white w-56 h-12 relative text-center cursor-pointer"
+              >Manage Option</a
+            >
           </div>
         </div>
         <% } %>
       </div>
     </div>
+    <script>
+      function goback() {
+        let btnGoBack = (document.getElementById("goBack").href =
+          "/Quetion/<%=electionList.id%>");
+      }
+    </script>
   </body>
 </html>

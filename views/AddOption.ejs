@@ -86,7 +86,7 @@
               >Delete Option</a
             >
             <a
-              href="/editOption/<%=OptionList[i].id%>"
+              href="/editOption/<%=OptionList[i].id%>/<%=Id%>"
               class="ml-3 bg-emerald-500 text-xl rounded font-medium p-2 outline-none text-white w-56 h-12 relative text-center my-3"
               >Edit Option</a
             >
@@ -101,5 +101,11 @@
       <div class="text-2xl font-medium text-center">Please Create Quetion</div>
     </div>
     <% } %>
+    <script>
+      function goback() {
+        let btnGoBack = (document.getElementById("goBack").href =
+          "/ManageQuetion/<%=Id%>");
+      }
+    </script>
   </body>
 </html>
