@@ -103,15 +103,39 @@
       <br />
       <div class="login form">
         <% if(messages && messages.error && messages.error.length != 0) { %>
-       <div style="background-color: #fee2e2;border-color: #f87171;color: #ef4444;border-radius: 3px; position: relative;padding: 10px;text-align: center;margin-bottom: 20px;" role="alert">
-        <strong> <%=messages.error %> </strong>
-      </div>
-      <% } %>
-        <% if(messages && messages.success && messages.success.length != 0) { %>
-       <div style="background-color: #ecfccb;border-color: #a3e635;color: #84cc16;border-radius: 3px; position: relative;padding: 10px;text-align: center;margin-bottom: 20px;" role="alert">
-        <strong> <%=messages.success %> </strong>
-      </div>
-      <% } %>
+        <div
+          style="
+            background-color: #fee2e2;
+            border-color: #f87171;
+            color: #ef4444;
+            border-radius: 3px;
+            position: relative;
+            padding: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+          "
+          role="alert"
+        >
+          <strong> <%=messages.error %> </strong>
+        </div>
+        <% } %> <% if(messages && messages.success && messages.success.length !=
+        0) { %>
+        <div
+          style="
+            background-color: #ecfccb;
+            border-color: #a3e635;
+            color: #84cc16;
+            border-radius: 3px;
+            position: relative;
+            padding: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+          "
+          role="alert"
+        >
+          <strong> <%=messages.success %> </strong>
+        </div>
+        <% } %>
         <header>Welcome To Online Voting Platform</header>
         <hr />
         <form action="/AdminLogin" method="post">
@@ -131,7 +155,9 @@
             placeholder="Enter Your Password"
             required
           />
-          <a href="/forgotPass" style="margin-left: 10px;color: black;">Forgot Password?</a>
+          <a href="/forgotPass" style="margin-left: 10px; color: black"
+            >Forgot Password?</a
+          >
           <input type="submit" class="button" value="Login" />
         </form>
         <div class="signup">

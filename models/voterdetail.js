@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class VoterDetail extends Model {
     /**
@@ -12,25 +10,27 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
     }
-    static getNumberofVotes(ElectId,OptTitle,QueId){
+    static getNumberofVotes(ElectId, OptTitle, QueId) {
       return this.findAll({
-        where:{
-          TotalVotes:OptTitle,
-          ElectionId:ElectId,
-          QuetionId:QueId,
-        }
-      })
+        where: {
+          TotalVotes: OptTitle,
+          ElectionId: ElectId,
+          QuetionId: QueId,
+        },
+      });
     }
-
   }
-  VoterDetail.init({
-    ElectionId: DataTypes.INTEGER,
-    QuetionId: DataTypes.INTEGER,
-    VoterId: DataTypes.INTEGER,
-    TotalVotes: DataTypes.STRING
-  }, {
-    sequelize,
-    modelName: 'VoterDetail',
-  });
+  VoterDetail.init(
+    {
+      ElectionId: DataTypes.INTEGER,
+      QuetionId: DataTypes.INTEGER,
+      VoterId: DataTypes.INTEGER,
+      TotalVotes: DataTypes.STRING,
+    },
+    {
+      sequelize,
+      modelName: "VoterDetail",
+    }
+  );
   return VoterDetail;
 };

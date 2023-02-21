@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class VotingAdmin extends Model {
     /**
@@ -12,29 +10,32 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
     }
-    static getUser(email){
+    static getUser(email) {
       return this.findOne({
-        where:{
+        where: {
           email,
-        }
-      })
+        },
+      });
     }
 
-    updatePass(Password){
+    updatePass(Password) {
       return this.update({
-        password:Password
-      })
+        password: Password,
+      });
     }
   }
-  VotingAdmin.init({
-    FirstName: DataTypes.STRING,
-    LastName: DataTypes.STRING,
-    email: DataTypes.STRING,
-    password: DataTypes.STRING,
-    UserRole: DataTypes.STRING
-  }, {
-    sequelize,
-    modelName: 'VotingAdmin',
-  });
+  VotingAdmin.init(
+    {
+      FirstName: DataTypes.STRING,
+      LastName: DataTypes.STRING,
+      email: DataTypes.STRING,
+      password: DataTypes.STRING,
+      UserRole: DataTypes.STRING,
+    },
+    {
+      sequelize,
+      modelName: "VotingAdmin",
+    }
+  );
   return VotingAdmin;
 };

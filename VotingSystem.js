@@ -484,13 +484,14 @@ app.get("/voting/:id/:voterId", async (request, response) => {
     );
     let electionList = await CreateElection.findByPk(request.params.id);
     let VoterDetail = await Voter.getVoter(request.params.voterId);
+    console.log("Result");
+    console.log(electionList);
     console.log(VoterDetail);
     // console.log("Length" + VoterDetail.length);
     // console.log("Length" + VoterDetail.UserRole);
     if (VoterDetail.length != 0) {
-      console.log(request.params.id);
-      console.log(request.params.voterId);
       if (electionList.End == true) {
+        console.log("redirected");
         response.redirect(`/result/${request.params.id}`);
       } else if (electionList.End == false && electionList.Start == true) {
         if (VoterDetail.UserRole == "Voter") {

@@ -103,12 +103,24 @@
       <br />
       <div class="login form">
         <% if(messages && messages.error && messages.error.length != 0) { %>
-          <div style="background-color: #fee2e2;border-color: #f87171;color: #ef4444;border-radius: 3px; position: relative;padding: 10px;text-align: center;margin-bottom: 20px;" role="alert">
-            <% for(var i=0; i < messages.error.length; i++ ) { %>
-           <strong> <%= messages.error[i] %> </strong>
-           <% } %>
-         </div>
-         <% } %>
+        <div
+          style="
+            background-color: #fee2e2;
+            border-color: #f87171;
+            color: #ef4444;
+            border-radius: 3px;
+            position: relative;
+            padding: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+          "
+          role="alert"
+        >
+          <% for(var i=0; i < messages.error.length; i++ ) { %>
+          <strong> <%= messages.error[i] %> </strong>
+          <% } %>
+        </div>
+        <% } %>
         <header>Admin Registration for Online Voting Platform</header>
         <hr />
         <form action="/SignUpUser" method="post">
@@ -147,7 +159,7 @@
     </div>
     <script>
       var email = document.getElementById("email");
-    
+
       function validate() {
         if (
           !email.value.match(
