@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
 "use strict";
 const express = require("express");
@@ -22,9 +23,6 @@ app.set("view engine", "ejs");
 
 const { sequelize } = require("./models");
 const { DataTypes } = require("sequelize");
-const { request } = require("http");
-const { response } = require("express");
-const { type } = require("os");
 
 //Models
 let Admin = require("./models/votingadmin")(sequelize, DataTypes);
@@ -158,13 +156,15 @@ app.use(function (request, response, next) {
   response.locals.messages = Message;
   next();
 });
+
 // Get Request's
 app.get("/", (request, response) => {
   try {
     response.status(200).render("Login", { csrfToken: request.csrfToken() });
   } catch (error) {
     console.log("Error:" + error);
-    response.status(402).send(error);
+    request.flash("error", `Error:${error}`);
+    response.redirect("back");
   }
 });
 
@@ -173,7 +173,8 @@ app.get("/Signup", (request, response) => {
     response.status(200).render("SignUp", { csrfToken: request.csrfToken() });
   } catch (error) {
     console.log("Error:" + error);
-    response.status(402).send(error);
+    request.flash("error", `Error:${error}`);
+    response.redirect("back");
   }
 });
 
@@ -204,7 +205,8 @@ app.get(
       }
     } catch (error) {
       console.log("Error:" + error);
-      response.status(402).send(error);
+      request.flash("error", `Error:${error}`);
+      response.redirect("back");
     }
   }
 );
@@ -228,7 +230,8 @@ app.get(
       });
     } catch (error) {
       console.log("Error:" + error);
-      response.status(402).send(error);
+      request.flash("error", `Error:${error}`);
+      response.redirect("back");
     }
   }
 );
@@ -257,7 +260,8 @@ app.get(
       }
     } catch (error) {
       console.log("Error:" + error);
-      response.status(402).send(error);
+      request.flash("error", `Error:${error}`);
+      response.redirect("back");
     }
   }
 );
@@ -285,7 +289,8 @@ app.get(
       });
     } catch (error) {
       console.log("Error:" + error);
-      response.status(402).send(error);
+      request.flash("error", `Error:${error}`);
+      response.redirect("back");
     }
   }
 );
@@ -311,7 +316,8 @@ app.get(
       }
     } catch (error) {
       console.log("Error:" + error);
-      response.status(402).send(error);
+      request.flash("error", `Error:${error}`);
+      response.redirect("back");
     }
   }
 );
@@ -330,20 +336,26 @@ app.get(
       });
     } catch (error) {
       console.log("Error:" + error);
-      response.status(402).send(error);
+      request.flash("error", `Error:${error}`);
+      response.redirect("back");
     }
   }
 );
 
 app.get("/loginvoter/:id", (request, response) => {
   try {
+    console.log(request.user);
+
     response.status(200).render("VoterLogin", {
       csrfToken: request.csrfToken(),
       Id: request.params.id,
     });
+    // request.flash("error", "Admin Can't Access Voter Login Page");
+    // response.redirect("/");
   } catch (error) {
     console.log("Error:" + error);
-    response.status(402).send(error);
+    request.flash("error", `Error:${error}`);
+    response.redirect("back");
   }
 });
 
@@ -386,7 +398,8 @@ app.get(
       }
     } catch (error) {
       console.log("Error:" + error);
-      response.status(402).send(error);
+      request.flash("error", `Error:${error}`);
+      response.redirect("back");
     }
   }
 );
@@ -407,7 +420,8 @@ app.get(
       }
     } catch (error) {
       console.log("Error:" + error);
-      response.status(402).send(error);
+      request.flash("error", `Error:${error}`);
+      response.redirect("back");
     }
   }
 );
@@ -438,7 +452,8 @@ app.get(
       });
     } catch (error) {
       console.log("Error:" + error);
-      response.status(402).send(error);
+      request.flash("error", `Error:${error}`);
+      response.redirect("back");
     }
   }
 );
@@ -447,12 +462,18 @@ app.get(
   "/editQuetion/:id",
   connectEnsure.ensureLoggedIn({ redirectTo: "/" }),
   async (request, response) => {
-    let QuetionDetail = await Quetion.findByPk(request.params.id);
-    response.status(200).render("editQuetion", {
-      csrfToken: request.csrfToken(),
-      QuetionDetail,
-      User: request.user.FirstName,
-    });
+    try {
+      let QuetionDetail = await Quetion.findByPk(request.params.id);
+      response.status(200).render("editQuetion", {
+        csrfToken: request.csrfToken(),
+        QuetionDetail,
+        User: request.user.FirstName,
+      });
+    } catch (error) {
+      console.log("Error:" + error);
+      request.flash("error", `Error:${error}`);
+      response.redirect("back");
+    }
   }
 );
 
@@ -512,7 +533,8 @@ app.get("/voting/:id/:voterId", async (request, response) => {
     }
   } catch (error) {
     console.log("Error:" + error);
-    response.status(402).send(error);
+    request.flash("error", `Error:${error}`);
+    response.redirect("back");
   }
 });
 
@@ -590,7 +612,8 @@ app.get(
       }
     } catch (error) {
       console.log("Error:" + error);
-      response.status(402).send(error);
+      request.flash("error", `Error:${error}`);
+      response.redirect("back");
     }
   }
 );
@@ -638,7 +661,8 @@ app.get("/result/:id", async (request, response) => {
     });
   } catch (error) {
     console.log("Error:" + error);
-    response.send(error);
+    request.flash("error", `Error:${error}`);
+    response.redirect("back");
   }
 });
 
@@ -653,7 +677,8 @@ app.get("/editOption/:id/:electId", async (request, response) => {
     });
   } catch (error) {
     console.log("Error:" + error);
-    response.send(error);
+    request.flash("error", `Error:${error}`);
+    response.redirect("back");
   }
 });
 
@@ -668,7 +693,8 @@ app.get("/editVoter/:id", async (request, response) => {
     });
   } catch (error) {
     console.log("Error:" + error);
-    response.send(error);
+    request.flash("error", `Error:${error}`);
+    response.redirect("back");
   }
 });
 
@@ -677,7 +703,8 @@ app.get("/forgotPass", async (request, response) => {
     response.render("forgotpass", { csrfToken: request.csrfToken() });
   } catch (error) {
     console.log("Error:" + error);
-    response.status(402).send(error);
+    request.flash("error", `Error:${error}`);
+    response.redirect("back");
   }
 });
 app.get("/Signout", (request, response, next) => {
@@ -691,7 +718,8 @@ app.get("/Signout", (request, response, next) => {
     });
   } catch (error) {
     console.log("Error:" + error);
-    response.status(402).send(error);
+    request.flash("error", `Error:${error}`);
+    response.redirect("back");
   }
 });
 
@@ -706,7 +734,8 @@ app.get("/Signout/Voter/:id", (request, response) => {
     });
   } catch (error) {
     console.log("Error:" + error);
-    response.status(402).send(error);
+    request.flash("error", `Error:${error}`);
+    response.redirect("back");
   }
 });
 
@@ -723,7 +752,8 @@ app.post(
       response.redirect("/Home");
     } catch (error) {
       console.log("Error:" + error);
-      response.status(402).send(error);
+      request.flash("error", `Error:${error}`);
+      response.redirect("back");
     }
   }
 );
@@ -755,7 +785,8 @@ app.post("/SignUpUser", async (request, response) => {
     }
   } catch (error) {
     console.log("Error:" + error);
-    response.status(402).send(error);
+    request.flash("error", `Error:${error}`);
+    response.redirect("back");
   }
 });
 
@@ -781,7 +812,8 @@ app.post("/forgotPass/User", async (request, response) => {
     }
   } catch (error) {
     console.log("Error:" + error);
-    response.json(error);
+    request.flash("error", `Error:${error}`);
+    response.redirect("back");
   }
 });
 
@@ -816,7 +848,8 @@ app.post(
       }
     } catch (error) {
       console.log("Error:" + error);
-      response.status(402).send(error);
+      request.flash("error", `Error:${error}`);
+      response.redirect("back");
     }
   }
 );
@@ -853,7 +886,8 @@ app.post(
       }
     } catch (error) {
       console.log("Error:" + error);
-      response.status(402).send(error);
+      request.flash("error", `Error:${error}`);
+      response.redirect("back");
     }
   }
 );
@@ -880,7 +914,8 @@ app.post(
       }
     } catch (error) {
       console.log("Error:" + error);
-      response.send(error);
+      request.flash("error", `Error:${error}`);
+      response.redirect("back");
     }
   }
 );
@@ -906,7 +941,8 @@ app.post(
       }
     } catch (error) {
       console.log("Error:" + error);
-      response.send(error);
+      request.flash("error", `Error:${error}`);
+      response.redirect("back");
     }
   }
 );
@@ -938,7 +974,8 @@ app.post(
       }
     } catch (error) {
       console.log("Error:" + error);
-      response.send(error);
+      request.flash("error", `Error:${error}`);
+      response.redirect("back");
     }
   }
 );
@@ -967,7 +1004,8 @@ app.post(
       }
     } catch (error) {
       console.log("Error:" + error);
-      response.status(402).send(error);
+      request.flash("error", `Error:${error}`);
+      response.redirect("back");
     }
   }
 );
@@ -1008,7 +1046,8 @@ app.post(
       }
     } catch (error) {
       console.log("Error:" + error);
-      response.status(402).send(error);
+      request.flash("error", `Error:${error}`);
+      response.redirect("back");
     }
   }
 );
@@ -1022,12 +1061,12 @@ app.post(
   async (request, response) => {
     try {
       console.log(request.user);
-      console.log(request.user.id);
       request.flash("success", "Login Suceessfully");
       response.redirect(`/voting/${request.params.id}/${request.user.VoterId}`);
     } catch (error) {
       console.log("Error:" + error);
-      response.status(402).send(error);
+      request.flash("error", `Error:${error}`);
+      response.redirect("back");
     }
   }
 );
@@ -1059,7 +1098,8 @@ app.post("/addVote/:id/election/:voterId", async (request, response) => {
     response.redirect(`/loginvoter/${request.params.id}`);
   } catch (error) {
     console.log("Error:" + error);
-    response.status(402).send(error);
+    request.flash("error", `Error:${error}`);
+    response.redirect("back");
   }
 });
 
@@ -1097,7 +1137,8 @@ app.delete(
       }
     } catch (error) {
       console.log("Error:" + error);
-      response.status(402).send(error);
+      request.flash("error", `Error:${error}`);
+      response.redirect("back");
     }
   }
 );
@@ -1119,7 +1160,8 @@ app.delete(
       return response.status(200).send(deleteElectionQuetion ? true : false);
     } catch (error) {
       console.log("Error:" + error);
-      response.status(402).send(error);
+      request.flash("error", `Error:${error}`);
+      response.redirect("back");
     }
   }
 );
@@ -1144,7 +1186,8 @@ app.delete(
       return response.status(200).send(deleteElectionOption ? true : false);
     } catch (error) {
       console.log("Error:" + error);
-      response.status(402).send(error);
+      request.flash("error", `Error:${error}`);
+      response.redirect("back");
     }
   }
 );
@@ -1165,7 +1208,8 @@ app.delete(
       return response.status(200).send(deleteElectionVoter ? true : false);
     } catch (error) {
       console.log("Error:" + error);
-      response.status(402).send(error);
+      request.flash("error", `Error:${error}`);
+      response.redirect("back");
     }
   }
 );
