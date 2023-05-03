@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "nodemon index.js -e ejs,js",
     "pretest": "npx sequelize-cli db:drop && npx sequelize-cli db:create",
     "test": "jest --detectOpenHandles",
     "prepare": "husky install"
