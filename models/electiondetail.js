@@ -55,13 +55,37 @@ module.exports = (sequelize, DataTypes) => {
         Start: false,
       });
     }
+    static getLiveElection(userId) {
+      return this.findAll({
+        where: {
+          userId,
+          Start: true,
+          End: false,
+        },
+      });
+    }
+    static getCompletedElection(userId) {
+      return this.findAll({
+        where: {
+          userId,
+          End: true,
+          Start: false,
+        },
+      });
+    }
   }
   ElectionDetail.init(
     {
       Title: DataTypes.STRING,
       userId: DataTypes.INTEGER,
-      Start: DataTypes.BOOLEAN,
-      End: DataTypes.BOOLEAN,
+      Start: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
+      End: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
     },
     {
       sequelize,

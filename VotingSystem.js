@@ -190,6 +190,12 @@ app.get(
       if (request.user.UserRole == "Admin") {
         console.log(request.user.id);
         let getElection = await CreateElection.RetriveElection(request.user.id);
+        let liveElection = await CreateElection.getLiveElection(
+          request.user.id
+        );
+        let completedElection = await CreateElection.getCompletedElection(
+          request.user.id
+        );
         // console.log(getElection)
         console.log(getElection);
         if (request.accepts("html")) {
@@ -197,6 +203,8 @@ app.get(
             csrfToken: request.csrfToken(),
             User: request.user.FirstName,
             getElection,
+            Live: liveElection.length,
+            complete: completedElection.length,
           });
         } else {
           response.json({
@@ -215,6 +223,14 @@ app.get(
   }
 );
 
+app.get("/users", async (request, response) => {
+  try {
+    let usersList = await Admin.allUserList();
+    response.render("users", { usersList, csrfToken: request.csrfToken() });
+  } catch (error) {
+    response.send(error);
+  }
+});
 app.get(
   "/Quetion/:id",
   connectEnsure.ensureLoggedIn({ redirectTo: "/" }),
@@ -1153,12 +1169,13 @@ app.delete(
   connectEnsure.ensureLoggedIn({ redirectTo: "/" }),
   async (request, response) => {
     try {
-      console.log(request.params.id);
+      // console.log(request.params.id);
+      console.log(request.body);
       let electionList = await CreateElection.findByPk(request.params.id);
-      console.log(electionList);
+      // console.log(electionList);
       if (electionList.Start == true && electionList.End == false) {
         request.flash("error", "Election is Live Please End First");
-        response.redirect("/Home");
+        response.redirect("/Home", { _csrf: request.body._csrf });
       } else {
         console.log(
           "We Get Delete Request From:" + request.params.id + request.user.id
@@ -1258,4 +1275,14 @@ app.delete(
   }
 );
 
+app.delete("/Delete/User/:id", async (request, response) => {
+  try {
+    console.log(`We Got Request to Delete User With Id ${request.params.id}`);
+    let deleteUser = await Admin.deleteUserById(request.params.id);
+    return response.send(deleteUser ? true : false);
+  } catch (error) {
+    console.log(error);
+    response.send(error);
+  }
+});
 module.exports = app;

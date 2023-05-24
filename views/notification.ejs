@@ -1,0 +1,15 @@
+<% if(messages && messages.error && messages.error.length != 0) { %>
+<div
+  class="border-l-8 w-full my-6 border-[#f87171] font-medium text-[#ef4444] bg-[#fee2e2] p-3 text-xl rounded text-center mb-5"
+  role="alert"
+>
+  <strong> <%=messages.error %> </strong>
+</div>
+<% } %> <% if(messages && messages.success && messages.success.length != 0) { %>
+<div
+  class="border-l-8 w-auto my-6 border-[#a3e635] font-medium text-[#84cc16] bg-[#ecfccb] p-3 text-xl rounded text-center mb-5"
+  role="alert"
+>
+  <strong> <%=messages.success %> </strong>
+</div>
+<% } %>

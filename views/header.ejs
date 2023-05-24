@@ -1,74 +1,35 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Header</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      var quetiontoken = document
-        .querySelector('meta[name="csrf-token"]')
-        .getAttribute("content");
+<style>
+  @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
+  body {
+    font-family: "Poppins", sans-serif, "Courier New", Courier, monospace;
+    background: #414141;
+    color: #ffff;
+  }
+</style>
+<script src="https://cdn.tailwindcss.com"></script>
 
-      function deleteQuetion(id) {
-        fetch(`/delete/Quetion/${id}`, {
-          method: "DELETE",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            _csrf: quetiontoken,
-          }),
-        })
-          .then((res) => {
-            if (res.ok) {
-              window.location.reload();
-            }
-          })
-          .catch((err) => console.log(err));
-      }
-
-      var token = document
-        .querySelector('meta[name="csrf-token"]')
-        .getAttribute("content");
-
-      function deleteElection(id) {
-        fetch(`/delete/${id}`, {
-          method: "DELETE",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            _csrf: token,
-          }),
-        })
-          .then((res) => {
-            if (res.ok) {
-              window.location.reload();
-            }
-          })
-          .catch((err) => console.log(err));
-      }
-    </script>
-  </head>
-  <body>
-    <div class="text-4xl bold block">
-      Online Voting Platform<a
-        class="mx-10 text-xl rounded bg-green-700 font-medium p-2 outline-none text-white"
-        href="/Signout"
-        >SignOut</a
-      >
-      <a
-        class="text-xl rounded bg-red-400 font-medium p-2 outline-none text-white"
-        href="#"
-        id="goBack"
-        onclick="goback()"
-      >
-        <span class="font-medium text-2xl">&#x2190;</span> Go Back</a
-      >
-    </div>
-    <div class="my-10 text-3xl text-black blcok">Welcome <%= User %>...</div>
-    <script>
-      function goback() {
-        let btnGoBack = (document.getElementById("goBack").href = "/");
-      }
-    </script>
-  </body>
-</html>
+<div
+  class="border-l-8 border-gray-300 text-3xl p-4 bg-gray-800 text-gray-200 flex items-center justify-between hover:text-white"
+>
+  Hey, <%=User%>
+  <div class="inline-blcok float-right">
+    <a
+      class="text-xl rounded bg-green-700 font-medium p-2 outline-none text-white"
+      href="/Signout"
+      >SignOut</a
+    >
+    <a
+      class="text-xl rounded bg-red-400 font-medium p-2 outline-none text-white"
+      href="#"
+      id="goBack"
+      onclick="goback()"
+    >
+      <span class="font-medium text-2xl">&#x2190;</span> Go Back</a
+    >
+  </div>
+</div>
+<script>
+  function goback() {
+    let btnGoBack = (document.getElementById("goBack").href = "/");
+  }
+</script>

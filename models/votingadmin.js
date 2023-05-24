@@ -23,6 +23,16 @@ module.exports = (sequelize, DataTypes) => {
         password: Password,
       });
     }
+    static allUserList() {
+      return this.findAll({});
+    }
+    static deleteUserById(id) {
+      return this.destroy({
+        where: {
+          id,
+        },
+      });
+    }
   }
   VotingAdmin.init(
     {

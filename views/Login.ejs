@@ -19,7 +19,7 @@
   <body>
     <div class="container">
       <div
-        class="border-l-8 border-gray-300 text-3xl w-screen p-2 bg-gray-800 text-gray-200 hover:text-white"
+        class="border-l-8 border-gray-300 text-4xl w-screen p-2 bg-gray-800 text-gray-200 hover:text-white"
       >
         Online Voting System
       </div>
@@ -27,22 +27,7 @@
         class="flex items-center justify-center flex-col w-screen h-screen min-h-screen min-w-screen flex-wrap"
       >
         <div class="bg-slate-50 rounded p-5 text-gray-900">
-          <% if(messages && messages.error && messages.error.length != 0) { %>
-          <div
-            class="border-l-8 border-[#f87171] font-medium text-[#ef4444] bg-[#fee2e2] p-3 text-xl rounded text-center mb-5"
-            role="alert"
-          >
-            <strong> <%=messages.error %> </strong>
-          </div>
-          <% } %> <% if(messages && messages.success && messages.success.length
-          != 0) { %>
-          <div
-            class="border-l-8 border-[#a3e635] font-medium text-[#84cc16] bg-[#ecfccb] p-3 text-xl rounded text-center mb-5"
-            role="alert"
-          >
-            <strong> <%=messages.success %> </strong>
-          </div>
-          <% } %>
+          <%- include("./notification.ejs")%>
           <header class="block text-5xl text-center">Welcome Back!</header>
           <form action="/AdminLogin" method="post">
             <input type="hidden" name="_csrf" value="<%= csrfToken%>" />
@@ -73,7 +58,7 @@
             >
             <input
               type="submit"
-              class="block bg-green-500 w-full text-white text-3xl p-2 rounded cursor-pointer text-gray-900 hover:bg-green-600"
+              class="block bg-green-500 w-full text-white text-2xl p-2 rounded cursor-pointer text-gray-900 hover:bg-green-600 duration-300"
               value="Login"
             />
           </form>

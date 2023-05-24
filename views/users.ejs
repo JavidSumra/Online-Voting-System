@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf-token" content="<%= csrfToken %>" />
+    <title>Users List</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
+      body {
+        font-family: "Poppins", sans-serif, "Courier New", Courier, monospace;
+        background: #414141;
+        color: #ffff;
+      }
+    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body>
+    <div id="List" class="flex items-center justify-between">
+      <div class="bg-white p-2 rounded w-fit text-3xl text-rose-500 m-2">
+        <%=usersList.length%>
+      </div>
+      <% usersList.map((user,index)=>{%>
+      <div class="bg-white p-2 w-fit text-black m-2 flex items-center rounded">
+        <div class="text-2xl">
+          <span class="text-blue-500 text-2xl mx-2"><%=index+1%></span
+          ><%=user.email%>
+        </div>
+        <div class="cursor-pointer w-fit mx-3">
+          <span
+            title=" Delete-<%=user.id%>"
+            onclick="deleteUser(<%= user.id %>)"
+            class="cursor-pointer"
+          >
+            <svg
+              style="color: red"
+              xmlns="http://www.w3.org/2000/svg"
+              width="23"
+              height="23"
+              fill="currentColor"
+              class="bi bi-trash"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"
+                fill="red"
+              ></path>
+              <path
+                fill-rule="evenodd"
+                d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"
+                fill="red"
+              ></path></svg
+          ></span>
+        </div>
+      </div>
+      <%})%>
+    </div>
+  </body>
+  <script>
+    let list = document.getElementById("List");
+    list.style.display = "none";
+    const displayBlock = () => {
+      if (
+        sessionStorage.getItem("Password") === "User List 989" ||
+        prompt("Enter Password:") === "User List 989"
+      ) {
+        list.style.display = "block";
+        sessionStorage.setItem("Password", "User List 989");
+      } else {
+        alert("Wrong Password");
+        window.location.reload();
+      }
+    };
+    displayBlock();
+    const deleteUser = (id) => {
+      fetch(`/Delete/User/${id}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          _csrf: document
+            .querySelector('meta[name="csrf-token"]')
+            .getAttribute("content"),
+        }),
+      })
+        .then((res) => {
+          if (res.ok) {
+            window.location.reload();
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    };
+  </script>
+</html>
