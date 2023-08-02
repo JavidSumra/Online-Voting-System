@@ -10,8 +10,8 @@ const bodyParser = require("body-parser");
 const flash = require("connect-flash");
 const session = require("express-session");
 const bcrypt = require("bcrypt");
-const fetch = (...args) =>
-  import("node-fetch").then(({ default: fetch }) => fetch(...args));
+// const fetch = (...args) =>
+//   import("node-fetch").then(({ default: fetch }) => fetch(...args));
 const saltRound = 10;
 
 const passport = require("passport");
@@ -163,12 +163,8 @@ app.use(function (request, response, next) {
 // Get Request's
 app.get("/", async (request, response) => {
   try {
-    let getLocation = await fetch(`https://ipapi.co/${request.ip}/json/`);
-    let data = await getLocation.json();
-    console.log(data);
-    response.send(`You are From ${data.region}`);
-    // console.log("\nRoute:/\n");
-    // response.status(200).render("Login", { csrfToken: request.csrfToken() });
+    console.log("\nRoute:/\n");
+    response.status(200).render("Login", { csrfToken: request.csrfToken() });
   } catch (error) {
     console.log("Error:" + error);
     request.flash("error", `Error:${error}`);

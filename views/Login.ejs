@@ -1,94 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="csrf-token" content="<%= csrfToken %>" />
-    <title>Sign Up | Login</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
-      body {
-        font-family: "Poppins", sans-serif, "Courier New", Courier, monospace;
-        background: #414141;
-        color: #ffff;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <div
-        class="border-l-8 border-gray-300 text-4xl w-screen p-2 bg-gray-800 text-gray-200 hover:text-white"
-      >
-        Online Voting System
-      </div>
-      <div
-        class="flex items-center justify-center flex-col w-screen h-screen min-h-screen min-w-screen flex-wrap"
-      >
-        <div class="bg-slate-50 rounded p-5 text-gray-900">
-          <%- include("./notification.ejs")%>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="csrf-token" content="<%= csrfToken %>" />
+  <title>Sign Up | Login</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
+
+    body {
+      font-family: "Poppins", sans-serif, "Courier New", Courier, monospace;
+      background: #414141;
+      color: #ffff;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="border-l-8 border-gray-300 text-4xl w-screen p-2 bg-gray-800 text-gray-200 hover:text-white">
+      Online Voting System
+    </div>
+    <div class="flex items-center justify-center flex-col w-screen h-screen min-h-screen min-w-screen flex-wrap">
+      <div class="bg-slate-50 rounded p-5 text-gray-900">
+        <%- include("./notification.ejs")%>
           <header class="block text-5xl text-center">Welcome Back!</header>
           <form action="/AdminLogin" method="post">
             <input type="hidden" name="_csrf" value="<%= csrfToken%>" />
             <div>
               <label for="email" class="block text-xl">Email:</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
+              <input type="email" id="email" name="email"
                 class="outline-none p-2 shadow w-full my-1.5 rounded bg-gray-100 focus:ring-2 focus:ring-purple-200"
-                placeholder="Enter Your Email"
-                required
-              />
+                placeholder="Enter Your Email" required />
             </div>
             <div>
               <label for="Password" class="text-xl block">Password:</label>
-              <input
-                type="password"
-                name="password"
-                id="Password"
+              <input type="password" name="password" id="Password"
                 class="outline-none p-2 shadow w-full my-1.5 rounded bg-gray-100 focus:ring-2 focus:ring-purple-200"
-                placeholder="Enter Your Password"
-                required
-              />
+                placeholder="Enter Your Password" required />
             </div>
-            <a href="/forgotPass" class="text-sm hover:underline"
-              >Forgot Password?</a
-            >
-            <input
-              type="submit"
+            <a href="/forgotPass" class="text-sm hover:underline">Forgot Password?</a>
+            <input type="submit"
               class="block bg-green-500 w-full text-white text-2xl p-2 rounded cursor-pointer text-gray-900 hover:bg-green-600 duration-300"
-              value="Login"
-            />
+              value="Login" />
           </form>
           <div class="text-sm">
-            <span
-              >Don't have an account?<a
-                href="/Signup"
-                class="mx-2 hover:underline"
-                >SignUp</a
-              ></span
-            >
+            <span>Don't have an account?<a href="/Signup" class="mx-2 hover:underline">SignUp</a></span>
           </div>
-        </div>
       </div>
     </div>
-    <script>
-      function validate() {
-        let email = document.getElementById("email");
-        console.log("Called");
-        if (
-          !email.value.match(
-            /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
-          )
-        ) {
-          return false;
-        } else {
-          // email.style.borderColor = "green";
-          return true;
-        }
+  </div>
+  <script>
+    function validate() {
+      let email = document.getElementById("email");
+      console.log("Called");
+      if (
+        !email.value.match(
+          /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
+        )
+      ) {
+        return false;
+      } else {
+        // email.style.borderColor = "green";
+        return true;
       }
-    </script>
-  </body>
+    }
+    // const getLoc = async () => {
+    //   let getLocation = await fetch(`https://ipapi.co/${ip}/json/`);
+    //   let data = await getLocation.json();
+    //   console.log(data);
+    // }
+    // getLoc()
+    // response.send(`You are From ${data.region}`);
+  </script>
+</body>
+
 </html>
