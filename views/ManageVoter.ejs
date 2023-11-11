@@ -1,75 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="csrf-token" content="<%= csrfToken %>" />
-    <title>AddOption</title>
-    <script>
-      var token = document
-        .querySelector('meta[name="csrf-token"]')
-        .getAttribute("content");
-      console.log("Function Part");
-      function deleteOption(id) {
-        fetch(`/delete/Voter/${id}`, {
-          method: "DELETE",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            _csrf: token,
-          }),
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="csrf-token" content="<%= csrfToken %>" />
+  <title>AddOption</title>
+  <script>
+    var token = document
+      .querySelector('meta[name="csrf-token"]')
+      .getAttribute("content");
+    console.log("Function Part");
+    function deleteOption(id) {
+      fetch(`/delete/Voter/${id}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          _csrf: token,
+        }),
+      })
+        .then((res) => {
+          if (res.ok) {
+            window.location.reload();
+          }
         })
-          .then((res) => {
-            if (res.ok) {
-              window.location.reload();
-            }
-          })
-          .catch((err) => console.log(err));
-      }
-    </script>
-  </head>
-  <body>
-    <% if (VotersList.length != 0 ) { %>
+        .catch((err) => console.log(err));
+    }
+  </script>
+</head>
+
+<body>
+  <% if (VotersList.length !=0 ) { %>
     <div class="grid justify-center my-6">
       <%-include ("header.ejs") %>
-      <span class="text-2xl font-medium"
-        >You Have <%=VotersList.length%> Voters:</span
-      >
-      <% for( let i = 0; i < VotersList.length ; i++ ) { %>
-      <div class="mt-5">
-        <div class="flex-wrap mt-5">
-          <div class="inline-blcok">
-            <span class="inline-blcok text-xl"> (<%=i+1%>) </span>
-            <span class="inline-blcok text-xl">
-              <%=VotersList[i].VoterId%>
-            </span>
-            <a
-              href=""
-              onclick="deleteOption(<%=VotersList[i].id%>)"
-              class="ml-3 bg-red-500 text-xl rounded font-medium p-2 outline-none text-white w-56 h-12 relative text-center my-3"
-              >Delete Voter</a
-            >
-            <a
-              href="/editVoter/<%=VotersList[i].id%>"
-              class="ml-3 bg-emerald-500 text-xl rounded font-medium p-2 outline-none text-white w-56 h-12 relative text-center my-3"
-              >Edit Voter</a
-            >
+        <span class="text-2xl font-medium">You Have <%=VotersList.length%> Voters:</span>
+        <% for( let i=0; i < VotersList.length ; i++ ) { %>
+          <div class="mt-5">
+            <div class="flex-wrap mt-5">
+              <div class="inline-blcok">
+                <span class="inline-blcok text-xl"> (<%=i+1%>) </span>
+                <span class="inline-blcok text-xl">
+                  <%=VotersList[i].email%>
+                </span>
+                <a href="" onclick="deleteOption(<%=VotersList[i].id%>)"
+                  class="ml-3 bg-red-500 text-xl rounded font-medium p-2 outline-none text-white w-56 h-12 relative text-center my-3">Delete
+                  Voter</a>
+                <a href="/editVoter/<%=VotersList[i].id%>"
+                  class="ml-3 bg-emerald-500 text-xl rounded font-medium p-2 outline-none text-white w-56 h-12 relative text-center my-3">Edit
+                  Voter</a>
+              </div>
+            </div>
+            <% } %>
           </div>
-        </div>
-        <% } %>
-      </div>
     </div>
     <% } else { %>
-    <div class="grid justify-center my-6">
-      <%-include ("header.ejs") %>
-      <div class="text-2xl font-medium text-center">Please Add Voters</div>
-    </div>
-    <% } %>
-    <script>
-      function goback() {
-        let btnGoBack = (document.getElementById("goBack").href =
-          "/Quetion/<%=Id%>");
-      }
-    </script>
-  </body>
+      <div class="grid justify-center my-6">
+        <%-include ("header.ejs") %>
+          <div class="text-2xl font-medium text-center">Please Add Voters</div>
+      </div>
+      <% } %>
+        <script>
+          function goback() {
+            let btnGoBack = (document.getElementById("goBack").href =
+              "/Quetion/<%=Id%>");
+          }
+        </script>
+</body>
+
 </html>

@@ -27,6 +27,8 @@ app.set("view engine", "ejs");
 const { sequelize } = require("./models");
 const { DataTypes } = require("sequelize");
 
+const sendMail = require("./nodemailer");
+
 //Models
 let Admin = require("./models/votingadmin")(sequelize, DataTypes);
 let Quetion = require("./models/quetiondetail")(sequelize, DataTypes);
@@ -163,7 +165,6 @@ app.use(function (request, response, next) {
 // Get Request's
 app.get("/", async (request, response) => {
   try {
-    console.log("\nRoute:/\n");
     response.status(200).render("Login", { csrfToken: request.csrfToken() });
   } catch (error) {
     console.log("Error:" + error);
@@ -174,7 +175,6 @@ app.get("/", async (request, response) => {
 
 app.get("/Signup", (request, response) => {
   try {
-    console.log("\nRoute:/Signup\n");
     response.status(200).render("SignUp", { csrfToken: request.csrfToken() });
   } catch (error) {
     console.log("Error:" + error);
@@ -188,7 +188,6 @@ app.get(
   connectEnsure.ensureLoggedIn({ redirectTo: "/" }),
   async (request, response) => {
     try {
-      console.log("\nRoute:/Home\n");
       if (request.user.UserRole == "Admin") {
         console.log(request.user.id);
         let getElection = await CreateElection.RetriveElection(request.user.id);
@@ -238,7 +237,6 @@ app.get(
   connectEnsure.ensureLoggedIn({ redirectTo: "/" }),
   async (request, response) => {
     try {
-      console.log("\nRoute:/Quetion/:id\n");
       console.log("Id:" + request.params.id);
       let electionList = await CreateElection.findByPk(request.params.id);
       let QuetionList = await Quetion.getQuetionList(request.params.id);
@@ -264,7 +262,6 @@ app.get(
   connectEnsure.ensureLoggedIn({ redirectTo: "/" }),
   async (request, response) => {
     try {
-      console.log("\nRoute:/ManageQuetion/:id\n");
       let electionList = await CreateElection.findByPk(request.params.id);
       console.log(electionList.Start);
       if (electionList.Start == true) {
@@ -294,7 +291,6 @@ app.get(
   connectEnsure.ensureLoggedIn({ redirectTo: "/" }),
   async (request, response) => {
     try {
-      console.log("\nRoute:/ManageOption/:id/election/:ElectId\n");
       console.log("ManageOption:" + request.params.id);
       let electionList = await CreateElection.findByElectID(
         request.params.ElectId
@@ -325,7 +321,6 @@ app.get(
   connectEnsure.ensureLoggedIn({ redirectTo: "/" }),
   async (request, response) => {
     try {
-      console.log("\nRoute:/voter/addVoter/:id\n");
       console.log("Voter Id:" + request.params.id);
       let electionList = await CreateElection.findByPk(request.params.id);
       if (electionList.Start === true) {
@@ -353,7 +348,6 @@ app.get(
   connectEnsure.ensureLoggedIn({ redirectTo: "/" }),
   async (request, response) => {
     try {
-      console.log("\nRoute:/Manage/voter/:id\n");
       let VotersList = await Voter.getVotersList(request.params.id);
       response.status(200).render("ManageVoter", {
         csrfToken: request.csrfToken(),
@@ -362,7 +356,6 @@ app.get(
         Id: request.params.id,
       });
     } catch (error) {
-      console.log("Error:" + error);
       request.flash("error", `Error:${error}`);
       response.redirect("back");
     }
@@ -371,7 +364,6 @@ app.get(
 
 app.get("/loginvoter/:id", (request, response) => {
   try {
-    console.log("\nRoute:/loginvoter/:id\n");
     response.status(200).render("VoterLogin", {
       csrfToken: request.csrfToken(),
       Id: request.params.id,
@@ -390,13 +382,11 @@ app.get(
   connectEnsure.ensureLoggedIn({ redirectTo: "/" }),
   async (request, response) => {
     try {
-      console.log("\nRoute:/DeclareElection/:id\n");
       let electionList = await CreateElection.findByPk(request.params.id);
-      console.log(electionList);
-      console.log(request.params.id);
       let QuetionDetail = await Quetion.getQuetionList(request.params.id);
       let VoterDetail = await Voter.getVotersList(request.params.id);
       let getOptionList;
+
       for (let i = 0; i < QuetionDetail.length; i++) {
         getOptionList = await CreateOption.getOptionList(QuetionDetail[i].id);
       }
@@ -436,8 +426,8 @@ app.get(
   connectEnsure.ensureLoggedIn({ redirectTo: "/" }),
   async (request, response) => {
     try {
-      console.log("\nRoute:/EndElection/:id\n");
       let electionList = await CreateElection.findByPk(request.params.id);
+
       if (electionList.Start === true && electionList.End === false) {
         request.flash("success", "Election is Now Ended");
         await electionList.EndElection(request.params.id);
@@ -459,19 +449,15 @@ app.get(
   connectEnsure.ensureLoggedIn({ redirectTo: "/" }),
   async (request, response) => {
     try {
-      console.log("\nRoute:/ElectionPerview/:id\n");
       let electionList = await CreateElection.findByPk(request.params.id);
       let QuetionDetail = await Quetion.getQuetionList(request.params.id);
-
-      console.log(QuetionDetail);
-      console.log(QuetionDetail.length);
 
       let getOptionList = [];
       for (let i = 0; i < QuetionDetail.length; ++i) {
         let OptionList = await CreateOption.getOptionList(QuetionDetail[i].id);
         getOptionList.push(OptionList);
       }
-      console.log(getOptionList);
+
       response.status(200).render("electionPerview", {
         csrfToken: request.csrfToken(),
         User: request.user.FirstName,
@@ -492,7 +478,6 @@ app.get(
   connectEnsure.ensureLoggedIn({ redirectTo: "/" }),
   async (request, response) => {
     try {
-      console.log("\nRoute:/editQuetion/:id\n");
       let QuetionDetail = await Quetion.findByPk(request.params.id);
       response.status(200).render("editQuetion", {
         csrfToken: request.csrfToken(),
@@ -509,17 +494,11 @@ app.get(
 
 app.get("/voting/:id/:voterId", async (request, response) => {
   try {
-    console.log("Route:/Voting/:id/:voterId");
     let electionList = await CreateElection.findByPk(request.params.id);
     let VoterDetail = await Voter.getVoter(request.params.voterId);
-    console.log("Result");
-    console.log(electionList);
-    console.log(VoterDetail);
-    // console.log("Length" + VoterDetail.length);
-    // console.log("Length" + VoterDetail.UserRole);
+
     if (VoterDetail.length != 0) {
       if (electionList.End == true) {
-        console.log("redirected");
         response.redirect(`/result/${request.params.id}`);
       } else if (electionList.End == false && electionList.Start == true) {
         if (VoterDetail.UserRole == "Voter") {
@@ -531,15 +510,6 @@ app.get("/voting/:id/:voterId", async (request, response) => {
             );
             getOptionList.push(OptionList);
           }
-          for (let i = 0; i < QuetionDetail.length; ++i) {
-            for (let j = 0; j < getOptionList.length; j++) {
-              console.log(getOptionList[i][j].OptionTitle);
-            }
-          }
-          console.log(VoterDetail);
-          console.log("Voter Login:" + VoterDetail.length);
-          console.log(getOptionList);
-          console.log(getOptionList.length);
 
           response.status(200).render("VotersVote", {
             csrfToken: request.csrfToken(),
@@ -572,19 +542,13 @@ app.get(
   connectEnsure.ensureLoggedIn("/"),
   async (request, response) => {
     try {
-      console.log("\nRoute:/election/ResultPerview/:id\n");
       let list = await CreateElection.findByPk(request.params.id);
       if (list.Start === true) {
         if (list.Start === false || list.End === false) {
-          console.log(request.params.id);
           if (request.user.UserRole == "Admin") {
             let electionList = await CreateElection.findByElectID(
               request.params.id
             );
-            console.log(electionList);
-            console.log(electionList.length);
-            console.log(electionList[0].Start);
-            console.log(electionList[0].id);
             let QuetionDetail = await Quetion.getQuetionList(request.params.id);
             let OptionDetail = [];
             let Vote = [];
@@ -615,7 +579,6 @@ app.get(
             );
             let RemaininigVoters = await Voter.getRemVoters(request.params.id);
             let SuccessVoters = await Voter.getSuccessVoters(request.params.id);
-            console.log(QuetionDetail, OptionDetail, QuetionId, Vote);
             // response.send("Completed")
             response.status(200).render("ResultPerview", {
               electionList,
@@ -636,7 +599,6 @@ app.get(
           response.redirect(`/Quetion/${request.params.id}`);
         }
       } else {
-        console.log("Not Started");
         request.flash("error", "Election is Not Live");
         response.redirect(`/Quetion/${request.params.id}`);
       }
@@ -650,8 +612,6 @@ app.get(
 
 app.get("/result/:id", async (request, response) => {
   try {
-    console.log("\nRoute:/result/:id\n");
-    console.log(request.params.id);
     let electionList = await CreateElection.findByElectID(request.params.id);
     let QuetionDetail = await Quetion.getQuetionList(request.params.id);
     let votedetail = await Voting.findByPk(request.params.id);
@@ -700,7 +660,6 @@ app.get("/result/:id", async (request, response) => {
 app.get("/editOption/:id/:electId", async (request, response) => {
   let OptionList = await CreateOption.findByPk(request.params.id);
   try {
-    console.log("\nRoute:/editOption/:id/:electId\n");
     response.render("editOption", {
       csrfToken: request.csrfToken(),
       User: request.user.FirstName,
@@ -718,7 +677,6 @@ app.get("/editVoter/:id", async (request, response) => {
   let VoterList = await Voter.findByPk(request.params.id);
   console.log(VoterList);
   try {
-    console.log("\nRoute:/editVoter/:id\n");
     response.render("updateVoter", {
       csrfToken: request.csrfToken(),
       User: request.user.FirstName,
@@ -733,7 +691,6 @@ app.get("/editVoter/:id", async (request, response) => {
 
 app.get("/forgotPass", async (request, response) => {
   try {
-    console.log("\nRoute:/forgotPass\n");
     response.render("forgotpass", { csrfToken: request.csrfToken() });
   } catch (error) {
     console.log("Error:" + error);
@@ -743,7 +700,6 @@ app.get("/forgotPass", async (request, response) => {
 });
 app.get("/Signout", (request, response, next) => {
   try {
-    console.log("\nRoute:/Signout\n");
     request.logout((err) => {
       if (err) {
         return next(err);
@@ -760,7 +716,6 @@ app.get("/Signout", (request, response, next) => {
 
 app.get("/Signout/Voter/:id", (request, response) => {
   try {
-    console.log("\nRoute:/Signout/Voter/:id\n");
     request.logout((err) => {
       if (err) {
         return next(err);
@@ -781,7 +736,6 @@ app.post(
   passport.authenticate("local", { failureRedirect: "/", failureFlash: true }),
   async (request, response) => {
     try {
-      console.log("\nPOST Route:/AdminLogin\n");
       if (request.user.UserRole == "Admin") {
         console.log("Admin");
       }
@@ -798,7 +752,6 @@ app.post(
 app.post("/SignUpUser", async (request, response) => {
   console.log(request.body);
   try {
-    console.log("\nPOST Route:/SignUpUser\n");
     let User = await Admin.findAll({ where: { email: request.body.email } });
     if (User.length == 0) {
       let hashPass = await bcrypt.hash(request.body.password, saltRound);
@@ -830,7 +783,6 @@ app.post("/SignUpUser", async (request, response) => {
 
 app.post("/forgotPass/User", async (request, response) => {
   try {
-    console.log("\nPOST Route:/fogotPass/User\n");
     let findUser = await Admin.getUser(request.body.email);
     if (findUser) {
       if (request.body.NewPass === request.body.ConPass) {
@@ -861,7 +813,6 @@ app.post(
   connectEnsure.ensureLoggedIn({ redirectTo: "/" }),
   async (request, response) => {
     try {
-      console.log("\nPOST Route:/AddElectionTitle\n");
       if (request.user.UserRole == "Admin") {
         if (request.body.title.length < 10) {
           request.flash(
@@ -899,7 +850,6 @@ app.post(
   connectEnsure.ensureLoggedIn({ redirectTo: "/" }),
   async (request, response) => {
     try {
-      console.log("\nPOST Route:/addQuetion/:id\n");
       let electionList = await CreateElection.findByPk(request.params.id);
       if (electionList.Start == true) {
         request.flash("error", "Election is Live Now You Cannot Edit Quetion");
@@ -938,7 +888,6 @@ app.post(
   connectEnsure.ensureLoggedIn({ redirectTo: "/" }),
   async (request, response) => {
     try {
-      console.log("\nPOST Route:/editQuetion/:id\n");
       let QuetionDetail = await Quetion.findByPk(request.params.id);
       let updateTitle = request.body.QuetionTitle;
       let updateDesc = request.body.Description;
@@ -967,7 +916,6 @@ app.post(
   connectEnsure.ensureLoggedIn({ redirectTo: "/" }),
   async (request, response) => {
     try {
-      console.log("\nPOST Route:/editOption/:id/:electId\n");
       let OptionDetail = await CreateOption.findByPk(request.params.id);
       let updateTitle = request.body.OptionTitle;
       if (updateTitle.trim().length > 10) {
@@ -995,7 +943,6 @@ app.post(
   connectEnsure.ensureLoggedIn({ redirectTo: "/" }),
   async (request, response) => {
     try {
-      console.log("\nPOST Route:/forgotPass/Voter\n");
       let VoterDetail = await Voter.getParticularVoter(request.body.VoterId);
       console.log(VoterDetail);
       if (VoterDetail) {
@@ -1029,7 +976,6 @@ app.post(
   connectEnsure.ensureLoggedIn({ redirectTo: "/" }),
   async (request, response) => {
     try {
-      console.log("\nPOST Route:/addOption/:QueId/:id\n");
       if (request.body.Title.trim().length > 9) {
         request.flash("error", "Option Name Must Less Than 9");
         response.redirect(
@@ -1061,7 +1007,6 @@ app.post(
   async (request, response) => {
     console.log(request.params.id);
     try {
-      console.log("\nPOST Route:/AddVoter/:id\n");
       if (
         request.body.VoterId.trim().length > 10 &&
         request.body.VoterId.trim().length < 5
@@ -1076,16 +1021,44 @@ app.post(
           request.flash("error", "Voter Id Already Exist");
           response.redirect(`/voter/addVoter/${request.params.id}`);
         } else {
+          const electiondetail = await CreateElection.findByPk(
+            request.params.id
+          );
+          console.log(electiondetail);
           let hashPass = await bcrypt.hash(request.body.password, saltRound);
+          let hashAddhar = await bcrypt.hash(request.body.VoterId, saltRound);
+          console.log(request.body.email);
           let addVoter = await Voter.create({
-            VoterId: request.body.VoterId,
+            email: request.body.email,
+            VoterId: hashAddhar,
             password: hashPass,
             userElectionId: request.params.id,
             Status: false,
             UserRole: "Voter",
           });
-          console.log(typeof addVoter);
           console.log(addVoter);
+          if (addVoter) {
+            console.log("Mail");
+            sendMail(
+              request.body.email,
+              `Welcome to the ${electiondetail.Title} Voter List!`,
+              `Dear Voter,
+
+We are excited to inform you that you have been officially added to the voter list for the upcoming ${electiondetail.Title}! Your participation in this democratic process is vital to shaping the future of our community/country, and we are grateful to have you as a registered voter.
+
+Your voter information:
+
+Voter ID: ${request.body.VoterId},
+Password: ${request.body.password},
+Email:${request.body.email},
+
+When Election is Live then You Can Vote on,
+https://online-voting-platform-xoug.onrender.com/loginvoter/${electiondetail.id}
+
+As a registered voter, you now have the privilege and responsibility of casting your vote in this election. It is your opportunity to have your voice heard and make a difference in the decisions that affect our community/country.`
+            );
+          }
+
           request.flash("success", "Voter Suceessfully Created");
           return response.redirect(`/Quetion/${request.params.id}`);
         }
@@ -1105,7 +1078,6 @@ app.post(
     failureFlash: true,
   }),
   async (request, response) => {
-    console.log("\nPOST Route:/Voterlogin/:id\n");
     let election = await Voter.findAll({
       where: {
         userElectionId: request.params.id,
@@ -1135,7 +1107,6 @@ app.post(
 app.post("/addVote/:id/election/:voterId", async (request, response) => {
   console.log(request.body);
   try {
-    console.log("\nPOST Route:/addVote/:id/election/:voterId\n");
     console.log(request.user);
     let electionList = await CreateElection.findByPk(request.params.id);
     let QuetionDetail = await Quetion.getQuetionList(request.params.id);

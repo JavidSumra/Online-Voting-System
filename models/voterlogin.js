@@ -100,6 +100,11 @@ module.exports = (sequelize, DataTypes) => {
       Status: DataTypes.BOOLEAN,
       VoterId: DataTypes.STRING,
       password: DataTypes.STRING,
+      email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+      },
       userElectionId: DataTypes.INTEGER,
       UserRole: DataTypes.STRING,
     },
