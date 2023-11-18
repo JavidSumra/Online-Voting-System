@@ -1,77 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf-token" content="<%= csrfToken %>" />
+    <title>Sign Up | Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="csrf-token" content="<%= csrfToken %>" />
-  <title>Sign Up | Login</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
 
-    body {
-      font-family: "Poppins", sans-serif, "Courier New", Courier, monospace;
-      background: #414141;
-      color: #ffff;
-    }
-  </style>
-</head>
+      body {
+        font-family: "Poppins", sans-serif, "Courier New", Courier, monospace;
+      }
+      .login_form_slide {
+        animation: slide 1.5s ease-in-out;
+      }
+      @keyframes slide {
+        0% {
+          transform: translateX(-100%);
+        }
+        100% {
+          transform: translateX(0);
+        }
+      }
+    </style>
+  </head>
 
-<body>
-  <div class="container">
-    <div class="flex items-center justify-center flex-col h-screen min-h-screen min-w-screen flex-wrap">
-      <div class="bg-slate-50 rounded p-5 text-gray-900 w-1/3">
-        <%- include("./notification.ejs")%>
-          <form action="/AdminLogin" method="post">
-            <input type="hidden" name="_csrf" value="<%= csrfToken%>" />
-            <div>
-              <label for="email" class="block text-xl">Email:</label>
-              <input type="email" id="email" name="email"
-                class="outline-none p-2 shadow w-full my-1.5 rounded bg-gray-100 focus:ring-2 focus:ring-purple-200"
-                placeholder="Enter Your Email" required />
-            </div>
-            <div>
-              <label for="Password" class="text-xl block">Password:</label>
-              <input type="password" name="password" id="Password"
-                class="outline-none p-2 shadow w-full my-1.5 rounded bg-gray-100 focus:ring-2 focus:ring-purple-200"
-                placeholder="Enter Your Password" required />
-            </div>
-            <a href="/forgotPass" class="text-sm hover:underline">Forgot Password?</a>
-            <input type="submit"
-              class="block bg-green-500 w-full text-white text-2xl p-1 rounded cursor-pointer text-gray-900 hover:bg-green-600 duration-300"
-              value="Login" />
-          </form>
-          <div class="text-sm">
-            <span>Don't have an account?<a href="/Signup" class="mx-2 hover:underline">SignUp</a></span>
+  <body>
+    <div class="flex w-screen h-screen">
+      <%- include("./notification.ejs")%>
+      <div
+        class="login_form_slide bg-[#f8f8f8] flex items-center py-16 min-[938px]:w-3/5 rounded-r-[40px] flex-col max-[938px]:w-full max-[938px]:rounded-none justify-center"
+      >
+        <div class="font-bold text-4xl space-2 text-center">Welcome Back</div>
+        <div class="text-sm">Welcome Back!Please Enter Your Details.</div>
+        <form action="/AdminLogin" method="post" class="py-10 w-1/2">
+          <input type="hidden" name="_csrf" value="<%= csrfToken%>" />
+          <div>
+            <label for="email" class="block text-xl">Email:</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              class="outline-none p-2 shadow w-full my-1.5 rounded focus:ring-2 focus:ring-purple-200 bg-white"
+              placeholder="Enter your email"
+              required
+            />
           </div>
+          <div class="pt-4">
+            <label for="Password" class="text-xl block">Password:</label>
+            <input
+              type="password"
+              name="password"
+              id="Password"
+              class="outline-none p-2 shadow w-full my-1.5 rounded focus:ring-2 focus:ring-purple-200"
+              placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;"
+              required
+            />
+          </div>
+          <div class="my-2 flex justify-between">
+            <div>
+              <input type="checkbox" id="Remember" />
+              <label for="Remember">Remember Me</label>
+            </div>
+            <div>
+              <a href="/forgotPass" class="text-sm hover:underline"
+                >Forgot Password ?</a
+              >
+            </div>
+          </div>
+          <input
+            type="submit"
+            class="block bg-rose-500 w-full text-white text-2xl p-1 rounded cursor-pointer text-gray-900 hover:shadow-rose-500/80 shadow-xl hover:bg-rose-500 duration-700"
+            value="Login"
+          />
+        </form>
+        <div>
+          <p class="text-sm">
+            Don't have an Account?<a href="/signup" class="text-rose-500">
+              Signup to free!</a
+            >
+          </p>
+        </div>
+      </div>
+      <div class="flex items-center justify-center w-2/5 max-[938px]:hidden">
+        <img src="/Login_Img.png" alt="Not Found" class="w-3/5" />
       </div>
     </div>
-  </div>
-  <script>
-    function validate() {
-      let email = document.getElementById("email");
-      console.log("Called");
-      if (
-        !email.value.match(
-          /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
-        )
-      ) {
-        return false;
-      } else {
-        // email.style.borderColor = "green";
-        return true;
-      }
-    }
-    // const getLoc = async () => {
-    //   let getLocation = await fetch(`https://ipapi.co/${ip}/json/`);
-    //   let data = await getLocation.json();
-    //   console.log(data);
-    // }
-    // getLoc()
-    // response.send(`You are From ${data.region}`);
-  </script>
-</body>
-
+  </body>
 </html>

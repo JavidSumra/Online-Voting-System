@@ -37,6 +37,7 @@ const CreateOption = require("./models/optiondetail")(sequelize, DataTypes);
 const Voter = require("./models/voterlogin")(sequelize, DataTypes);
 const Voting = require("./models/voterdetail")(sequelize, DataTypes);
 
+app.use(express.static("./Assets/"));
 app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -81,7 +82,7 @@ passport.use(
               return done(null, false, { message: "Invalid Password" });
             }
           } else {
-            return done(null, false, { message: "User Does Not Exist" });
+            return done(null, false, { message: "User Doesn't Exist" });
           }
         })
         .catch((error) => {
