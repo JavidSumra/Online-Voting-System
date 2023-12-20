@@ -28,6 +28,7 @@ const { sequelize } = require("./models");
 const { DataTypes } = require("sequelize");
 
 const sendMail = require("./nodemailer");
+const electiondetail = require("./models/electiondetail");
 
 //Models
 let Admin = require("./models/votingadmin")(sequelize, DataTypes);
@@ -166,23 +167,11 @@ app.use(function (request, response, next) {
 // Get Request's
 app.get("/", async (request, response) => {
   try {
-    if (process.env.NODE_ENV !== "production") {
-      const User = await Admin.findOne({
-        where: { email: "javidsumara987@gmail.com" },
-      });
-      request.login(User, (err) => {
-        if (err) {
-          console.log(err);
-        }
-        // request.flash("success", "Admin Suceessfully Created");
-        return response.redirect("/Home");
-      });
+    if (request.isAuthenticated()) {
+      response.redirect("/Home");
+    } else {
+      response.status(200).render("Login", { csrfToken: request.csrfToken() });
     }
-    // if (request.isAuthenticated()) {
-    //   response.redirect("/Home");
-    // } else {
-    //   response.status(200).render("Login", { csrfToken: request.csrfToken() });
-    // }
   } catch (error) {
     console.log("Error:" + error);
     request.flash("error", `Error:${error}`);
@@ -1071,7 +1060,7 @@ Your voter information:
 
 Voter ID: ${request.body.VoterId},
 Password: ${request.body.password},
-Email:${request.body.email},
+Email: ${request.body.email},
 
 When Election is Live then You Can Vote on,
 https://online-voting-platform-xoug.onrender.com/loginvoter/${electiondetail.id}
@@ -1129,14 +1118,16 @@ app.post("/addVote/:id/election/:voterId", async (request, response) => {
   console.log(request.body);
   try {
     console.log(request.user);
-    let electionList = await CreateElection.findByPk(request.params.id);
-    let QuetionDetail = await Quetion.getQuetionList(request.params.id);
-    let VoterDetail = await Voter.findByPk(request.params.voterId);
+    const electionList = await CreateElection.findByPk(request.params.id);
+    const QuetionDetail = await Quetion.getQuetionList(request.params.id);
+    const VoterDetail = await Voter.findByPk(request.params.voterId);
+
     console.log(VoterDetail);
-    console.log(VoterDetail.id);
+
     for (let i = 0; i < QuetionDetail.length; i++) {
       let VoteValue = request.body[`Option-[${QuetionDetail[i].id}]`];
       console.log(VoteValue);
+
       let AddVote = await Voting.create({
         ElectionId: electionList.id,
         QuetionId: QuetionDetail[i].id,
@@ -1144,11 +1135,14 @@ app.post("/addVote/:id/election/:voterId", async (request, response) => {
         TotalVotes: VoteValue,
       });
       console.log(AddVote);
+      sendMail(
+        VoterDetail.email,
+        "Successful Vote Count - Thank You!",
+        `I'm delighted to inform you that your vote in ${electionList.Title} for ${VoteValue} has been successfully counted in the recent election. Thank you for participating and contributing to the democratic process.`
+      );
     }
-    //  console.log(updateVotingStatus)
     await VoterDetail.Voted();
-    console.log(QuetionDetail);
-    console.log(electionList);
+
     response.redirect(`/loginvoter/${request.params.id}`);
   } catch (error) {
     console.log("Error:" + error);
