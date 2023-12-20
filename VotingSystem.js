@@ -166,7 +166,23 @@ app.use(function (request, response, next) {
 // Get Request's
 app.get("/", async (request, response) => {
   try {
-    response.status(200).render("Login", { csrfToken: request.csrfToken() });
+    if (process.env.NODE_ENV !== "production") {
+      const User = await Admin.findOne({
+        where: { email: "javidsumara987@gmail.com" },
+      });
+      request.login(User, (err) => {
+        if (err) {
+          console.log(err);
+        }
+        // request.flash("success", "Admin Suceessfully Created");
+        return response.redirect("/Home");
+      });
+    }
+    // if (request.isAuthenticated()) {
+    //   response.redirect("/Home");
+    // } else {
+    //   response.status(200).render("Login", { csrfToken: request.csrfToken() });
+    // }
   } catch (error) {
     console.log("Error:" + error);
     request.flash("error", `Error:${error}`);
@@ -203,7 +219,7 @@ app.get(
         if (request.accepts("html")) {
           response.render("Home", {
             csrfToken: request.csrfToken(),
-            User: request.user.FirstName,
+            User: request.user,
             getElection,
             Live: liveElection.length,
             complete: completedElection.length,
@@ -211,7 +227,7 @@ app.get(
         } else {
           response.json({
             getElection,
-            User: request.user.FirstName,
+            User: request.user,
           });
         }
       } else {
@@ -245,7 +261,7 @@ app.get(
       // console.log(VotersList);
       response.status(200).render("AddQuetion", {
         csrfToken: request.csrfToken(),
-        User: request.user.FirstName,
+        User: request.user,
         electionList,
         QuetionList,
         VotersList,
@@ -275,7 +291,7 @@ app.get(
         // let OptionList = await CreateOption.getOptionList(request.params.id);
         response.status(200).render("ManageQuetion", {
           csrfToken: request.csrfToken(),
-          User: request.user.FirstName,
+          User: request.user,
           electionList,
           QuetionList,
         });
@@ -303,7 +319,7 @@ app.get(
       console.log(QuetionDetail);
       console.log(OptionList);
       response.status(200).render("AddOption", {
-        User: request.user.FirstName,
+        User: request.user,
         csrfToken: request.csrfToken(),
         Id: electionList[0].id,
         OptionList,
@@ -331,7 +347,7 @@ app.get(
         console.log("AddVoter:" + electionList);
         console.log(electionList.Title);
         response.status(200).render("AddVoters", {
-          User: request.user.FirstName,
+          User: request.user,
           electionList,
           csrfToken: request.csrfToken(),
         });
@@ -352,7 +368,7 @@ app.get(
       let VotersList = await Voter.getVotersList(request.params.id);
       response.status(200).render("ManageVoter", {
         csrfToken: request.csrfToken(),
-        User: request.user.FirstName,
+        User: request.user,
         VotersList,
         Id: request.params.id,
       });
@@ -461,7 +477,7 @@ app.get(
 
       response.status(200).render("electionPerview", {
         csrfToken: request.csrfToken(),
-        User: request.user.FirstName,
+        User: request.user,
         electionList,
         QuetionDetail,
         getOptionList,
@@ -483,7 +499,7 @@ app.get(
       response.status(200).render("editQuetion", {
         csrfToken: request.csrfToken(),
         QuetionDetail,
-        User: request.user.FirstName,
+        User: request.user,
       });
     } catch (error) {
       console.log("Error:" + error);
@@ -590,7 +606,7 @@ app.get(
               Total: TotalNumberofVoters.length,
               Remaining: RemaininigVoters.length,
               Success: SuccessVoters.length,
-              User: request.user.FirstName,
+              User: request.user,
             });
           } else {
             response.redirect(`/Quetion/${request.params.id}`);
@@ -658,21 +674,25 @@ app.get("/result/:id", async (request, response) => {
   }
 });
 
-app.get("/editOption/:id/:electId", async (request, response) => {
-  let OptionList = await CreateOption.findByPk(request.params.id);
-  try {
-    response.render("editOption", {
-      csrfToken: request.csrfToken(),
-      User: request.user.FirstName,
-      OptionList,
-      Id: request.params.electId,
-    });
-  } catch (error) {
-    console.log("Error:" + error);
-    request.flash("error", `Error:${error}`);
-    response.redirect("back");
+app.get(
+  "/editOption/:id/:electId",
+  connectEnsure.ensureLoggedIn("/"),
+  async (request, response) => {
+    let OptionList = await CreateOption.findByPk(request.params.id);
+    try {
+      response.render("editOption", {
+        csrfToken: request.csrfToken(),
+        User: request.user,
+        OptionList,
+        Id: request.params.electId,
+      });
+    } catch (error) {
+      console.log("Error:" + error);
+      request.flash("error", `Error:${error}`);
+      response.redirect("back");
+    }
   }
-});
+);
 
 app.get("/editVoter/:id", async (request, response) => {
   let VoterList = await Voter.findByPk(request.params.id);
@@ -680,7 +700,7 @@ app.get("/editVoter/:id", async (request, response) => {
   try {
     response.render("updateVoter", {
       csrfToken: request.csrfToken(),
-      User: request.user.FirstName,
+      User: request.user,
       VoterList,
     });
   } catch (error) {
@@ -737,10 +757,10 @@ app.post(
   passport.authenticate("local", { failureRedirect: "/", failureFlash: true }),
   async (request, response) => {
     try {
-      if (request.user.UserRole == "Admin") {
-        console.log("Admin");
-      }
       request.flash("success", "Login Successfully");
+      if (request.body.remember) {
+        req.session.cookie.maxAge = 2628000000;
+      }
       response.redirect("/Home");
     } catch (error) {
       console.log("Error:" + error);
@@ -857,12 +877,12 @@ app.post(
         response.redirect(`/ManageQuetion/${request.params.id}`);
       } else {
         if (
-          request.body.QuetionTitle.trim().length > 20 ||
+          request.body.QuetionTitle.trim().length > 50 ||
           request.body.Description.trim().length < 10
         ) {
           request.flash(
             "error",
-            "Quetion Title Must Less Than 15 And Quetion Description Greater Than 10"
+            "Quetion Title Must Less Than 50 And Quetion Description Greater Than 10"
           );
           response.redirect(`/ManageQuetion/${request.params.id}`);
         } else {
@@ -893,13 +913,14 @@ app.post(
       let updateTitle = request.body.QuetionTitle;
       let updateDesc = request.body.Description;
       console.log(updateTitle + "\n" + updateDesc);
-      if (updateTitle.trim().length > 20 || updateDesc.trim().length < 10) {
+      if (updateTitle.trim().length > 50 || updateDesc.trim().length < 10) {
         request.flash(
           "error",
           "Quetion Title Must Less Than 10 And Quetion Description Greater Than 10"
         );
         response.redirect(`/editQuetion/${request.params.id}`);
       } else {
+        console.log(request.params.id);
         await QuetionDetail.updateQuetion(updateTitle, updateDesc);
         request.flash("success", "Quetion Updated Successfully");
         response.redirect(`/editQuetion/${request.params.id}`);
@@ -1027,11 +1048,10 @@ app.post(
           );
           console.log(electiondetail);
           let hashPass = await bcrypt.hash(request.body.password, saltRound);
-          let hashAddhar = await bcrypt.hash(request.body.VoterId, saltRound);
           console.log(request.body.email);
           let addVoter = await Voter.create({
             email: request.body.email,
-            VoterId: hashAddhar,
+            VoterId: request.body.VoterId,
             password: hashPass,
             userElectionId: request.params.id,
             Status: false,

@@ -5,13 +5,12 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon index.js -e ejs,js",
-    "pretest": "npx sequelize-cli db:drop && npx sequelize-cli db:create",
-    "test": "jest --detectOpenHandles",
-    "prepare": "husky install"
+    "test": "jest --detectOpenHandles"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@jmilanes/passport-remember-me": "^0.1.2",
     "bcrypt": "^5.1.0",
     "body-parser": "^1.20.1",
     "cheerio": "^1.0.0-rc.12",
@@ -25,6 +24,7 @@
     "nodemon": "^3.0.1",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
+    "passport-remember-me": "^0.0.1",
     "pg": "^8.8.0",
     "prettier": "^2.8.3",
     "sequelize": "^6.28.0",

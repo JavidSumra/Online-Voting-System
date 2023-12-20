@@ -6,8 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="csrf-token" content="<%= csrfToken %>" />
     <title>Sign Up | Login</title>
+    <link rel="icon" href="../Public/favicon.ico" type="image/x-icon" />
+    <link
+      rel="shortcut icon"
+      href="../Public/favicon.ico"
+      type="image/x-icon"
+    />
     <script src="https://cdn.tailwindcss.com"></script>
-
     <style>
       @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
 
@@ -62,7 +67,7 @@
           </div>
           <div class="my-2 flex justify-between">
             <div>
-              <input type="checkbox" id="Remember" />
+              <input type="checkbox" id="Remember" name="remember" />
               <label for="Remember">Remember Me</label>
             </div>
             <div>
