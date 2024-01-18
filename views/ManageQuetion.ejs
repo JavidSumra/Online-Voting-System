@@ -1,37 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf-token" content="<%= csrfToken %>" />
+    <title>Quetion List</title>
+    <script>
+      var token = document
+        .querySelector('meta[name="csrf-token"]')
+        .getAttribute("content");
 
-<head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="csrf-token" content="<%= csrfToken %>" />
-  <title>Quetion List</title>
-  <script>
-    var token = document
-      .querySelector('meta[name="csrf-token"]')
-      .getAttribute("content");
-
-    function deleteQuetion(id) {
-      fetch(`/delete/Quetion/${id}`, {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          _csrf: token,
-        }),
-      })
-        .then((res) => {
-          if (res.ok) {
-            window.location.reload();
-          }
+      function deleteQuetion(id) {
+        fetch(`/delete/Quetion/${id}`, {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            _csrf: token,
+          }),
         })
-        .catch((err) => console.log(err));
-    }
-  </script>
-</head>
+          .then((res) => {
+            if (res.ok) {
+              window.location.reload();
+            }
+          })
+          .catch((err) => console.log(err));
+      }
+    </script>
+  </head>
 
-<body class="text-white bg-gray-700">
-  <%-include ("./header.ejs") %>
+  <body class="text-black bg-gray-100">
+    <%-include ("./header.ejs") %>
     <div class="notification flex items-center justify-center w-screen">
       <%- include ("./notification.ejs")%>
     </div>
@@ -43,44 +42,58 @@
       <form action="/addQuetion/<%= electionList.id %>" method="post">
         <input type="hidden" name="_csrf" value="<%= csrfToken%>" />
         <span class="text-xl block my-4">Quetion Name/Title:</span>
-        <input type="text" name="QuetionTitle"
+        <input
+          type="text"
+          name="QuetionTitle"
           class="outline-none p-2 text-black shadow w-full my-1.5 rounded bg-gray-100 focus:ring-2 focus:ring-purple-200"
-          placeholder="Enter Quetion Name" />
+          placeholder="Enter Quetion Name"
+        />
         <span class="text-xl block my-4">Quetion Description:</span>
-        <textarea name="Description" placeholder="Enter Quetion Description"
+        <textarea
+          name="Description"
+          placeholder="Enter Quetion Description"
           class="outline-none p-2 text-black shadow w-full my-1.5 rounded bg-gray-100 focus:ring-2 focus:ring-purple-200 resize-none"
-          cols="40" rows="3"></textarea>
-        <input type="submit" value="Add"
-          class="my-4 text-xl rounded bg-green-700 font-medium p-1 outline-none text-white w-20 h-12 cursor-pointer block" />
+          cols="40"
+          rows="3"
+        ></textarea>
+        <input
+          type="submit"
+          value="Add"
+          class="my-4 text-xl rounded bg-green-700 font-medium p-1 outline-none text-white w-20 h-12 cursor-pointer block"
+        />
       </form>
     </div>
     <div class="text-2xl font-medium text-center w-full">
       You Have
-      <span class="text-rose-500">
-        <%=QuetionList.length%>
-      </span> Previous
+      <span class="text-rose-500"> <%=QuetionList.length%> </span> Previous
       Quetion:
     </div>
     <div class="mt-5 flex items-center justify-center flex-col">
       <% for( let i=0; i < QuetionList.length ; i++ ) { %>
-        <div class="flex-wrap mt-5">
-          <div class="inline-blcok">
-            <span class="inline-blcok text-xl">
-              <%= QuetionList[i].QuetionTitle %>
-            </span>
-            <a onclick="deleteQuetion(<%=QuetionList[i].id%>)"
-              class="ml-3 bg-red-500 text-xl rounded font-medium p-2 outline-none text-white w-56 h-12 relative text-center my-3 cursor-pointer">Delete
-              Quetion</a>
-            <a href="/editQuetion/<%=QuetionList[i].id%>"
-              class="ml-3 bg-emerald-500 text-xl rounded font-medium p-2 outline-none text-white w-56 h-12 relative text-center my-3 cursor-pointer">Edit
-              Quetion</a>
-            <a href="/ManageOption/<%=QuetionList[i].id%>/election/<%=electionList.id%>"
-              class="ml-3 text-xl rounded bg-green-700 font-medium p-2 outline-none text-white w-56 h-12 relative text-center cursor-pointer">Manage
-              Option</a>
-          </div>
-
-          <% } %>
+      <div class="flex-wrap mt-5">
+        <div class="inline-blcok">
+          <span class="inline-blcok text-xl">
+            <%= QuetionList[i].QuetionTitle %>
+          </span>
+          <a
+            onclick="deleteQuetion(<%=QuetionList[i].id%>)"
+            class="ml-3 bg-red-500 text-xl rounded font-medium p-2 outline-none text-white w-56 h-12 relative text-center my-3 cursor-pointer"
+            >Delete Quetion</a
+          >
+          <a
+            href="/editQuetion/<%=QuetionList[i].id%>"
+            class="ml-3 bg-emerald-500 text-xl rounded font-medium p-2 outline-none text-white w-56 h-12 relative text-center my-3 cursor-pointer"
+            >Edit Quetion</a
+          >
+          <a
+            href="/ManageOption/<%=QuetionList[i].id%>/election/<%=electionList.id%>"
+            class="ml-3 text-xl rounded bg-green-700 font-medium p-2 outline-none text-white w-56 h-12 relative text-center cursor-pointer"
+            >Manage Option</a
+          >
         </div>
+
+        <% } %>
+      </div>
     </div>
     <script>
       function goback() {
@@ -88,6 +101,5 @@
           "/Quetion/<%=electionList.id%>");
       }
     </script>
-</body>
-
+  </body>
 </html>

@@ -1,79 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="csrf-token" content="<%=csrfToken%>" />
-  <title>Home Page</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    var token = document
-      .querySelector('meta[name="csrf-token"]')
-      .getAttribute("content");
-    function deleteElection(id) {
-      // console.log("Called");
-      console.log(token);
-      fetch(`/delete/${id}`, {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          _csrf: token,
-        }),
-      })
-        .then((res) => {
-          if (res.ok) {
-            console.log(res);
-            window.location.reload();
-          }
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf-token" content="<%=csrfToken%>" />
+    <title>Home Page</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      var token = document
+        .querySelector('meta[name="csrf-token"]')
+        .getAttribute("content");
+      function deleteElection(id) {
+        // console.log("Called");
+        console.log(token);
+        fetch(`/delete/${id}`, {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            _csrf: token,
+          }),
         })
-        .catch((err) => console.log(err));
-    }
-  </script>
-  <style>
-    @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
+          .then((res) => {
+            if (res.ok) {
+              console.log(res);
+              window.location.reload();
+            }
+          })
+          .catch((err) => console.log(err));
+      }
+    </script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
 
-    body {
-      font-family: "Poppins", sans-serif, "Courier New", Courier, monospace;
-      background: #414141;
-      color: #ffff;
-    }
-  </style>
-</head>
+      body {
+        font-family: "Poppins", sans-serif, "Courier New", Courier, monospace;
+      }
+    </style>
+  </head>
 
-<body>
-  <div class="container">
-    <%-include ("header.ejs") %>
+  <body class="bg-gray-100">
+    <div class="container w-full h-full">
+      <%-include ("header.ejs") %>
       <div class="notification flex items-center justify-center w-screen">
         <%- include ("./notification.ejs")%>
       </div>
       <div class="flex ml-20 justify-center items-start flex-col flex-wrap">
         <div class="block mt-5">
           <form action="/AddElectionTitle" method="post">
-            <label for="textTitle" class="block text-3xl w-fit">Create An Election:</label>
-            <input type="hidden" name="_csrf" value="<%=csrfToken%>" id="csrf" />
-            <input type="text" id="textTitle" name="title"
-              class="outline-none p-3 text-black w-4/12 shadow my-1.5 rounded bg-gray-100 focus:ring-2 focus:ring-purple-200"
-              placeholder="Enter Election Title" required />
-            <input type="submit"
-              class="mx-2 text-xl rounded bg-green-700 font-medium p-1 outline-none text-white w-20 h-12 cursor-pointer" />
+            <label for="textTitle" class="block text-3xl w-fit"
+              >Create An Election:</label
+            >
+            <input
+              type="hidden"
+              name="_csrf"
+              value="<%=csrfToken%>"
+              id="csrf"
+            />
+            <div class="flex items-center justify-center">
+              <input
+                type="text"
+                id="textTitle"
+                name="title"
+                class="outline-none p-3 bg-gray-300 text-black w-full shadow my-1.5 rounded focus:ring-2 focus:ring-purple-200"
+                placeholder="Enter Election Title"
+                required
+              />
+              <input
+                type="submit"
+                class="mx-2 text-xl rounded bg-green-700 font-medium p-1 outline-none text-white w-20 h-12 cursor-pointer"
+              />
+            </div>
           </form>
         </div>
         <div class="mt-3 flex justify-between w-min">
-          <div class="bg-white w-min text-black rounded-b rounded-3xl p-2 mt-3 shadow mx-2">
+          <div
+            class="bg-white w-min text-black rounded-b rounded-3xl p-2 mt-3 shadow mx-2"
+          >
             <div class="text-4xl text-center text-blue-500">
               <%= getElection.length %>
             </div>
             <div class="text-sm text-center">Total Election's</div>
           </div>
-          <div class="bg-white w-min text-black rounded-b rounded-3xl p-2 mt-3 shadow mx-2">
-            <div class="text-4xl text-center text-green-500">
-              <%= Live %>
-            </div>
+          <div
+            class="bg-white w-min text-black rounded-b rounded-3xl p-2 mt-3 shadow mx-2"
+          >
+            <div class="text-4xl text-center text-green-500"><%= Live %></div>
             <div class="text-sm text-center">Live Election's</div>
           </div>
-          <div class="bg-white w-min text-black rounded-b rounded-3xl p-2 mt-3 shadow mx-2">
+          <div
+            class="bg-white w-min text-black rounded-b rounded-3xl p-2 mt-3 shadow mx-2"
+          >
             <div class="text-4xl text-center text-rose-500">
               <%= complete %>
             </div>
@@ -82,49 +99,83 @@
         </div>
         <div class="w-fit">
           <% getElection.map((election)=>{ %>
-            <div class="bg-white p-2 text-black p-3 rounded m-3">
-              <div class="text-3xl w-full">Title:<%=election.Title%>
+          <div class="bg-white p-2 text-black p-3 rounded m-3">
+            <div class="text-3xl w-full">Title:<%=election.Title%></div>
+            <% if(election.Start==true){%>
+            <div class="text-2xl text-green-500">Live</div>
+            <%}else{%>
+            <div class="text-2xl text-rose-500">Not Live Yet</div>
+            <%}%>
+            <div class="flex w-full my-2 justify-between items-center">
+              <span
+                title=" Delete-<%=election.id%>"
+                onclick="deleteElection(<%= election.id %>)"
+                class="cursor-pointer"
+              >
+                <svg
+                  style="color: red"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="23"
+                  height="23"
+                  fill="currentColor"
+                  class="bi bi-trash"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"
+                    fill="red"
+                  ></path>
+                  <path
+                    fill-rule="evenodd"
+                    d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"
+                    fill="red"
+                  ></path></svg
+              ></span>
+              <span class="mx-6" title="Edit-<%=election.id%>">
+                <a href="/Quetion/<%= election.id %>">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="23"
+                    height="23"
+                    fill="currentColor"
+                    class="bi bi-pencil"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"
+                    />
+                  </svg>
+                </a>
+              </span>
+              <div class="text-black">
+                <a
+                  href="/election/ResultPerview/<%= election.id %>"
+                  class="ml-3 bg-yellow-400 text-xl rounded font-medium p-2 outline-none w-56 h-12 relative text-center my-3"
+                  >Result Perview</a
+                >
               </div>
-              <% if(election.Start==true){%>
-                <div class="text-2xl text-green-500">Live</div>
-                <%}else{%>
-                  <div class="text-2xl text-rose-500">Not Live Yet</div>
-                  <%}%>
-                    <div class="flex w-full my-2 justify-between items-center">
-                      <span title=" Delete-<%=election.id%>" onclick="deleteElection(<%= election.id %>)"
-                        class="cursor-pointer">
-                        <svg style="color: red" xmlns="http://www.w3.org/2000/svg" width="23" height="23"
-                          fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
-                          <path
-                            d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"
-                            fill="red"></path>
-                          <path fill-rule="evenodd"
-                            d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"
-                            fill="red"></path>
-                        </svg></span>
-                      <span class="mx-6" title="Edit-<%=election.id%>">
-                        <a href="/Quetion/<%= election.id %>">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"
-                            class="bi bi-pencil" viewBox="0 0 16 16">
-                            <path
-                              d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
-                          </svg>
-                        </a>
-                      </span>
-                      <div class="text-black">
-                        <a href="/election/ResultPerview/<%= election.id %>"
-                          class="ml-3 bg-yellow-400 text-xl rounded font-medium p-2 outline-none w-56 h-12 relative text-center my-3">Result
-                          Perview</a>
-                      </div>
-                    </div>
             </div>
-            <%})%>
+          </div>
+          <%})%>
         </div>
       </div>
-  </div>
-  <script>
-    document.getElementById("goBack").style.display = "none";
-  </script>
-</body>
-
+    </div>
+    <script>
+      document.getElementById("goBack").style.display = "none";
+    </script>
+    <!-- <div class="flex">
+      <div class="user flex">
+        <div>
+          <div>Hey <%=User.FirstName%>,</div>
+          <div>
+            Online voting made simple. Join AssociationVoting and make your
+            voice heard today!
+          </div>
+        </div>
+        <div class="">
+          <img src="/Dashboard_Img.png" alt="" />
+        </div>
+      </div>
+    </div> -->
+  </body>
 </html>

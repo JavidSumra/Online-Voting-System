@@ -30,38 +30,27 @@
   </head>
   <body>
     <% if (QuetionDetail.length != 0 ) { %>
-    <div class="grid justify-center my-6">
-      <% if(messages && messages.error && messages.error.length != 0) { %>
-      <div
-        class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative text-center mb-3"
-        role="alert"
-      >
-        <strong> <%=messages.error %> </strong>
-      </div>
-      <% } %> <% if(messages && messages.success && messages.success.length !=
-      0) { %>
-      <div
-        class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative text-center mb-3"
-        role="alert"
-      >
-        <strong> <%=messages.success %> </strong>
-      </div>
-      <% } %> <%-include ("header.ejs") %> <% for( let i = 0; i <
-      QuetionDetail.length ; i++ ) { %>
-      <div class="text-xl font-medium">
+    <div class="grid justify-center">
+      <%-include ("header.ejs") %> <%- include ("./notification.ejs")%> <% for(
+      let i = 0; i < QuetionDetail.length ; i++ ) { %>
+      <div class="text-xl font-medium ml-20 my-2">
         Quetion Title: <%=QuetionDetail[i].QuetionTitle %>
       </div>
-      <div class="text-xl font-medium">
+      <div class="text-xl font-medium ml-20 my-2">
         Quetion Description: <%=QuetionDetail[i].Description %>
       </div>
-      <form action="/addOption/<%=QuetionDetail[i].id%>/<%=Id%>" method="post">
+      <form
+        action="/addOption/<%=QuetionDetail[i].id%>/<%=Id%>"
+        method="post"
+        class="ml-20"
+      >
         <input type="hidden" name="_csrf" value="<%= csrfToken%>" />
         <span class="text-xl block my-4 font-medium">Option Name/Title:</span>
         <input
           type="text"
           name="Title"
-          class="rounded border border-black outline-none p-3 w-2/4"
-          placeholder="Enter Quetion Name"
+          class="outline-none p-2 text-black shadow my-1.5 rounded bg-gray-100 focus:ring-2 focus:ring-purple-200"
+          placeholder="Enter Option Name"
         />
         <input
           type="submit"
@@ -69,12 +58,12 @@
           class="my-4 text-xl rounded bg-green-700 font-medium p-1 outline-none text-white w-20 h-12 cursor-pointer block"
         />
       </form>
-      <span class="text-2xl font-medium"
+      <span class="text-2xl font-medium ml-20"
         >You Have <%=OptionList.length%> Previous Option:</span
       >
       <div class="mt-5">
         <% for( let i = 0; i < OptionList.length ; i++ ) { %>
-        <div class="flex-wrap mt-5">
+        <div class="flex-wrap mt-5 ml-20">
           <div class="inline-blcok">
             <span class="inline-blcok text-xl">
               <%=OptionList[i].OptionTitle%>
@@ -97,7 +86,7 @@
     </div>
     <% } else { %>
     <div class="grid justify-center my-6">
-      <%-include ("header.ejs") %>
+      <%-include ("header.ejs") %> <%- include ("./notification.ejs")%>
       <div class="text-2xl font-medium text-center">Please Create Quetion</div>
     </div>
     <% } %>

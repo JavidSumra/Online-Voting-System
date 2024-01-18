@@ -1,77 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="csrf-token" content="<%= csrfToken %>" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Election Dashboard</title>
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="csrf-token" content="<%= csrfToken %>" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Election Dashboard</title>
-</head>
-
-<body>
-  <%-include ("./header.ejs") %>
-    <div class="grid justify-center pt-4 max-h-screen h-full bg-gray-700 text-white">
+  <body class="bg-gray-100">
+    <%-include ("./header.ejs") %>
+    <div class="grid justify-center pt-4 max-h-screen h-full text-black">
       <%-include ("./notification.ejs") %>
-        <div class="title text-3xl font-medium text-center">
-          Election Title : <%= electionList.Title %>
+      <div class="title text-3xl font-medium text-center">
+        Election Title : <%= electionList.Title %>
+      </div>
+      <div class="text-xl font-medium text-center mt-5">
+        <% if(electionList.Start===true && electionList.End===false){%> Your
+        Election is Live On:
+        <a
+          target="_blank"
+          href="https://online-voting-platform-xoug.onrender.com/loginvoter/<%=electionList.id%>"
+          class="underline"
+          >https://online-voting-platform-xoug.onrender.com/loginvoter/<%=electionList.id%></a
+        >
+        <% } %>
+      </div>
+      <div class="flex items-center justify-between flex-col">
+        <div class="my-4 text-2xl font-medium">
+          You Have
+          <span class="text-rose-500"> <%=QuetionList.length %> </span> Quetion
+          In Your Election Ballot
         </div>
-        <div class="text-xl font-medium text-center mt-5">
-          <% if(electionList.Start===true && electionList.End===false){%> Your
-            Election is Live On:
-            <a target="_blank" href="https://online-voting-platform-xoug.onrender.com/loginvoter/<%=electionList.id%>"
-              class="underline">https://online-voting-platform-xoug.onrender.com/loginvoter/<%=electionList.id%></a>
-            <% } %>
+        <div class="grid grid-cols-2 grid-rows-1">
+          <a
+            href="/ManageQuetion/<%= electionList.id %>"
+            class="text-xl rounded border-black hover:border-none border-2 font-medium p-2 text-black w-56 h-12 relative text-center hover:bg-white hover:text-green-700 duration-300"
+            >Manage Quetion</a
+          >
         </div>
-        <div class="flex items-center justify-between flex-col">
-          <div class="my-4 text-2xl font-medium">
-            You Have
-            <span class="text-rose-500">
-              <%=QuetionList.length %>
-            </span> Quetion
-            In Your Election Ballot
-          </div>
-          <div class="grid grid-cols-2 grid-rows-1">
-            <a href="/ManageQuetion/<%= electionList.id %>"
-              class="text-xl rounded border-white border-2 font-medium p-2 text-white w-56 h-12 relative text-center hover:bg-white hover:text-green-700 duration-300">Manage
-              Quetion</a>
-          </div>
-          <div class="font-medium my-4 text-2xl">
-            You Have
-            <span class="text-rose-500">
-              <%=VotersList.length%>
-            </span> Registered
-            Voters
-          </div>
-          <div class="grid grid-cols-2 grid-rows-3 gap-3">
-            <a href="/voter/addVoter/<%= electionList.id %>"
-              class="text-xl rounded border-white border-2 font-medium p-2 text-white relative w-56 h-12 text-center hover:bg-white hover:text-green-500 duration-300">Add
-              Voters</a>
-            <a href="/Manage/voter/<%= electionList.id %>"
-              class="text-xl rounded border-white border-2 font-medium p-2 text-white relative w-56 h-12 text-center hover:bg-white hover:text-black duration-300">Manage
-              Voters</a>
+        <div class="font-medium my-4 text-2xl">
+          You Have
+          <span class="text-rose-500"> <%=VotersList.length%> </span> Registered
+          Voters
+        </div>
+        <div class="grid grid-cols-2 grid-rows-3 gap-3">
+          <a
+            href="/voter/addVoter/<%= electionList.id %>"
+            class="text-xl rounded border-black hover:border-none border-2 font-medium p-2 text-black relative w-56 h-12 text-center hover:bg-white hover:text-green-500 duration-300"
+            >Add Voters</a
+          >
+          <a
+            href="/Manage/voter/<%= electionList.id %>"
+            class="text-xl rounded border-black hover:border-none border-2 font-medium p-2 text-black relative w-56 h-12 text-center hover:bg-white hover:text-black duration-300"
+            >Manage Voters</a
+          >
 
-            <a href="/DeclareElection/<%= electionList.id %>"
-              class="text-xl rounded font-medium p-2 border-white border-2 text-white w-56 h-12 relative text-center my-3 hover:bg-white hover:text-green-500 duration-300">Declare
-              Election</a>
-            <a href="/EndElection/<%= electionList.id %>"
-              class="border-white border-2 text-xl rounded font-medium p-2 text-white w-56 h-12 relative text-center my-3 hover:bg-white hover:text-rose-500 duration-300">End
-              Election</a>
+          <a
+            href="/DeclareElection/<%= electionList.id %>"
+            class="text-xl rounded font-medium p-2 border-black hover:border-none border-2 text-black w-56 h-12 relative text-center my-3 hover:bg-white hover:text-green-500 duration-300"
+            >Declare Election</a
+          >
+          <a
+            href="/EndElection/<%= electionList.id %>"
+            class="border-black hover:border-none border-2 text-xl rounded font-medium p-2 text-black w-56 h-12 relative text-center my-3 hover:bg-white hover:text-rose-500 duration-300"
+            >End Election</a
+          >
 
-            <a href="/election/ResultPerview/<%= electionList.id %>"
-              class="text-xl rounded font-medium p-2 border-white border-2 text-white w-56 h-12 relative text-center my-3 hover:bg-white hover:text-yellow-400 duration-300">Result
-              Perview</a>
-            <a href="/ElectionPerview/<%= electionList.id %>"
-              class="text-xl rounded font-medium p-2 border-white border-2 text-white w-56 h-12 relative text-center my-3 hover:bg-white hover:text-orange-500 duration-300">Election
-              Preview</a>
-          </div>
+          <a
+            href="/election/ResultPerview/<%= electionList.id %>"
+            class="text-xl rounded font-medium p-2 border-black hover:border-none border-2 text-black w-56 h-12 relative text-center my-3 hover:bg-white hover:text-yellow-400 duration-300"
+            >Result Perview</a
+          >
+          <a
+            href="/ElectionPerview/<%= electionList.id %>"
+            class="text-xl rounded font-medium p-2 border-black hover:border-none border-2 text-black w-56 h-12 relative text-center my-3 hover:bg-white hover:text-orange-500 duration-300"
+            >Election Preview</a
+          >
         </div>
+      </div>
     </div>
     <script>
       function goback() {
         let btnGoBack = (document.getElementById("goBack").href = "/Home");
       }
     </script>
-</body>
-
+  </body>
 </html>

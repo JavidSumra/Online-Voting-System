@@ -5,7 +5,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="csrf-token" content="<%= csrfToken %>" />
-    <title>Sign Up</title>
+
+    <title>Change Password</title>
+
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
@@ -16,85 +18,117 @@
     </style>
   </head>
   <body>
-    <!-- <div class="container">
-      <br />
-      <div class="login form">
-        <% if(messages && messages.error && messages.error.length != 0) { %>
-        <div
-          style="
-            background-color: #fee2e2;
-            border-color: #f87171;
-            color: #ef4444;
-            border-radius: 3px;
-            position: relative;
-            padding: 10px;
-            text-align: center;
-            margin-bottom: 20px;
-          "
-          role="alert"
-        >
-          <strong> <%=messages.error %> </strong>
+
+    <div class="flex w-screen h-screen">
+      <%- include("./notification.ejs")%>
+      <div class="flex items-center justify-center w-2/5 max-[938px]:hidden">
+        <img src="/ForgotPass_Img.png" alt="Not Found" class="w-full" />
+      </div>
+      <div
+        class="bg-[#f8f8f8] flex items-center py-16 min-[938px]:w-3/5 rounded-l-[40px] flex-col max-[938px]:w-full max-[938px]:rounded-none justify-center"
+      >
+        <div class="w-full flex justify-end items-center">
+          <a
+            href="/"
+            class="bg-rose-500 text-white text-2xl p-2 mx-8 rounded text-gray-900 hover:shadow-rose-500/80 shadow-xl hover:bg-rose-500 duration-700"
+            >Login</a
+          >
         </div>
-        <% } %> <% if(messages && messages.success && messages.success.length !=
-        0) { %>
-        <div
-          style="
-            background-color: #ecfccb;
-            border-color: #a3e635;
-            color: #84cc16;
-            border-radius: 3px;
-            position: relative;
-            padding: 10px;
-            text-align: center;
-            margin-bottom: 20px;
-          "
-          role="alert"
-        >
-          <strong> <%=messages.success %> </strong>
+        <div class="font-bold text-2xl space-2 text-left w-1/2">
+          Reset Your Password Now!
         </div>
-        <% } %>
-        <header>Update Password</header>
-        <hr />
-        <form action="/forgotpass/User" method="post">
+        <div class="text-sm font-light text-slate-400 text-left w-1/2">
+          Securing Your Account with New Password.
+        </div>
+        <form action="/forgotpass/User" method="post" class="py-10 w-1/2">
           <input type="hidden" name="_csrf" value="<%= csrfToken%>" />
+          <div>
+            <label for="email" class="block text-xl">Email:</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              class="outline-none p-2 shadow w-full my-1.5 rounded focus:ring-2 focus:ring-purple-200 bg-white"
+              placeholder="Enter your email"
+              required
+            />
+          </div>
+          <div>
+            <label for="Password" class="text-xl block">New Password:</label>
+            <input
+              type="password"
+              name="NewPass"
+              id="Password"
+              onkeyup="validatePassword()"
+              class="outline-none p-2 shadow w-full my-1.5 rounded focus:ring-2 focus:ring-purple-200"
+              placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;"
+              required
+            />
+          </div>
+          <div>
+            <label for="ConPassword" class="text-xl block"
+              >Confirm Password:</label
+            >
+            <input
+              type="password"
+              name="ConPass"
+              id="ConPassword"
+              class="outline-none p-2 shadow w-full my-1.5 rounded focus:ring-2 focus:ring-purple-200"
+              placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;"
+              required
+            />
+          </div>
+          <div class="Pass_Strength text-right font-bold"></div>
           <input
-            type="email"
-            id="email"
-            name="email"
-            placeholder="Enter Your Email"
-            onkeyup="validate()"
-            required
+            type="submit"
+            class="block bg-rose-500 w-full text-white text-2xl p-1 mt-4 rounded text-gray-900 hover:shadow-rose-500/80 shadow-xl hover:bg-rose-500 duration-700"
+            value="Enter Password"
           />
-          <input
-            type="password"
-            name="NewPass"
-            id="Password"
-            placeholder="Enter Your New Password"
-            required
-          />
-          <input
-            type="password"
-            name="ConPass"
-            id="Password"
-            placeholder="Enter Your Confirm Password"
-            required
-          />
-          <input type="submit" class="button" value="Update" />
         </form>
       </div>
     </div>
     <script>
-      var email = document.getElementById("email");
+      function validatePassword() {
+        const password = document.querySelector("input[type='password']").value;
+        const passwordStrength = document.querySelector(".Pass_Strength");
 
-      function validate() {
-        if (
-          !email.value.match(
-            /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
-          )
-        ) {
-          email.style.borderColor = "red";
-        } else {
-          email.style.borderColor = "green";
+        // Reset classes and text content
+        passwordStrength.classList.add("hidden");
+        passwordStrength.textContent = "";
+
+        if (password.length > 0) {
+          // Check for weak password
+          if (password.length <= 8) {
+            passwordStrength.classList.remove("hidden", "text-amber-400");
+            passwordStrength.classList.add("text-rose-500");
+            passwordStrength.textContent = "Weak";
+          }
+
+          // Check for medium strength password
+          if (password.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/)) {
+            passwordStrength.classList.remove(
+              "hidden",
+              "text-rose-500",
+              "text-green-500"
+            );
+            passwordStrength.classList.add("text-amber-400");
+            passwordStrength.textContent = "Medium";
+          }
+
+          // Check for strong password
+          if (
+            password.match(
+              /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\$%\^&\*]).{8,}$/
+            )
+          ) {
+            passwordStrength.classList.remove(
+              "hidden",
+              "text-rose-500",
+              "text-amber-400"
+            );
+            passwordStrength.classList.add("text-green-500");
+            passwordStrength.textContent = "Strong";
+          }
         }
       }
     </script> -->
