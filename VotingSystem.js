@@ -857,7 +857,7 @@ app.post(
         response.redirect(`/ManageQuetion/${request.params.id}`);
       } else {
         if (
-          request.body.QuetionTitle.trim().length > 20 ||
+          request.body.QuetionTitle.trim().length > 50 ||
           request.body.Description.trim().length < 10
         ) {
           request.flash(
