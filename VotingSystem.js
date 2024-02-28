@@ -1031,7 +1031,7 @@ app.post(
           console.log(request.body.email);
           let addVoter = await Voter.create({
             email: request.body.email,
-            VoterId: hashAddhar,
+            VoterId: request.body.VoterId,
             password: hashPass,
             userElectionId: request.params.id,
             Status: false,
