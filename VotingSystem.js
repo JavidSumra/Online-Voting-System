@@ -1027,7 +1027,7 @@ app.post(
           );
           console.log(electiondetail);
           let hashPass = await bcrypt.hash(request.body.password, saltRound);
-          let hashAddhar = await bcrypt.hash(request.body.VoterId, saltRound);
+          let hashAddhar =(request.body.VoterId, saltRound);
           console.log(request.body.email);
           let addVoter = await Voter.create({
             email: request.body.email,
