@@ -5,7 +5,7 @@
 This is an online voting web application where users can register, sign in, create elections, and vote in them. Below is a detailed demonstration of the features provided by the application.
 
 ### Demo Links
-- [Web Application Link](https://online-voting-platform-xoug.onrender.com/](https://online-voting-system-m346.onrender.com/))
+- [Web Application Link](https://online-voting-system-m346.onrender.com))
 - [Loom Video Demonstration](https://www.loom.com/share/e2b3506446164b3eb0e82f73eb7bb86f)
 
 ## Features
