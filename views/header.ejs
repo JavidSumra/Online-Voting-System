@@ -1,23 +1,30 @@
 <div
-  class="border-l-8 border-gray-300 text-3xl p-4 bg-gray-800 text-gray-200 flex items-center justify-between hover:text-white w-screen">
+  class="border-l-8 border-gray-300 text-3xl p-4 bg-gray-800 text-gray-200 flex items-center justify-between hover:text-white w-screen"
+>
   Hey, <%=User%>
-    <div class="inline-blcok float-right">
-      <a class="text-xl rounded bg-green-700 font-medium p-2 outline-none text-white" href="/Signout">SignOut</a>
-      <a class="text-xl rounded bg-red-400 font-medium p-2 outline-none text-white" href="#" id="goBack"
-        onclick="goback()">
-        <span class="font-medium text-2xl">&#x2190;</span> Go Back</a>
-    </div>
+  <div class="inline-blcok float-right">
+    <a
+      class="text-xl rounded bg-green-700 font-medium p-2 outline-none text-white"
+      href="/Signout"
+      >SignOut</a
+    >
+    <a
+      class="text-xl rounded bg-red-400 font-medium p-2 outline-none text-white"
+      href="#"
+      id="goBack"
+      onclick="goback()"
+    >
+      <span class="font-medium text-2xl">&#x2190;</span> Go Back</a
+    >
+  </div>
 </div>
 <script>
   function goback() {
     let btnGoBack = (document.getElementById("goBack").href = "/");
-  } 56
+  }
+  56;
   function removeNotification() {
-    document.querySelector(".alert").style.display = "none"
+    document.querySelector(".alert").style.display = "none";
   }
 </script>
-<<<<<<< HEAD
 <script src="https://cdn.tailwindcss.com"></script>
-=======
-    <script src="https://cdn.tailwindcss.com"></script>
->>>>>>> 735208cdda5651f04cff83e335f5655741989c52

@@ -37,6 +37,7 @@ const CreateOption = require("./models/optiondetail")(sequelize, DataTypes);
 const Voter = require("./models/voterlogin")(sequelize, DataTypes);
 const Voting = require("./models/voterdetail")(sequelize, DataTypes);
 
+app.use(express.static("./Assets/"));
 app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -81,7 +82,7 @@ passport.use(
               return done(null, false, { message: "Invalid Password" });
             }
           } else {
-            return done(null, false, { message: "User Does Not Exist" });
+            return done(null, false, { message: "User Doesn't Exist" });
           }
         })
         .catch((error) => {
@@ -856,7 +857,7 @@ app.post(
         response.redirect(`/ManageQuetion/${request.params.id}`);
       } else {
         if (
-          request.body.QuetionTitle.trim().length > 20 ||
+          request.body.QuetionTitle.trim().length > 50 ||
           request.body.Description.trim().length < 10
         ) {
           request.flash(
@@ -1026,11 +1027,11 @@ app.post(
           );
           console.log(electiondetail);
           let hashPass = await bcrypt.hash(request.body.password, saltRound);
-          let hashAddhar = await bcrypt.hash(request.body.VoterId, saltRound);
+          let hashAddhar =(request.body.VoterId, saltRound);
           console.log(request.body.email);
           let addVoter = await Voter.create({
             email: request.body.email,
-            VoterId: hashAddhar,
+            VoterId: request.body.VoterId,
             password: hashPass,
             userElectionId: request.params.id,
             Status: false,
