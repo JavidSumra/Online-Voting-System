@@ -1,7 +1,12 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
 
-"use strict";
+const dotenv = require("dotenv");
+
+dotenv.config({
+  path: "./.env",
+});
+
 const express = require("express");
 const app = express();
 const csrf = require("tiny-csrf");
@@ -10,19 +15,29 @@ const bodyParser = require("body-parser");
 const flash = require("connect-flash");
 const session = require("express-session");
 const bcrypt = require("bcrypt");
-// const fetch = (...args) =>
-//   import("node-fetch").then(({ default: fetch }) => fetch(...args));
+const cors = require("cors");
+
 const saltRound = 10;
+
+const uploadOnCloudinary = require("./cloudinary");
 
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const connectEnsure = require("connect-ensure-login");
+
+const upload = require("./multer");
 
 const path = require("path");
 
 //Set View Engine
 app.set("views", path.join(__dirname + "/views"));
 app.set("view engine", "ejs");
+
+app.use(
+  cors({
+    origin: process.env.ORIGIN || "*",
+  })
+);
 
 const { sequelize } = require("./models");
 const { DataTypes } = require("sequelize");
@@ -37,12 +52,12 @@ const CreateOption = require("./models/optiondetail")(sequelize, DataTypes);
 const Voter = require("./models/voterlogin")(sequelize, DataTypes);
 const Voting = require("./models/voterdetail")(sequelize, DataTypes);
 
-app.use(express.static("./Assets/"));
+app.use(express.static("Assets"));
 app.use(bodyParser.json());
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.json({ limit: "18kb" }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookiepasrser("this is Secret String"));
-app.use(csrf("this_should_be_32_character_long", ["POST", "PUT", "DELETE"]));
+app.use(csrf("this_should_be_32_character_long", ["PUT", "DELETE"]));
 
 //Flash Message
 app.use(flash());
@@ -751,7 +766,6 @@ app.post(
 );
 
 app.post("/SignUpUser", async (request, response) => {
-  console.log(request.body);
   try {
     let User = await Admin.findAll({ where: { email: request.body.email } });
     if (User.length == 0) {
@@ -860,10 +874,7 @@ app.post(
           request.body.QuetionTitle.trim().length > 50 ||
           request.body.Description.trim().length < 10
         ) {
-          request.flash(
-            "error",
-            "Quetion Title Must Less Than 15 And Quetion Description Greater Than 10"
-          );
+          request.flash("error", "Quetion Description Greater Than 10");
           response.redirect(`/ManageQuetion/${request.params.id}`);
         } else {
           console.log("Post Request:" + request.params.id);
@@ -1004,10 +1015,25 @@ app.post(
 
 app.post(
   "/AddVoter/:id",
+  upload.fields([{ name: "voterImage", maxCount: 1 }]),
   connectEnsure.ensureLoggedIn({ redirectTo: "/" }),
   async (request, response) => {
-    console.log(request.params.id);
     try {
+      //upload File
+      if (!request.files || !request.files["voterImage"]) {
+        request.flash("error", "Please upload a voter image");
+        return response.redirect(`/voter/addVoter/${request.params.id}`);
+      }
+
+      const voterImage = request.files["voterImage"][0]; // Get the uploaded file
+
+      // Upload voter image to Cloudinary
+      const cloudinaryResponse = await uploadOnCloudinary(voterImage.path);
+      if (!cloudinaryResponse) {
+        request.flash("error", "Failed to upload voter image");
+        return response.redirect(`/voter/addVoter/${request.params.id}`);
+      }
+
       if (
         request.body.VoterId.trim().length > 10 &&
         request.body.VoterId.trim().length < 5
@@ -1027,7 +1053,7 @@ app.post(
           );
           console.log(electiondetail);
           let hashPass = await bcrypt.hash(request.body.password, saltRound);
-          let hashAddhar =(request.body.VoterId, saltRound);
+          let hashAddhar = (request.body.VoterId, saltRound);
           console.log(request.body.email);
           let addVoter = await Voter.create({
             email: request.body.email,
@@ -1035,29 +1061,30 @@ app.post(
             password: hashPass,
             userElectionId: request.params.id,
             Status: false,
+            VoterImage: cloudinaryResponse.url,
             UserRole: "Voter",
           });
           console.log(addVoter);
           if (addVoter) {
             console.log("Mail");
-            sendMail(
-              request.body.email,
-              `Welcome to the ${electiondetail.Title} Voter List!`,
-              `Dear Voter,
+            //             sendMail(
+            //               request.body.email,
+            //               `Welcome to the ${electiondetail.Title} Voter List!`,
+            //               `Dear Voter,
 
-We are excited to inform you that you have been officially added to the voter list for the upcoming ${electiondetail.Title}! Your participation in this democratic process is vital to shaping the future of our community/country, and we are grateful to have you as a registered voter.
+            // We are excited to inform you that you have been officially added to the voter list for the upcoming ${electiondetail.Title}! Your participation in this democratic process is vital to shaping the future of our community/country, and we are grateful to have you as a registered voter.
 
-Your voter information:
+            // Your voter information:
 
-Voter ID: ${request.body.VoterId},
-Password: ${request.body.password},
-Email:${request.body.email},
+            // Voter ID: ${request.body.VoterId},
+            // Password: ${request.body.password},
+            // Email:${request.body.email},
 
-When Election is Live then You Can Vote on,
-https://online-voting-platform-xoug.onrender.com/loginvoter/${electiondetail.id}
+            // When Election is Live then You Can Vote on,
+            // https://online-voting-platform-xoug.onrender.com/loginvoter/${electiondetail.id}
 
-As a registered voter, you now have the privilege and responsibility of casting your vote in this election. It is your opportunity to have your voice heard and make a difference in the decisions that affect our community/country.`
-            );
+            // As a registered voter, you now have the privilege and responsibility of casting your vote in this election. It is your opportunity to have your voice heard and make a difference in the decisions that affect our community/country.`
+            //             );
           }
 
           request.flash("success", "Voter Suceessfully Created");
@@ -1085,10 +1112,16 @@ app.post(
         VoterId: request.body.VoterId,
       },
     });
-    // console.log(election.length);
+
     if (election.length > 0) {
       try {
-        console.log(request.user);
+        console.log("Hello", request.user);
+        console.log("Accept", request.accepts);
+        if (!request.accepts("html")) {
+          console.log(request.user);
+          return response.json({ User: request.user });
+        }
+
         request.flash("success", "Login Suceessfully");
         response.redirect(
           `/voting/${request.params.id}/${request.user.VoterId}`

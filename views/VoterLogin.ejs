@@ -138,25 +138,50 @@
         <% } %>
         <header>Welcome To Online Voting Platform</header>
         <hr />
-        <form action="/VoterLogin/<%=Id%>" method="post">
-          <input type="hidden" name="_csrf" value="<%= csrfToken%>" />
-          <input
-            type="text"
-            id="email"
-            name="VoterId"
-            placeholder="Enter Your VoterId"
-            required
-          />
-          <input
-            type="password"
-            name="password"
-            id="Password"
-            placeholder="Enter Your Password"
-            required
-          />
-          <input type="submit" class="button" value="Login" />
-        </form>
+        <!-- <form action="/VoterLogin<%=Id%>" method="post"> -->
+        <!-- <form onsubmit="CompareImage()"> -->
+        <input type="hidden" name="_csrf" value="<%= csrfToken%>" />
+        <input
+          type="text"
+          id="email"
+          name="VoterId"
+          placeholder="Enter Your VoterId"
+          required
+        />
+        <input
+          type="password"
+          name="password"
+          id="Password"
+          placeholder="Enter Your Password"
+          required
+        />
+        <input
+          type="submit"
+          class="button"
+          value="Login"
+          onclick="CompareImage()"
+        />
+        <!-- </form> -->
       </div>
     </div>
+    <script>
+      const CompareImage = () => {
+        console.log("Called");
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("Password").value;
+
+        console.log(email, password);
+
+        if (email && password) {
+          console.log("if");
+          window.location.replace(
+            `http://localhost:3000?id=<%=Id%>&VoterId=${email}&password=${password}`
+          );
+        } else {
+          console.log("else");
+          window.location.reload();
+        }
+      };
+    </script>
   </body>
 </html>

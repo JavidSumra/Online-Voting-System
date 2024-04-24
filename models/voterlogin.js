@@ -107,6 +107,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       userElectionId: DataTypes.INTEGER,
       UserRole: DataTypes.STRING,
+      VoterImage: DataTypes.STRING,
     },
     {
       sequelize,
