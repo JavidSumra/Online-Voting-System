@@ -25,7 +25,10 @@ module.exports = (sequelize, DataTypes) => {
       ElectionId: DataTypes.INTEGER,
       QuetionId: DataTypes.INTEGER,
       VoterId: DataTypes.INTEGER,
-      TotalVotes: DataTypes.STRING,
+      TotalVotes: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
     },
     {
       sequelize,

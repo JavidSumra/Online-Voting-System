@@ -513,6 +513,8 @@ app.get("/voting/:id/:voterId", async (request, response) => {
     let electionList = await CreateElection.findByPk(request.params.id);
     let VoterDetail = await Voter.getVoter(request.params.voterId);
 
+    console.log(electionList, VoterDetail);
+
     if (VoterDetail.length != 0) {
       if (electionList.End == true) {
         response.redirect(`/result/${request.params.id}`);
@@ -1139,16 +1141,13 @@ app.post(
 );
 
 app.post("/addVote/:id/election/:voterId", async (request, response) => {
-  console.log(request.body);
   try {
-    console.log(request.user);
     let electionList = await CreateElection.findByPk(request.params.id);
     let QuetionDetail = await Quetion.getQuetionList(request.params.id);
     let VoterDetail = await Voter.findByPk(request.params.voterId);
-    console.log(VoterDetail);
-    console.log(VoterDetail.id);
+
     for (let i = 0; i < QuetionDetail.length; i++) {
-      let VoteValue = request.body[`Option-[${QuetionDetail[i].id}]`];
+      let VoteValue = request.body[`Option-`][i];
       console.log(VoteValue);
       let AddVote = await Voting.create({
         ElectionId: electionList.id,
@@ -1158,10 +1157,8 @@ app.post("/addVote/:id/election/:voterId", async (request, response) => {
       });
       console.log(AddVote);
     }
-    //  console.log(updateVotingStatus)
-    await VoterDetail.Voted();
-    console.log(QuetionDetail);
-    console.log(electionList);
+    const status = await VoterDetail.Voted();
+    console.log(status);
     response.redirect(`/loginvoter/${request.params.id}`);
   } catch (error) {
     console.log("Error:" + error);
